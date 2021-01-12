@@ -5,6 +5,14 @@ export default (function () {
   return {
 
     /**
+     * @description 判断是否为定义
+     * @param {*} source 
+     */
+    isUndefined: function (source) {
+      return typeof source === 'undefined';
+    },
+
+    /**
      * @description 判断是否为对象
      * @param {*} source 
      */
