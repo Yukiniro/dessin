@@ -57,5 +57,41 @@ export default (function () {
         array.splice(index, 1);
       }
     },
+
+    /**
+     * @description 绑定DOM事件
+     * @param {*} target 
+     * @param {*} eventName 
+     * @param {*} handler 
+     */
+    addEventListener: function (target, eventName, handler) {
+      if (!target) {
+        throw new Error(constant.ARGUMENT_ERROR);
+      }
+
+      if (target.addEventListener) {
+        target.addEventListener(eventName, handler);
+      } else if (target.attachEvent) {
+        target.attachEvent(`on${eventName}`, handler);
+      }
+    },
+
+    /**
+     * @description 解绑DOM事件
+     * @param {*} target 
+     * @param {*} eventName 
+     * @param {*} handler 
+     */
+    removeEventListener: function (target, eventName, handler) {
+      if (!target) {
+        throw new Error(constant.ARGUMENT_ERROR);
+      }
+
+      if (target.removeEventListener) {
+        target.removeEventListener(eventName, handler);
+      } else if (target.detachEvent) {
+        target.detachEvent(eventName, handler);
+      }
+    },
   }
 })();
