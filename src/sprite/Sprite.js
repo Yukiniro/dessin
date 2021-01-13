@@ -5,6 +5,7 @@ class Sprite {
 
   constructor(props = {}) {
     let _props = {
+      type: '',
       width: 1,
       heihgt: 1,
       angle: 0,
@@ -27,6 +28,10 @@ class Sprite {
     this._selected = false;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
+  }
+
+  get type() {
+    return this._type;
   }
 
   getWidth() {
