@@ -1,0 +1,30 @@
+{
+  "name": "canvas-core",
+  "version": "1.0.0",
+  "description": "基于canvas渲染的2d图形渲染库",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yukiniro/canvas-core.git"
+  },
+  "keywords": [
+    "canvas",
+    "render",
+    "2d",
+    "library"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yukiniro/canvas-core/issues"
+  },
+  "homepage": "https://github.com/Yukiniro/canvas-core#readme",
+  "devDependencies": {
+    "webpack": "^5.13.0",
+    "webpack-cli": "^4.3.1"
+  }
+}
