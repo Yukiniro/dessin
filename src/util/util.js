@@ -101,5 +101,18 @@ export default (function () {
         target.detachEvent(eventName, handler);
       }
     },
+
+    /**
+     * @description 设置元素的css
+     * @param {*} element 
+     * @param {*} style 
+     */
+    css(element, style) {
+      for (let key in style) {
+        if (Object.hasOwnProperty.call(style, key)) {
+          element.style[key] = style[key];
+        }
+      }
+    }
   }
 })();

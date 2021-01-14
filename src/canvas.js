@@ -6,12 +6,57 @@ import event from './event'
 class Canvas {
 
   constructor(props = {}) {
-    this._lowerCanvas = props && props.lowerCanvas; // 渲染视图
-    this._upperCanvas = props && props.upperCanvas; // 事件响应、辅助线视图
-    this._size = {width: 1, height: 1};
+    this._lowerCanvas = props && props.canvas; // 渲染视图
+    this._upperCanvas = document.createElement('canvas'); // 事件响应、辅助线视图
+    this._size = {width: 500, height: 500};
     this._viewResponse = 1; // 实际渲染与最终成像之间的比例关系
 
-    event.bindView(this._lowerCanvas, this._upperCanvas);
+    this._initView();
+    this._updateView();
+  }
+
+  _initView() {
+    let parent = this._lowerCanvas.parentNode;
+    let parentPositionStyle = parent.style.position;
+    parent.insertBefore(this._upperCanvas, this._lowerCanvas.nextSibling);
+    if (!parentPositionStyle || parentPositionStyle === 'static') {
+      util.css(parent, {position: 'relative'});
+    }
+    util.css(this._lowerCanvas, {
+      position: 'absolute',
+    });
+    util.css(this._upperCanvas, {
+      position: 'absolute',
+    });
+    event.bindView(this, this._upperCanvas);
+  }
+
+  _updateView() {
+    let {width, height} = this._size;
+    this._lowerCanvas.width = width;
+    this._lowerCanvas.height = height;
+    this._upperCanvas.width = width;
+    this._upperCanvas.height = height;
+
+    this.render();
+  }
+
+  render() {
+
+  }
+
+  getSize() {
+    return this._size;
+  }
+
+  setSize(size) {
+    this._size = {...size};
+    this._updateView();
+    return this;
+  }
+
+  fireEvent(type, e) {
+    
   }
 }
 

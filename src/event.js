@@ -6,6 +6,7 @@ export default (function() {
   let _view = null;
   let _owner = null;
   let _isMouseDown = false;
+  let _isMouseDrag = false;
 
   function onMouseDown(e) {
     _isMouseDown = true;
@@ -17,18 +18,21 @@ export default (function() {
     let {MOUSE_HOVER, MOUSE_DRAG, MOUSE_MOVE} = constant;
     _owner.fireEvent(MOUSE_MOVE, e);
     if (_isMouseDown) {
-      _owner.fireEvent(MOUSE_HOVER, e);
-    } else {
       _owner.fireEvent(MOUSE_DRAG, e);
+      _isMouseDrag = true;
+    } else {
+      _owner.fireEvent(MOUSE_HOVER, e);
     }
   }
 
   function onMouseUp(e) {
     let {MOUSE_UP, MOUSE_DROP} = constant;
     _owner.fireEvent(MOUSE_UP, e);
-    if (_isMouseDown) {
+    if (_isMouseDrag) {
       _owner.fireEvent(MOUSE_DROP, e);
+      _isMouseDrag = false;
     }
+    _isMouseDown = false;
     util.removeEventListener(document.body, 'mouseup', onMouseUp);
   }
 
