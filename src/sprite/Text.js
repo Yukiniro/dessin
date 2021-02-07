@@ -4,18 +4,15 @@ import Sprite from "./Sprite";
 class Text extends Sprite {
 
   constructor(props = {}) {
-    let _props = {
-      type: constant.SPRITE_TYPE_TEXT,
-      fontSize: 16,
-      fontStyle: 'normal',
-      fontWeight: 'normal',
-      fontFamily: 'Times New Roman',
-      textAlign: 'center',
-      lineHeight: 1.2,
-      text: '',
-      ...props,
-    }
     super(_props);
+    this._type = constant.SPRITE_TYPE_TEXT;
+    this._fontSize = props.fontSize || 16;
+    this._fontStyle = props.fontStyle || 'normal';
+    this._fontWeight = props.fontWeight || 'noramal';
+    this._fontFamily = props.fontFamily|| 'Times New Roman';
+    this._textCenter = props.textAlign || 'center';
+    this._lineHeight = props.lineHeight || 1.2;
+    this._text = props.text || '';
   }
 
   getText() {
@@ -73,7 +70,7 @@ class Text extends Sprite {
   }
 
   renderCache() {
-    
+    this._cacheView.width
   }
 
   render() {

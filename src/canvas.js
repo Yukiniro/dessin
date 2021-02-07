@@ -42,7 +42,9 @@ class Canvas {
   }
 
   render() {
-
+    this.forEachItem((sprite) => {
+      sprite.rendre(this._lowerCanvas);
+    });
   }
 
   getSize() {

@@ -4,27 +4,17 @@ import util from "../util/util";
 class Sprite {
 
   constructor(props = {}) {
-    let _props = {
-      type: '',
-      width: 1,
-      heihgt: 1,
-      angle: 0,
-      originX: 0,
-      originY: 0,
-      flipX: 1,
-      flipY: 1,
-      x: 0,
-      y: 0,
-      opacity: 1,
-      ...props,
-    }
-
-    for (let i in _props) {
-      if (Object.prototype.hasOwnProperty.call(_props, i)) {
-        this[`_${i}`] = _props[i];
-      }
-    }
-
+    this._type = '';
+    this._width = props.width || 1;
+    this._height = props.height || 1;
+    this._angle = props.angle || 0;
+    this._originX = props.originX || 0;
+    this._originY = props.originY || 0;
+    this._flipX = props.flipX || 1;
+    this._flipY = props.flipY || 1;
+    this._x = props.x || 0;
+    this._y = props.y || 0;
+    this._opacity = props.opacity || 1;
     this._selected = false;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
