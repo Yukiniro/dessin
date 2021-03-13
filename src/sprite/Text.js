@@ -4,27 +4,35 @@ import Sprite from "./Sprite";
 class Text extends Sprite {
 
   constructor(props = {}) {
-    let _props = {
-      type: constant.SPRITE_TYPE_TEXT,
-      fontSize: 16,
-      fontStyle: 'normal',
-      fontWeight: 'normal',
-      fontFamily: 'Times New Roman',
-      textAlign: 'center',
-      lineHeight: 1.2,
-      text: '',
-      ...props,
+    super(props);
+    this._type = constant.SPRITE_TYPE_TEXT;
+    this._fontSize = this.updateValue('_fontSize', props.fontSize, 16);
+    this._fontStyle = this.updateValue('_fontStyle', props.fontStyle, 'normal');
+    this._fontWeight = this.updateValue('_fontWeight', props.fontWeight, 'normal');
+    this._fontFamily = this.updateValue('_fontFamily', props.fontFamily, 'normal');
+    this._textAlign = this.updateValue('_textAlign', props.textAlign, 'center');
+    this._lineHeight = this.updateValue('_lineHeight', props.lineHeight, 1.2);
+  }
+
+  encode() {
+    return {
+      ...super.encode(),
+      fontSize: this.getFontSize(),
+      fontStyle: this.getFontStyle(),
+      fontWeight: this.getFontWeight(),
+      fontFamily: this.getFontFamily(),
+      textAlign: this.getTextAlign(),
+      lienHeight: this.getLineHeight(),
     }
-    super(_props);
   }
 
-  getText() {
-    return this._text;
-  }
-
-  setText(text) {
-    this._text = text;
-    return this;
+  decode(data) {
+    super.decode(data);
+    this.fontSize = this.updateValue('_fontSize', data.fontSize, this.getFontSize());
+    this.fontStyle = this.updateValue('_fontStyle', data.fontStyle, this.getFontStyle());
+    this.fontWeight = this.updateValue('_fontWeight', data.fontWeight, this.getFontWeight());
+    this.textAlign = this.updateValue('_textAlgin', data.textAlign, this.getTextAlign());
+    this.lineHeight = this.updateValue('_lineHeight', data.lineHeight, this.getLineHeight());
   }
 
   getFontSize() {
@@ -70,14 +78,6 @@ class Text extends Sprite {
   setLineHeight(lineHeight) {
     this._lineHeight = lineHeight;
     return this;
-  }
-
-  renderCache() {
-    
-  }
-
-  render() {
-
   }
 
 }

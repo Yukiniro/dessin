@@ -41,6 +41,11 @@ class Canvas {
     this.render();
   }
 
+  _clear() {
+    let {width, height} = this.getSize();
+    this._lowerCanvas.getContext('2d').clearRect(0, 0, width, height);
+  }
+
   render() {
 
   }
