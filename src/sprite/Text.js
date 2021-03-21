@@ -1,3 +1,4 @@
+import config from "../config/config";
 import constant from "../constant/constant";
 import util from "../util/util";
 import Sprite from "./Sprite";
@@ -138,28 +139,32 @@ class Text extends Sprite {
   }
 
   renderCache() {
+    let {perPixel} = config;
     let x = 0;
     let y = 0;
+    let width = this._width * perPixel;
+    let height = this._height * perPixel;
+    let fontSize = this._fontSize * perPixel;
     switch (this._textAlign) {
       case 'left':
         break;
       case 'center':
-        x = this._width / 2;
+        x = width / 2;
         break;
       case 'right':
-        x = this._width;
+        x = width;
         break;
       default:
     }
-    this._cacheView.width = this._width;
-    this._cacheView.height = this._height;
-    this._cacheCtx.font = `${this._fontStyle} ${this._fontWeight} ${this._fontSize}px ${this._fontFamily}`;
+    this._cacheView.width = width;
+    this._cacheView.height = height;
+    this._cacheCtx.font = `${this._fontStyle} ${this._fontWeight} ${fontSize}px ${this._fontFamily}`;
     this._cacheCtx.fillStyle = this._fillColor;
     this._cacheCtx.strokeStyle = this._strokeColor;
     this._cacheCtx.textBaseline = 'top';
     this._cacheCtx.textAlign = this._textAlign;
     this._value.forEach((text, index) => {
-      y = index * this._lineHeight * this._fontSize;
+      y = index * this._lineHeight * fontSize;
       this._cacheCtx.fillText(text, x, y);
     });
   }
