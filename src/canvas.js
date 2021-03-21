@@ -48,7 +48,7 @@ class Canvas {
 
   render() {
     this.forEachItem((sprite) => {
-      sprite.rendre(this._lowerCanvas);
+      sprite.render(this._lowerCanvas.getContext('2d'));
     });
   }
 

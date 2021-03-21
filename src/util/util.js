@@ -113,6 +113,29 @@ export default (function () {
           element.style[key] = style[key];
         }
       }
-    }
+    },
+
+    /**
+     * @description 计算文本的尺寸
+     * @param {*} ctx 
+     * @param {stiring} value 
+     * @param {object} options
+     * @param {number} options.fontSize
+     * @param {string} options.fontFamily
+     * @param {string} options.fontStyle
+     * @param {string} options.fontWeight
+     * @returns 
+     */
+    calcTextSize(ctx, value, options = {}) {
+      let {fontSize, fontFamily, fontStyle, fontWeight} = options;
+      ctx.save();
+      ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
+      let {width, fontBoundingBoxAscent, fontBoundingBoxDescent} = ctx.measureText(value);
+      ctx.restore();
+      return {
+        width,
+        height: fontBoundingBoxAscent + fontBoundingBoxDescent, 
+      }
+    },
   }
 })();

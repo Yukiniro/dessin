@@ -4,18 +4,18 @@ import util from "../util/util";
 class Sprite {
 
   constructor(props = {}) {
-    this._type = this.updateValue('_type', props.type, '');
-    this._x = this.updateValue('_x', props.x, 0);
-    this._y = this.updateValue('_y', props.y, 0);
-    this._width = this.updateValue('_width', props.width, 0);
-    this._height = this.updateValue('_height', props.height, 0);
-    this._angle = this.updateValue('_angle', props.angle, 0);
-    this._originX = this.updateValue('_originX', props.originX, 0);
-    this._originY = this.updateValue('_originY', props.originY, 0);
-    this._flipX = this.updateValue('_flipX', props.flipX, 1);
-    this._flipY = this.updateValue('_flipY', props.flipY, 0);
-    this._opacity = this.updateValue('_opacity', props.opacity, 1);
-    this._value = this.updateValue('_value', props.value, '');
+    this._type = this.computedValue('_type', props.type, '');
+    this._x = this.computedValue('_x', props.x, 0);
+    this._y = this.computedValue('_y', props.y, 0);
+    this._width = this.computedValue('_width', props.width, 0);
+    this._height = this.computedValue('_height', props.height, 0);
+    this._angle = this.computedValue('_angle', props.angle, 0);
+    this._originX = this.computedValue('_originX', props.originX, 0);
+    this._originY = this.computedValue('_originY', props.originY, 0);
+    this._flipX = this.computedValue('_flipX', props.flipX, 1);
+    this._flipY = this.computedValue('_flipY', props.flipY, 0);
+    this._opacity = this.computedValue('_opacity', props.opacity, 1);
+    this._value = this.computedValue('_value', props.value, '');
     this._selected = false;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
@@ -39,23 +39,23 @@ class Sprite {
   }
 
   decode(data) {
-    this.updateValue('_type', data.type, this.getType());
-    this.updateValue('_x', data.x, this.getX());
-    this.updateValue('_y', data.y, this.getY());
-    this.updateValue('_width', data.width, this.getWidth());
-    this.updateValue('_height', data.height, this.getHeight());
-    this.updateValue('_angle', data.angle, this.getAngle());
-    this.updateValue('_originX', data.originX, this.getOriginX());
-    this.updateValue('_originY', data.originY, this.getOriginY());
-    this.updateValue('_flipX', data.flipX, this.getFlipY());
-    this.updateValue('_flipY', data.flipY, this.getFlipY());
-    this.updateValue('_opacity', data.opacity, this.getOpacity());
-    this.updateValue('_value', data.value, this.getValue());
+    this._type = this.computedValue('_type', data.type, this.getType());
+    this._x = this.computedValue('_x', data.x, this.getX());
+    this._y = this.computedValue('_y', data.y, this.getY());
+    this._width = this.computedValue('_width', data.width, this.getWidth());
+    this._height = this.computedValue('_height', data.height, this.getHeight());
+    this._angle = this.computedValue('_angle', data.angle, this.getAngle());
+    this._originX = this.computedValue('_originX', data.originX, this.getOriginX());
+    this._originY = this.computedValue('_originY', data.originY, this.getOriginY());
+    this._flipX = this.computedValue('_flipX', data.flipX, this.getFlipY());
+    this._flipY = this.computedValue('_flipY', data.flipY, this.getFlipY());
+    this._opacity = this.computedValue('_opacity', data.opacity, this.getOpacity());
+    this._value = this.computedValue('_value', data.value, this.getValue());
   }
 
-  updateValue(key, value, defalultValue) {
+  computedValue(key, value, defalultValue) {
     const {isUndefined} = util;
-    this[key] = isUndefined(value) ? defalultValue : value;
+    return isUndefined(value) ? defalultValue : value;
   }
 
   get type() {
