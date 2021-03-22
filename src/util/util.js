@@ -107,7 +107,7 @@ export default (function () {
      * @param {*} element 
      * @param {*} style 
      */
-    css(element, style) {
+    css: function (element, style) {
       for (let key in style) {
         if (Object.hasOwnProperty.call(style, key)) {
           element.style[key] = style[key];
@@ -126,7 +126,7 @@ export default (function () {
      * @param {string} options.fontWeight
      * @returns 
      */
-    calcTextSize(ctx, value, options = {}) {
+    calcTextSize: function (ctx, value, options = {}) {
       let {fontSize, fontFamily, fontStyle, fontWeight} = options;
       ctx.save();
       ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
@@ -137,5 +137,75 @@ export default (function () {
         height: fontBoundingBoxAscent + fontBoundingBoxDescent, 
       }
     },
+
+    /**
+     * @description 渲染线
+     * @param {*} ctx 
+     * @param {object} startPos 
+     * @param {number} startPos.x
+     * @param {number} startPos.y
+     * @param {object} endPos 
+     * @param {number} endPos.x 
+     * @param {number} endPos.y 
+     * @param {string} color 
+     * @param {object} options 
+     * @param {array} options.dash 虚线数据，[]为实线
+     */
+    renderLine: function (ctx, startPos, endPos, color, options) {
+      let {x: startX, y: startY} = startPos;
+      let {x: endX, y: endY} = endPos;
+      let dash = options && options.dash || [];
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.setLineDash(dash);
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+      ctx.restore();
+    },
+    
+    /**
+     * @description 计算rect中点的位置
+     * @param {*} type 
+     * @param {*} rect 
+     * @returns 
+     */
+    calePointInRect: function (type, rect) {
+      let {x, y, width, height} = rect;
+      let point = {x: 0, y: 0};
+      switch(type) {
+        case constant.LEFT_TOP:
+          point = {x, y};
+          break;
+        case constant.CENTER_TOP:
+          point = {x: x + width / 2, y};
+          break;
+        case constant.RIGHT_TOP:
+          point = {x: x + width, y};
+          break;
+        case constant.RIGHT_CENTER:
+          point = {x: x + width, y: y + height / 2};
+          break;
+        case constant.RIGHT_BOTTOM:
+          point = {x: x + width, y: y + height};
+          break;
+        case constant.CENTER_BOTTOM:
+          point = {x: x + width / 2, y: y + height};
+          break;
+        case constant.LEFT_BOTTOM:
+          point = {x, y: y + height};
+          break;
+        case constant.LEFT_CENTER:
+          point = {x, y: y + height / 2};
+          break;
+        case constant.CENTER:
+          point = {x: x + width / 2, y: y + height / 2};
+          break;
+          default:
+      }
+
+      return point;
+    }
   }
 })();

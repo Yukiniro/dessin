@@ -17,6 +17,7 @@ class Text extends Sprite {
     this._fillColor = this.computedValue('_fillColor', props.fillColor, '#FFFFFF');
     this._strokeColor = this.computedValue('_strokeColor', props.strokeColor, '#FFFFFF');
     this._value = this.computedValue('_value', props.value, ['Enter Your Text']);
+    this._supportNodes = [0, 2, 4, 6];
 
     this.initSize();
     this.renderCache();

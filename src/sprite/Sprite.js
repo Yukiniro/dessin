@@ -1,5 +1,6 @@
 import observableMixin from "../mixin/observable.mixin";
 import util from "../util/util";
+import Track from "./Track";
 
 class Sprite {
 
@@ -16,9 +17,11 @@ class Sprite {
     this._flipY = this.computedValue('_flipY', props.flipY, 0);
     this._opacity = this.computedValue('_opacity', props.opacity, 1);
     this._value = this.computedValue('_value', props.value, '');
+    this._supportNodes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1];
     this._selected = false;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
+    this._track = null;
   }
 
   encode() {
@@ -207,6 +210,11 @@ class Sprite {
   renderCache() {}
 
   render() {}
+
+  renderTrack(ctx) {
+    this._track = this._track || new Track({supportNodes: this._supportNodes});
+    this._track.render(ctx, this._x, this._y, this._width, this._height);
+  }
 }
 
 util.mixin(Sprite.prototype, observableMixin);
