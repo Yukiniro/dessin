@@ -135,6 +135,7 @@ export default (function () {
       return {
         width,
         height: fontBoundingBoxAscent + fontBoundingBoxDescent, 
+        fontBoundingBoxAscent,
       }
     },
 

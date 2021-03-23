@@ -18,6 +18,7 @@ class Text extends Sprite {
     this._strokeColor = this.computedValue('_strokeColor', props.strokeColor, '#FFFFFF');
     this._value = this.computedValue('_value', props.value, ['Enter Your Text']);
     this._supportNodes = [0, 2, 4, 6];
+    this._fontBoundingBoxAscent = 0;
 
     this.initSize();
     this.renderCache();
@@ -55,12 +56,13 @@ class Text extends Sprite {
         fontStyle: this._fontStyle,
         fontWeight: this._fontWeight,
       }
-      let { width, height } = util.calcTextSize(this._cacheCtx, text, opstions);
+      let { width, height, fontBoundingBoxAscent } = util.calcTextSize(this._cacheCtx, text, opstions);
       return {
         width: Math.max(width, finalValue.width),
         height: height + finalValue.height,
+        fontBoundingBoxAscent,
       }
-    }, { width: 0, height: 0 })
+    }, { width: 0, height: 0, fontBoundingBoxAscent: 0 })
   }
 
   getFontSize() {
@@ -136,7 +138,9 @@ class Text extends Sprite {
   }
 
   initSize() {
-    this.setSize(this._calcSize());
+    let { width, height, fontBoundingBoxAscent} = this._calcSize();
+    this.setSize({width, height});
+    this._fontBoundingBoxAscent = fontBoundingBoxAscent;
   }
 
   renderCache() {
@@ -162,10 +166,10 @@ class Text extends Sprite {
     this._cacheCtx.font = `${this._fontStyle} ${this._fontWeight} ${fontSize}px ${this._fontFamily}`;
     this._cacheCtx.fillStyle = this._fillColor;
     this._cacheCtx.strokeStyle = this._strokeColor;
-    this._cacheCtx.textBaseline = 'top';
+    // this._cacheCtx.textBaseline = 'top';
     this._cacheCtx.textAlign = this._textAlign;
     this._value.forEach((text, index) => {
-      y = index * this._lineHeight * fontSize;
+      y = index * this._lineHeight * fontSize + this._fontBoundingBoxAscent;
       this._cacheCtx.fillText(text, x, y);
     });
   }
