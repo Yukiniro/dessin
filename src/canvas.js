@@ -15,6 +15,9 @@ class Canvas {
     this._updateView();
   }
 
+  /**
+   * @description 初始化视图
+   */
   _initView() {
     let parent = this._lowerCanvas.parentNode;
     let parentPositionStyle = parent.style.position;
@@ -31,6 +34,9 @@ class Canvas {
     event.bindView(this, this._upperCanvas);
   }
 
+  /**
+   * @description 更新视图尺寸
+   */
   _updateView() {
     let {width, height} = this._size;
     this._lowerCanvas.width = width;
@@ -41,11 +47,17 @@ class Canvas {
     this.render();
   }
 
+  /**
+   * @description 清空画布
+   */
   _clear() {
     let {width, height} = this.getSize();
     this._lowerCanvas.getContext('2d').clearRect(0, 0, width, height);
   }
 
+  /**
+   * @description 渲染
+   */
   render() {
     this.forEachItem((sprite) => {
       sprite.render(this._lowerCanvas.getContext('2d'));
@@ -53,18 +65,27 @@ class Canvas {
     });
   }
 
+  /**
+   * @description 返回返回尺寸
+   * @returns {object} size
+   * @returns {number} size.widht
+   * @returns {number} size.height
+   */
   getSize() {
     return this._size;
   }
 
+  /**
+   * @description 设置视图尺寸
+   * @param {object} size 
+   * @param {number} size.width
+   * @param {number} size.height 
+   * @returns 
+   */
   setSize(size) {
     this._size = {...size};
     this._updateView();
     return this;
-  }
-
-  fireEvent(type, e) {
-    
   }
 }
 

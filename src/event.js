@@ -1,8 +1,7 @@
-import constant from "./constant/constant";
-import util from "./util/util";
+import constant from './constant/constant';
+import util from './util/util';
 
-export default (function() {
-
+export default (function () {
   let _view = null;
   let _owner = null;
   let _isMouseDown = false;
@@ -15,7 +14,7 @@ export default (function() {
   }
 
   function onMouseMove(e) {
-    let {MOUSE_HOVER, MOUSE_DRAG, MOUSE_MOVE} = constant;
+    let { MOUSE_HOVER, MOUSE_DRAG, MOUSE_MOVE } = constant;
     _owner.fireEvent(MOUSE_MOVE, e);
     if (_isMouseDown) {
       _owner.fireEvent(MOUSE_DRAG, e);
@@ -26,7 +25,7 @@ export default (function() {
   }
 
   function onMouseUp(e) {
-    let {MOUSE_UP, MOUSE_DROP} = constant;
+    let { MOUSE_UP, MOUSE_DROP } = constant;
     _owner.fireEvent(MOUSE_UP, e);
     if (_isMouseDrag) {
       _owner.fireEvent(MOUSE_DROP, e);
@@ -47,11 +46,10 @@ export default (function() {
   }
 
   return {
-
     /**
      * @description 绑定视图及事件
-     * @param {*} owner 
-     * @param {*} view 
+     * @param {*} owner
+     * @param {*} view
      */
     bindView: function (owner, view) {
       if (_view) {
@@ -60,6 +58,6 @@ export default (function() {
       _view = view;
       _owner = owner;
       bindEvent();
-    }
-  }
+    },
+  };
 })();

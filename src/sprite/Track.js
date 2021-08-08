@@ -36,6 +36,11 @@ class Track {
     return isUndefined(value) ? defalultValue : value;
   }
 
+  /**
+   * @description 渲染缓存
+   * @param {number} width 
+   * @param {number} height 
+   */
   renderCache(width, height) {
     this._cacheView.width = width;
     this._cacheView.height = height;
@@ -46,6 +51,14 @@ class Track {
     this._renderNodes(width, height);
   }
 
+  /**
+   * @description 渲染控制器
+   * @param {context} ctx 
+   * @param {number} x 
+   * @param {number} y 
+   * @param {number} width 
+   * @param {number} height 
+   */
   render(ctx, x, y, width, height) {
     let rect = {
       x: x - this._nodeRadius,
@@ -57,6 +70,11 @@ class Track {
     ctx.drawImage(this._cacheView, rect.x, rect.y, rect.width, rect.height);
   }
 
+  /**
+   * @description 渲染所有控制点
+   * @param {number} width 
+   * @param {number} height 
+   */
   _renderNodes(width, height) {
     this._supportNodes.forEach(node => {
       let point = { x: 0, y: 0 };
@@ -100,6 +118,12 @@ class Track {
     });
   }
 
+  /**
+   * @description 渲染控制点
+   * @param {object} point 
+   * @param {number} point.x
+   * @param {number} point.y
+   */
   _renderNode(point) {
     this._cacheCtx.save();
     this._cacheCtx.fillStyle = this._nodeColor;

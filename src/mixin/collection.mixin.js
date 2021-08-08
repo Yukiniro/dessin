@@ -1,13 +1,11 @@
-import util from "../util/util";
+import util from '../util/util';
 
 export default (function () {
-
   let _items = [];
   return {
-    
     /**
      * @descrition 添加某个元素
-     * @param {*} item 
+     * @param {*} item
      */
     add: function (item) {
       if (!_items.includes(item)) {
@@ -17,7 +15,7 @@ export default (function () {
 
     /**
      * @description 移除某个元素
-     * @param {*} item 
+     * @param {*} item
      */
     remove: function (item) {
       util.removeFromArray(_items, item);
@@ -25,7 +23,7 @@ export default (function () {
 
     /**
      * @description 对每个元素调用handler
-     * @param {*} handler 
+     * @param {*} handler
      */
     forEachItem: function (handler) {
       _items.forEach((item, index) => {
@@ -49,8 +47,8 @@ export default (function () {
 
     /**
      * @description 插入某个元素
-     * @param {*} item 
-     * @param {number} index 
+     * @param {*} item
+     * @param {number} index
      */
     inserAt: function (item, index) {
       _items.splice(index, 0, item);
@@ -58,7 +56,7 @@ export default (function () {
 
     /**
      * @description 集合是否包含某个元素
-     * @param {*} item 
+     * @param {*} item
      */
     includes: function (item) {
       return _items.includes(item);
