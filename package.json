@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,6 @@
   },
   "homepage": "https://github.com/Yukiniro/canvas-core#readme",
   "devDependencies": {
-    "webpack": "^5.13.0",
-    "webpack-cli": "^4.3.1"
+    "@rollup/plugin-commonjs": "^20.0.0"
   }
 }
