@@ -3,6 +3,7 @@ const commonjs = require('@rollup/plugin-commonjs');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const { babel } = require('@rollup/plugin-babel');
 const { uglify } = require('rollup-plugin-uglify');
+const fileSize = require('rollup-plugin-filesize');
 
 function resolve(filePath) {
   return path.resolve(__dirname, filePath);
@@ -24,5 +25,6 @@ module.exports = {
       presets: ['@babel/preset-env'],
     }),
     uglify(),
+    fileSize(),
   ],
 };

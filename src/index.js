@@ -1,7 +1,5 @@
 import Canvas from './Canvas'
 import Text from './sprite/Text'
 
-export default {
-  Canvas,
-  Text,
-}
+export const ZCanvas = Canvas;
+export const ZText = Text;
