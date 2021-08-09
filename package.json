@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c"
+    "build-dev": "./node_modules/.bin/rollup --config rollup.config.dev.js",
+    "build-prod": "./node_modules/.bin/rollup --config rollup.config.prod.js"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,13 @@
   "homepage": "https://github.com/Yukiniro/canvas-core#readme",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0"
+  },
+  "dependencies": {
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-node-resolve": "^13.0.4",
+    "rollup": "^2.56.1",
+    "rollup-plugin-uglify": "^6.0.4"
   }
 }
