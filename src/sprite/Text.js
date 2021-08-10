@@ -1,5 +1,6 @@
 import config from '../config/config';
 import constant from '../constant/constant';
+import eventConstant from '../constant/event-constant';
 import util from '../util/util';
 import Sprite from './sprite';
 
@@ -39,9 +40,7 @@ class Text extends Sprite {
       props.strokeColor,
       '#FFFFFF'
     );
-    this._value = this.extendsValue('_value', props.value, [
-      'Enter Your Text',
-    ]);
+    this._value = this.extendsValue('_value', props.value, ['Enter Your Text']);
     this._supportNodes = [0, 2, 4, 6];
     this._fontBoundingBoxAscent = 0;
 
@@ -309,7 +308,10 @@ class Text extends Sprite {
   }
 
   render(ctx) {
+    const {WILL_RENDER, DID_RENDER} = eventConstant;
+    this.fire(WILL_RENDER, {target: this});
     ctx.drawImage(this._cacheView, this._x, this._y, this._width, this._height);
+    this.fire(DID_RENDER, {target: this});
   }
 }
 

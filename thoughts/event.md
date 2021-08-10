@@ -13,6 +13,10 @@
 对象将要删除
 ### diddestroy
 对象删除完成
+### selected
+对象选中
+### deselected
+对象取消选中
 ### mouseenter
 鼠标进入
 ### mouseleave

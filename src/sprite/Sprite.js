@@ -1,4 +1,5 @@
 import constant from '../constant/constant';
+import eventConstant from '../constant/event-constant';
 import observableMixin from '../mixin/observable.mixin';
 import util from '../util/util';
 import Track from './track';
@@ -365,7 +366,7 @@ class Sprite {
    */
   select() {
     this._selected = true;
-    this.fire('')
+    this.fire(eventConstant.SELECTED, {target: this});
     return this;
   }
 
@@ -375,6 +376,7 @@ class Sprite {
    */
   deselect() {
     this._selected = false;
+    this.fire(eventConstant.DESELECTED, {target: this});
     return this;
   }
 
@@ -386,7 +388,10 @@ class Sprite {
   /**
    * @description 渲染元素
    */
-  render() {}
+  render() {
+    this.fire(eventConstant.WILL_RENDER, {target: this});
+    this.fire(eventConstant.DID_RENDER, {target: this});
+  }
 
   /**
    * @description 渲染控制器
@@ -396,6 +401,20 @@ class Sprite {
     this._track =
       this._track || new Track({ supportNodes: this._supportNodes });
     this._track.render(ctx, this._x, this._y, this._width, this._height);
+  }
+
+  /**
+   * @description 事件交互
+   */
+  transform() {
+    this.fire(eventConstant.WILL_TRANSFORM, {target: this});
+    this.fire(eventConstant.DID_TRANSFORM, {target: thsi});
+  }
+
+  destroy() {
+    this.fire(eventConstant.WILL_DESTROY, {target: this});
+    this.resetListener();
+    this.fire(eventConstant.DID_DESTROY);
   }
 }
 

@@ -6,6 +6,8 @@ export default {
   DID_RENDER: 'didrender',
   WILL_DESTROY: 'willdestroy',
   DID_DESTROY: 'diddestroy',
+  SELECTED: 'selected',
+  DESELECTED: 'deselected',
   MOUSE_ENTER: 'mouseenter',
   MOUSE_LEAVE: 'mouseleave',
   MOUSE_HOVER: 'mousehover',

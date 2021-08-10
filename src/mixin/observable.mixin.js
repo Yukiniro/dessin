@@ -29,7 +29,7 @@ export default (function () {
     /**
      * @description 重置事件监听
      */
-    reset: function () {
+    resetListener: function () {
       _listeners = {};
     },
 
