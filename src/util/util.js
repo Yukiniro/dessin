@@ -209,5 +209,10 @@ export default (function () {
 
       return point;
     },
+
+    /**
+     * @description 空函数
+     */
+    emptyFunc: function () {},
   };
 })();
