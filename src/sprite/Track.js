@@ -18,10 +18,10 @@ const TRACK_NODES = {
 class Track {
 
   constructor(props = {}) {
-    this._supportNodes = this.computedValue('_supportNodes', props.supportNodes, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1]);
-    this._lineColor = this.computedValue('_lineColor', props.lineColor, '#08b9ff');
-    this._nodeColor = this.computedValue('_nodeColor', props.nodeColor, '#adadad');
-    this._nodeRadius = this.computedValue('_nodeRadius', props.nodeRadius, 4);
+    this._supportNodes = this.extendsValue('_supportNodes', props.supportNodes, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1]);
+    this._lineColor = this.extendsValue('_lineColor', props.lineColor, '#08b9ff');
+    this._nodeColor = this.extendsValue('_nodeColor', props.nodeColor, '#adadad');
+    this._nodeRadius = this.extendsValue('_nodeRadius', props.nodeRadius, 4);
     this._rotateNodeOffset = 10;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
@@ -31,9 +31,8 @@ class Track {
     return TRACK_NODES;
   }
 
-  computedValue(key, value, defalultValue) {
-    const {isUndefined} = util;
-    return isUndefined(value) ? defalultValue : value;
+  extendsValue(key, value, defalultValue) {
+    this[key] = util.isUndefined(value) ? defalultValue : value;
   }
 
   /**

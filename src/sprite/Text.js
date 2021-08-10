@@ -7,39 +7,39 @@ class Text extends Sprite {
   constructor(props = {}) {
     super(props);
     this._type = constant.SPRITE_TYPE_TEXT;
-    this._fontSize = this.computedValue('_fontSize', props.fontSize, 36);
-    this._fontStyle = this.computedValue(
+    this._fontSize = this.extendsValue('_fontSize', props.fontSize, 36);
+    this._fontStyle = this.extendsValue(
       '_fontStyle',
       props.fontStyle,
       'normal'
     );
-    this._fontWeight = this.computedValue(
+    this._fontWeight = this.extendsValue(
       '_fontWeight',
       props.fontWeight,
       'normal'
     );
-    this._fontFamily = this.computedValue(
+    this._fontFamily = this.extendsValue(
       '_fontFamily',
       props.fontFamily,
       'sans-serif'
     );
-    this._textAlign = this.computedValue(
+    this._textAlign = this.extendsValue(
       '_textAlign',
       props.textAlign,
       'center'
     );
-    this._lineHeight = this.computedValue('_lineHeight', props.lineHeight, 1.2);
-    this._fillColor = this.computedValue(
+    this._lineHeight = this.extendsValue('_lineHeight', props.lineHeight, 1.2);
+    this._fillColor = this.extendsValue(
       '_fillColor',
       props.fillColor,
       '#FFFFFF'
     );
-    this._strokeColor = this.computedValue(
+    this._strokeColor = this.extendsValue(
       '_strokeColor',
       props.strokeColor,
       '#FFFFFF'
     );
-    this._value = this.computedValue('_value', props.value, [
+    this._value = this.extendsValue('_value', props.value, [
       'Enter Your Text',
     ]);
     this._supportNodes = [0, 2, 4, 6];
@@ -63,27 +63,27 @@ class Text extends Sprite {
 
   decode(data) {
     super.decode(data);
-    this._fontSize = this.computedValue(
+    this._fontSize = this.extendsValue(
       '_fontSize',
       data.fontSize,
       this.getFontSize()
     );
-    this._fontStyle = this.computedValue(
+    this._fontStyle = this.extendsValue(
       '_fontStyle',
       data.fontStyle,
       this.getFontStyle()
     );
-    this._fontWeight = this.computedValue(
+    this._fontWeight = this.extendsValue(
       '_fontWeight',
       data.fontWeight,
       this.getFontWeight()
     );
-    this._textAlign = this.computedValue(
+    this._textAlign = this.extendsValue(
       '_textAlgin',
       data.textAlign,
       this.getTextAlign()
     );
-    this._lineHeight = this.computedValue(
+    this._lineHeight = this.extendsValue(
       '_lineHeight',
       data.lineHeight,
       this.getLineHeight()
