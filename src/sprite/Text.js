@@ -1,7 +1,7 @@
 import config from '../config/config';
 import constant from '../constant/constant';
 import util from '../util/util';
-import Sprite from './Sprite';
+import Sprite from './sprite';
 
 class Text extends Sprite {
   constructor(props = {}) {

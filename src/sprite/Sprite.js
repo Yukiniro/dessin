@@ -1,7 +1,7 @@
 import constant from '../constant/constant';
 import observableMixin from '../mixin/observable.mixin';
 import util from '../util/util';
-import Track from './Track';
+import Track from './track';
 
 class Sprite {
   constructor(props = {}) {
@@ -365,6 +365,7 @@ class Sprite {
    */
   select() {
     this._selected = true;
+    this.fire('')
     return this;
   }
 
