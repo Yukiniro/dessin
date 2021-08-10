@@ -27,6 +27,13 @@ export default (function () {
     },
 
     /**
+     * @description 重置事件监听
+     */
+    reset: function () {
+      _listeners = {};
+    },
+
+    /**
      * @description 触犯事件
      */
     fire: function () {
