@@ -37,11 +37,10 @@ export default (function () {
      * @description 触犯事件
      */
     fire: function () {
-      let _args = [...arguments];
-      let _eventName = _args[0];
-      util.removeFromArray(_args, _eventName);
-      (_listeners[_eventName] || []).forEach((handler) => {
-        handler.call(this, ..._args);
+      const args = [...arguments];
+      const eventName = args.shift();
+      (_listeners[eventName] || []).forEach((handler) => {
+        handler.call(this, ...args);
       });
     },
   };

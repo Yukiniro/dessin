@@ -6,18 +6,18 @@ import Track from './track';
 
 class Sprite {
   constructor(props = {}) {
-    this._type = this.extendsValue('_type', props.type, '');
-    this._x = this.extendsValue('_x', props.x, 0);
-    this._y = this.extendsValue('_y', props.y, 0);
-    this._width = this.extendsValue('_width', props.width, 0);
-    this._height = this.extendsValue('_height', props.height, 0);
-    this._angle = this.extendsValue('_angle', props.angle, 0);
-    this._originX = this.extendsValue('_originX', props.originX, 0);
-    this._originY = this.extendsValue('_originY', props.originY, 0);
-    this._flipX = this.extendsValue('_flipX', props.flipX, 1);
-    this._flipY = this.extendsValue('_flipY', props.flipY, 0);
-    this._opacity = this.extendsValue('_opacity', props.opacity, 1);
-    this._value = this.extendsValue('_value', props.value, '');
+    this._type = this.extendsValue(props.type, '');
+    this._x = this.extendsValue(props.x, 0);
+    this._y = this.extendsValue(props.y, 0);
+    this._width = this.extendsValue(props.width, 0);
+    this._height = this.extendsValue(props.height, 0);
+    this._angle = this.extendsValue(props.angle, 0);
+    this._originX = this.extendsValue(props.originX, 0);
+    this._originY = this.extendsValue(props.originY, 0);
+    this._flipX = this.extendsValue(props.flipX, 1);
+    this._flipY = this.extendsValue(props.flipY, 0);
+    this._opacity = this.extendsValue(props.opacity, 1);
+    this._value = this.extendsValue(props.value, '');
     this._supportNodes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1];
     this._selected = false;
     this._cacheView = document.createElement('canvas');
@@ -43,34 +43,22 @@ class Sprite {
   }
 
   decode(data) {
-    this._type = this.extendsValue('_type', data.type, this.getType());
-    this._x = this.extendsValue('_x', data.x, this.getX());
-    this._y = this.extendsValue('_y', data.y, this.getY());
-    this._width = this.extendsValue('_width', data.width, this.getWidth());
-    this._height = this.extendsValue('_height', data.height, this.getHeight());
-    this._angle = this.extendsValue('_angle', data.angle, this.getAngle());
-    this._originX = this.extendsValue(
-      '_originX',
-      data.originX,
-      this.getOriginX()
-    );
-    this._originY = this.extendsValue(
-      '_originY',
-      data.originY,
-      this.getOriginY()
-    );
-    this._flipX = this.extendsValue('_flipX', data.flipX, this.getFlipY());
-    this._flipY = this.extendsValue('_flipY', data.flipY, this.getFlipY());
-    this._opacity = this.extendsValue(
-      '_opacity',
-      data.opacity,
-      this.getOpacity()
-    );
-    this._value = this.extendsValue('_value', data.value, this.getValue());
+    this._type = this.extendsValue(data.type, this.getType());
+    this._x = this.extendsValue(data.x, this.getX());
+    this._y = this.extendsValue(data.y, this.getY());
+    this._width = this.extendsValue(data.width, this.getWidth());
+    this._height = this.extendsValue(data.height, this.getHeight());
+    this._angle = this.extendsValue(data.angle, this.getAngle());
+    this._originX = this.extendsValue(data.originX, this.getOriginX());
+    this._originY = this.extendsValue(data.originY, this.getOriginY());
+    this._flipX = this.extendsValue(data.flipX, this.getFlipY());
+    this._flipY = this.extendsValue(data.flipY, this.getFlipY());
+    this._opacity = this.extendsValue(data.opacity, this.getOpacity());
+    this._value = this.extendsValue(data.value, this.getValue());
   }
 
-  extendsValue(key, value, defalultValue) {
-    this[key] = util.isUndefined(value) ? defalultValue : value;
+  extendsValue(value, defalultValue) {
+    return util.isUndefined(value) ? defalultValue : value;
   }
 
   /**
@@ -366,7 +354,7 @@ class Sprite {
    */
   select() {
     this._selected = true;
-    this.fire(eventConstant.SELECTED, {target: this});
+    this.fire(eventConstant.SELECTED, { target: this });
     return this;
   }
 
@@ -376,7 +364,7 @@ class Sprite {
    */
   deselect() {
     this._selected = false;
-    this.fire(eventConstant.DESELECTED, {target: this});
+    this.fire(eventConstant.DESELECTED, { target: this });
     return this;
   }
 
@@ -389,8 +377,8 @@ class Sprite {
    * @description 渲染元素
    */
   render() {
-    this.fire(eventConstant.WILL_RENDER, {target: this});
-    this.fire(eventConstant.DID_RENDER, {target: this});
+    this.fire(eventConstant.WILL_RENDER, { target: this });
+    this.fire(eventConstant.DID_RENDER, { target: this });
   }
 
   /**
@@ -407,12 +395,12 @@ class Sprite {
    * @description 事件交互
    */
   transform() {
-    this.fire(eventConstant.WILL_TRANSFORM, {target: this});
-    this.fire(eventConstant.DID_TRANSFORM, {target: thsi});
+    this.fire(eventConstant.WILL_TRANSFORM, { target: this });
+    this.fire(eventConstant.DID_TRANSFORM, { target: thsi });
   }
 
   destroy() {
-    this.fire(eventConstant.WILL_DESTROY, {target: this});
+    this.fire(eventConstant.WILL_DESTROY, { target: this });
     this.resetListener();
     this.fire(eventConstant.DID_DESTROY);
   }

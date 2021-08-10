@@ -1,5 +1,5 @@
-import constant from "../constant/constant";
-import util from "../util/util";
+import constant from '../constant/constant';
+import util from '../util/util';
 
 const TRACK_NODES = {
   LEFT_TOP: 0,
@@ -16,12 +16,14 @@ const TRACK_NODES = {
 };
 
 class Track {
-
   constructor(props = {}) {
-    this._supportNodes = this.extendsValue('_supportNodes', props.supportNodes, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1]);
-    this._lineColor = this.extendsValue('_lineColor', props.lineColor, '#08b9ff');
-    this._nodeColor = this.extendsValue('_nodeColor', props.nodeColor, '#adadad');
-    this._nodeRadius = this.extendsValue('_nodeRadius', props.nodeRadius, 4);
+    this._supportNodes = this.extendsValue(
+      props.supportNodes,
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1]
+    );
+    this._lineColor = this.extendsValue(props.lineColor, '#08b9ff');
+    this._nodeColor = this.extendsValue(props.nodeColor, '#adadad');
+    this._nodeRadius = this.extendsValue(props.nodeRadius, 4);
     this._rotateNodeOffset = 10;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
@@ -31,32 +33,37 @@ class Track {
     return TRACK_NODES;
   }
 
-  extendsValue(key, value, defalultValue) {
-    this[key] = util.isUndefined(value) ? defalultValue : value;
+  extendsValue(value, defalultValue) {
+    return util.isUndefined(value) ? defalultValue : value;
   }
 
   /**
    * @description 渲染缓存
-   * @param {number} width 
-   * @param {number} height 
+   * @param {number} width
+   * @param {number} height
    */
   renderCache(width, height) {
     this._cacheView.width = width;
     this._cacheView.height = height;
     this._cacheCtx.save();
     this._cacheCtx.strokeStyle = this._lineColor;
-    this._cacheCtx.strokeRect(this._nodeRadius, this._nodeRadius, width - this._nodeRadius * 2, height - this._nodeRadius * 2);
+    this._cacheCtx.strokeRect(
+      this._nodeRadius,
+      this._nodeRadius,
+      width - this._nodeRadius * 2,
+      height - this._nodeRadius * 2
+    );
     this._cacheCtx.restore();
     this._renderNodes(width, height);
   }
 
   /**
    * @description 渲染控制器
-   * @param {context} ctx 
-   * @param {number} x 
-   * @param {number} y 
-   * @param {number} width 
-   * @param {number} height 
+   * @param {context} ctx
+   * @param {number} x
+   * @param {number} y
+   * @param {number} width
+   * @param {number} height
    */
   render(ctx, x, y, width, height) {
     let rect = {
@@ -71,15 +78,15 @@ class Track {
 
   /**
    * @description 渲染所有控制点
-   * @param {number} width 
-   * @param {number} height 
+   * @param {number} width
+   * @param {number} height
    */
   _renderNodes(width, height) {
-    this._supportNodes.forEach(node => {
+    this._supportNodes.forEach((node) => {
       let point = { x: 0, y: 0 };
       let rect = {
-        x: this._nodeRadius, 
-        y: this._nodeRadius, 
+        x: this._nodeRadius,
+        y: this._nodeRadius,
         width: width - this._nodeRadius * 2,
         height: height - this._nodeRadius * 2,
       };
@@ -94,22 +101,25 @@ class Track {
           point = util.calePointInRect(constant.RIGHT_TOP, rect);
           break;
         case 3:
-          point = util.calePointInRect(constant.RIGHT_CENTER, rect);         
+          point = util.calePointInRect(constant.RIGHT_CENTER, rect);
           break;
         case 4:
-          point = util.calePointInRect(constant.RIGHT_BOTTOM, rect);          
+          point = util.calePointInRect(constant.RIGHT_BOTTOM, rect);
           break;
         case 5:
-          point = util.calePointInRect(constant.CENTER_BOTTOM, rect);          
+          point = util.calePointInRect(constant.CENTER_BOTTOM, rect);
           break;
         case 6:
-          point = util.calePointInRect(constant.LEFT_BOTTOM, rect);          
+          point = util.calePointInRect(constant.LEFT_BOTTOM, rect);
           break;
         case 7:
-          point = util.calePointInRect(constant.LEFT_CENTER, rect);          
+          point = util.calePointInRect(constant.LEFT_CENTER, rect);
           break;
         case 9:
-          point = { x: width / 2, y: this._nodeRadius - this._rotateNodeOffset };
+          point = {
+            x: width / 2,
+            y: this._nodeRadius - this._rotateNodeOffset,
+          };
           break;
         default:
       }
@@ -119,7 +129,7 @@ class Track {
 
   /**
    * @description 渲染控制点
-   * @param {object} point 
+   * @param {object} point
    * @param {number} point.x
    * @param {number} point.y
    */

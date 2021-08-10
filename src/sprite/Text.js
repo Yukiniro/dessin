@@ -8,39 +8,15 @@ class Text extends Sprite {
   constructor(props = {}) {
     super(props);
     this._type = constant.SPRITE_TYPE_TEXT;
-    this._fontSize = this.extendsValue('_fontSize', props.fontSize, 36);
-    this._fontStyle = this.extendsValue(
-      '_fontStyle',
-      props.fontStyle,
-      'normal'
-    );
-    this._fontWeight = this.extendsValue(
-      '_fontWeight',
-      props.fontWeight,
-      'normal'
-    );
-    this._fontFamily = this.extendsValue(
-      '_fontFamily',
-      props.fontFamily,
-      'sans-serif'
-    );
-    this._textAlign = this.extendsValue(
-      '_textAlign',
-      props.textAlign,
-      'center'
-    );
-    this._lineHeight = this.extendsValue('_lineHeight', props.lineHeight, 1.2);
-    this._fillColor = this.extendsValue(
-      '_fillColor',
-      props.fillColor,
-      '#FFFFFF'
-    );
-    this._strokeColor = this.extendsValue(
-      '_strokeColor',
-      props.strokeColor,
-      '#FFFFFF'
-    );
-    this._value = this.extendsValue('_value', props.value, ['Enter Your Text']);
+    this._fontSize = this.extendsValue(props.fontSize, 36);
+    this._fontStyle = this.extendsValue(props.fontStyle, 'normal');
+    this._fontWeight = this.extendsValue(props.fontWeight, 'normal');
+    this._fontFamily = this.extendsValue(props.fontFamily, 'sans-serif');
+    this._textAlign = this.extendsValue(props.textAlign, 'center');
+    this._lineHeight = this.extendsValue(props.lineHeight, 1.2);
+    this._fillColor = this.extendsValue(props.fillColor, '#FFFFFF');
+    this._strokeColor = this.extendsValue(props.strokeColor, '#FFFFFF');
+    this._value = this.extendsValue(props.value, ['Enter Your Text']);
     this._supportNodes = [0, 2, 4, 6];
     this._fontBoundingBoxAscent = 0;
 
@@ -62,31 +38,11 @@ class Text extends Sprite {
 
   decode(data) {
     super.decode(data);
-    this._fontSize = this.extendsValue(
-      '_fontSize',
-      data.fontSize,
-      this.getFontSize()
-    );
-    this._fontStyle = this.extendsValue(
-      '_fontStyle',
-      data.fontStyle,
-      this.getFontStyle()
-    );
-    this._fontWeight = this.extendsValue(
-      '_fontWeight',
-      data.fontWeight,
-      this.getFontWeight()
-    );
-    this._textAlign = this.extendsValue(
-      '_textAlgin',
-      data.textAlign,
-      this.getTextAlign()
-    );
-    this._lineHeight = this.extendsValue(
-      '_lineHeight',
-      data.lineHeight,
-      this.getLineHeight()
-    );
+    this._fontSize = this.extendsValue(data.fontSize, this.getFontSize());
+    this._fontStyle = this.extendsValue(data.fontStyle, this.getFontStyle());
+    this._fontWeight = this.extendsValue(data.fontWeight, this.getFontWeight());
+    this._textAlign = this.extendsValue(data.textAlign, this.getTextAlign());
+    this._lineHeight = this.extendsValue(data.lineHeight, this.getLineHeight());
 
     this.initSize();
     this.renderCache();
@@ -308,10 +264,10 @@ class Text extends Sprite {
   }
 
   render(ctx) {
-    const {WILL_RENDER, DID_RENDER} = eventConstant;
-    this.fire(WILL_RENDER, {target: this});
+    const { WILL_RENDER, DID_RENDER } = eventConstant;
+    this.fire(WILL_RENDER, { target: this });
     ctx.drawImage(this._cacheView, this._x, this._y, this._width, this._height);
-    this.fire(DID_RENDER, {target: this});
+    this.fire(DID_RENDER, { target: this });
   }
 }
 

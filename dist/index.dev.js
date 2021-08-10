@@ -644,12 +644,10 @@ var observableMixin = (function () {
     fire: function fire() {
       var _this = this;
 
-      var _args = Array.prototype.slice.call(arguments);
-
-      var _eventName = _args[0];
-      util.removeFromArray(_args, _eventName);
-      (_listeners[_eventName] || []).forEach(function (handler) {
-        handler.call.apply(handler, [_this].concat(_toConsumableArray(_args)));
+      var args = Array.prototype.slice.call(arguments);
+      var eventName = args.shift();
+      (_listeners[eventName] || []).forEach(function (handler) {
+        handler.call.apply(handler, [_this].concat(_toConsumableArray(args)));
       });
     }
   };
@@ -847,6 +845,9 @@ var Canvas = /*#__PURE__*/function () {
 
       return this;
     }
+  }, {
+    key: "fireEvent",
+    value: function fireEvent() {}
   }]);
 
   return Canvas;
@@ -905,10 +906,10 @@ var Track = /*#__PURE__*/function () {
 
     _classCallCheck(this, Track);
 
-    this._supportNodes = this.extendsValue('_supportNodes', props.supportNodes, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1]);
-    this._lineColor = this.extendsValue('_lineColor', props.lineColor, '#08b9ff');
-    this._nodeColor = this.extendsValue('_nodeColor', props.nodeColor, '#adadad');
-    this._nodeRadius = this.extendsValue('_nodeRadius', props.nodeRadius, 4);
+    this._supportNodes = this.extendsValue(props.supportNodes, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1]);
+    this._lineColor = this.extendsValue(props.lineColor, '#08b9ff');
+    this._nodeColor = this.extendsValue(props.nodeColor, '#adadad');
+    this._nodeRadius = this.extendsValue(props.nodeRadius, 4);
     this._rotateNodeOffset = 10;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
@@ -916,13 +917,13 @@ var Track = /*#__PURE__*/function () {
 
   _createClass(Track, [{
     key: "extendsValue",
-    value: function extendsValue(key, value, defalultValue) {
-      this[key] = util.isUndefined(value) ? defalultValue : value;
+    value: function extendsValue(value, defalultValue) {
+      return util.isUndefined(value) ? defalultValue : value;
     }
     /**
      * @description 渲染缓存
-     * @param {number} width 
-     * @param {number} height 
+     * @param {number} width
+     * @param {number} height
      */
 
   }, {
@@ -943,11 +944,11 @@ var Track = /*#__PURE__*/function () {
     }
     /**
      * @description 渲染控制器
-     * @param {context} ctx 
-     * @param {number} x 
-     * @param {number} y 
-     * @param {number} width 
-     * @param {number} height 
+     * @param {context} ctx
+     * @param {number} x
+     * @param {number} y
+     * @param {number} width
+     * @param {number} height
      */
 
   }, {
@@ -964,8 +965,8 @@ var Track = /*#__PURE__*/function () {
     }
     /**
      * @description 渲染所有控制点
-     * @param {number} width 
-     * @param {number} height 
+     * @param {number} width
+     * @param {number} height
      */
 
   }, {
@@ -1031,7 +1032,7 @@ var Track = /*#__PURE__*/function () {
     }
     /**
      * @description 渲染控制点
-     * @param {object} point 
+     * @param {object} point
      * @param {number} point.x
      * @param {number} point.y
      */
@@ -1067,18 +1068,18 @@ var Sprite = /*#__PURE__*/function () {
 
     _classCallCheck(this, Sprite);
 
-    this._type = this.extendsValue('_type', props.type, '');
-    this._x = this.extendsValue('_x', props.x, 0);
-    this._y = this.extendsValue('_y', props.y, 0);
-    this._width = this.extendsValue('_width', props.width, 0);
-    this._height = this.extendsValue('_height', props.height, 0);
-    this._angle = this.extendsValue('_angle', props.angle, 0);
-    this._originX = this.extendsValue('_originX', props.originX, 0);
-    this._originY = this.extendsValue('_originY', props.originY, 0);
-    this._flipX = this.extendsValue('_flipX', props.flipX, 1);
-    this._flipY = this.extendsValue('_flipY', props.flipY, 0);
-    this._opacity = this.extendsValue('_opacity', props.opacity, 1);
-    this._value = this.extendsValue('_value', props.value, '');
+    this._type = this.extendsValue(props.type, '');
+    this._x = this.extendsValue(props.x, 0);
+    this._y = this.extendsValue(props.y, 0);
+    this._width = this.extendsValue(props.width, 0);
+    this._height = this.extendsValue(props.height, 0);
+    this._angle = this.extendsValue(props.angle, 0);
+    this._originX = this.extendsValue(props.originX, 0);
+    this._originY = this.extendsValue(props.originY, 0);
+    this._flipX = this.extendsValue(props.flipX, 1);
+    this._flipY = this.extendsValue(props.flipY, 0);
+    this._opacity = this.extendsValue(props.opacity, 1);
+    this._value = this.extendsValue(props.value, '');
     this._supportNodes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1];
     this._selected = false;
     this._cacheView = document.createElement('canvas');
@@ -1107,23 +1108,23 @@ var Sprite = /*#__PURE__*/function () {
   }, {
     key: "decode",
     value: function decode(data) {
-      this._type = this.extendsValue('_type', data.type, this.getType());
-      this._x = this.extendsValue('_x', data.x, this.getX());
-      this._y = this.extendsValue('_y', data.y, this.getY());
-      this._width = this.extendsValue('_width', data.width, this.getWidth());
-      this._height = this.extendsValue('_height', data.height, this.getHeight());
-      this._angle = this.extendsValue('_angle', data.angle, this.getAngle());
-      this._originX = this.extendsValue('_originX', data.originX, this.getOriginX());
-      this._originY = this.extendsValue('_originY', data.originY, this.getOriginY());
-      this._flipX = this.extendsValue('_flipX', data.flipX, this.getFlipY());
-      this._flipY = this.extendsValue('_flipY', data.flipY, this.getFlipY());
-      this._opacity = this.extendsValue('_opacity', data.opacity, this.getOpacity());
-      this._value = this.extendsValue('_value', data.value, this.getValue());
+      this._type = this.extendsValue(data.type, this.getType());
+      this._x = this.extendsValue(data.x, this.getX());
+      this._y = this.extendsValue(data.y, this.getY());
+      this._width = this.extendsValue(data.width, this.getWidth());
+      this._height = this.extendsValue(data.height, this.getHeight());
+      this._angle = this.extendsValue(data.angle, this.getAngle());
+      this._originX = this.extendsValue(data.originX, this.getOriginX());
+      this._originY = this.extendsValue(data.originY, this.getOriginY());
+      this._flipX = this.extendsValue(data.flipX, this.getFlipY());
+      this._flipY = this.extendsValue(data.flipY, this.getFlipY());
+      this._opacity = this.extendsValue(data.opacity, this.getOpacity());
+      this._value = this.extendsValue(data.value, this.getValue());
     }
   }, {
     key: "extendsValue",
-    value: function extendsValue(key, value, defalultValue) {
-      this[key] = util.isUndefined(value) ? defalultValue : value;
+    value: function extendsValue(value, defalultValue) {
+      return util.isUndefined(value) ? defalultValue : value;
     }
     /**
      * @description 返回类型
@@ -1591,15 +1592,15 @@ var Text = /*#__PURE__*/function (_Sprite) {
 
     _this = _super.call(this, props);
     _this._type = constant.SPRITE_TYPE_TEXT;
-    _this._fontSize = _this.extendsValue('_fontSize', props.fontSize, 36);
-    _this._fontStyle = _this.extendsValue('_fontStyle', props.fontStyle, 'normal');
-    _this._fontWeight = _this.extendsValue('_fontWeight', props.fontWeight, 'normal');
-    _this._fontFamily = _this.extendsValue('_fontFamily', props.fontFamily, 'sans-serif');
-    _this._textAlign = _this.extendsValue('_textAlign', props.textAlign, 'center');
-    _this._lineHeight = _this.extendsValue('_lineHeight', props.lineHeight, 1.2);
-    _this._fillColor = _this.extendsValue('_fillColor', props.fillColor, '#FFFFFF');
-    _this._strokeColor = _this.extendsValue('_strokeColor', props.strokeColor, '#FFFFFF');
-    _this._value = _this.extendsValue('_value', props.value, ['Enter Your Text']);
+    _this._fontSize = _this.extendsValue(props.fontSize, 36);
+    _this._fontStyle = _this.extendsValue(props.fontStyle, 'normal');
+    _this._fontWeight = _this.extendsValue(props.fontWeight, 'normal');
+    _this._fontFamily = _this.extendsValue(props.fontFamily, 'sans-serif');
+    _this._textAlign = _this.extendsValue(props.textAlign, 'center');
+    _this._lineHeight = _this.extendsValue(props.lineHeight, 1.2);
+    _this._fillColor = _this.extendsValue(props.fillColor, '#FFFFFF');
+    _this._strokeColor = _this.extendsValue(props.strokeColor, '#FFFFFF');
+    _this._value = _this.extendsValue(props.value, ['Enter Your Text']);
     _this._supportNodes = [0, 2, 4, 6];
     _this._fontBoundingBoxAscent = 0;
 
@@ -1627,11 +1628,11 @@ var Text = /*#__PURE__*/function (_Sprite) {
     value: function decode(data) {
       _get(_getPrototypeOf(Text.prototype), "decode", this).call(this, data);
 
-      this._fontSize = this.extendsValue('_fontSize', data.fontSize, this.getFontSize());
-      this._fontStyle = this.extendsValue('_fontStyle', data.fontStyle, this.getFontStyle());
-      this._fontWeight = this.extendsValue('_fontWeight', data.fontWeight, this.getFontWeight());
-      this._textAlign = this.extendsValue('_textAlgin', data.textAlign, this.getTextAlign());
-      this._lineHeight = this.extendsValue('_lineHeight', data.lineHeight, this.getLineHeight());
+      this._fontSize = this.extendsValue(data.fontSize, this.getFontSize());
+      this._fontStyle = this.extendsValue(data.fontStyle, this.getFontStyle());
+      this._fontWeight = this.extendsValue(data.fontWeight, this.getFontWeight());
+      this._textAlign = this.extendsValue(data.textAlign, this.getTextAlign());
+      this._lineHeight = this.extendsValue(data.lineHeight, this.getLineHeight());
       this.initSize();
       this.renderCache();
     }

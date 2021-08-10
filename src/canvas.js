@@ -87,6 +87,10 @@ class Canvas {
     this._updateView();
     return this;
   }
+
+  fireEvent() {
+    
+  }
 }
 
 util.mixin(Canvas.prototype, collection);
