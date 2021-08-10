@@ -5,8 +5,6 @@ import Track from './Track';
 
 class Sprite {
   constructor(props = {}) {
-    const { emptyFunc } = util;
-
     this._type = this.computedValue('_type', props.type, '');
     this._x = this.computedValue('_x', props.x, 0);
     this._y = this.computedValue('_y', props.y, 0);
@@ -24,44 +22,6 @@ class Sprite {
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
     this._track = null;
-
-    this._onCreated = this.computedValue(
-      '_onCreated',
-      props.onCreated,
-      emptyFunc
-    );
-    this._onWillTransform = this.computedValue(
-      '_onWillTransform',
-      props.onWillRender,
-      emptyFunc
-    );
-    this._onDidTransfrom = this.computedValue(
-      '_onDidTransfrom',
-      props.onDidTransfrom,
-      emptyFunc
-    );
-    this._onWillRender = this.computedValue(
-      '_onWillRender',
-      props.onWillRender,
-      emptyFunc
-    );
-    this._onDidRender = this.computedValue(
-      '_onDidRender',
-      props.onDidRender,
-      emptyFunc
-    );
-    this._onWillDestroy = this.computedValue(
-      '_onWillDestroy',
-      props.onWillDestroy,
-      emptyFunc
-    );
-    this._onDidDestroy = this.computedValue(
-      '_onDidDestroy',
-      props.onDidDestroy,
-      emptyFunc
-    );
-
-    this.triggerLifecycle('created');
   }
 
   encode() {
@@ -117,35 +77,6 @@ class Sprite {
    */
   get type() {
     return this._type;
-  }
-
-  triggerLifecycle() {
-    const args = Array.from(arguments);
-    const type = args.shift();
-    switch (type) {
-      case 'created':
-        this._onCreated(...args);
-        break;
-      case 'willTransform':
-        this._onWillTransform(...args);
-        break;
-      case 'didTransform':
-        this._onDidTransfrom(...args);
-        break;
-      case 'willRender':
-        this._onWillRender(...args);
-        break;
-      case 'didRender':
-        this._onDidRender(...args);
-        break;
-      case 'willDestroy':
-        this._onWillDestroy(...args);
-        break;
-      case 'didDestroy':
-        this._onDidDestroy(...argus);
-        break;
-      default:
-    }
   }
 
   /**
