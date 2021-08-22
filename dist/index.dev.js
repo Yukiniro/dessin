@@ -1082,6 +1082,7 @@ var Canvas = /*#__PURE__*/function () {
     this._recordPoint = null;
     this._recordTrackNode = Track.TRACK_NODES().NONE;
     this._recordSpriteData = null;
+    this._viewRect = null;
     this._fireEvent = this._fireEvent.bind(this);
 
     this._initView();
@@ -1164,9 +1165,17 @@ var Canvas = /*#__PURE__*/function () {
   }, {
     key: "_fireEvent",
     value: function _fireEvent(mouseEvent) {
+      var cursorPoint = util.calcCursorPoint(mouseEvent);
+      var offsetCursorPoint = {
+        x: cursorPoint.x - this._viewRect.x,
+        y: cursorPoint.y - this._viewRect.y
+      };
+
       switch (mouseEvent.type) {
         case 'mousedown':
-          this._recordPoint = util.calcCursorPoint(mouseEvent);
+          this._recordPoint = offsetCursorPoint;
+
+          this._unbindEvent();
 
           this._bindEventForBody();
 
@@ -1188,18 +1197,27 @@ var Canvas = /*#__PURE__*/function () {
           break;
 
         case 'mousemove':
-          if (this._recordSprite) {
-            var curPoint = util.calcCursorPoint(mouseEvent);
-            var vercotr = util.calcVertor(this._recordPoint, curPoint);
+          {
+            if (this._recordSprite) {
+              var vercotr = util.calcVertor(this._recordPoint, offsetCursorPoint);
 
-            this._recordSprite.transform(this._recordTrackNode, vercotr, this._recordSpriteData);
+              this._recordSprite.transform(this._recordTrackNode, vercotr, this._recordSpriteData);
 
-            this.render();
+              this.render();
+            } else {
+              var hoverSprite = this._getTopSprite(offsetCursorPoint);
+
+              if (hoverSprite) {
+                hoverSprite.calcTrackNode(offsetCursorPoint);
+              }
+            }
+
+            break;
           }
 
-          break;
-
         case 'mouseup':
+          this._bindEvent();
+
           this._unbindEventForBody();
 
           this._hasMousedown = false;
@@ -1277,8 +1295,27 @@ var Canvas = /*#__PURE__*/function () {
       this._lowerCanvas.height = height;
       this._upperCanvas.width = width;
       this._upperCanvas.height = height;
+
+      this._updateViewRect();
+
       this.render();
       this.renderTrack();
+    }
+    /**
+     * @description 更新视图相对于浏览器的位置尺寸信息
+     */
+
+  }, {
+    key: "_updateViewRect",
+    value: function _updateViewRect() {
+      var viewRect = this._upperCanvas.getBoundingClientRect();
+
+      this._viewRect = {
+        x: viewRect.left,
+        y: viewRect.top,
+        width: viewRect.width,
+        height: viewRect.height
+      };
     }
     /**
      * @description 清空画布
@@ -1491,7 +1528,7 @@ var Sprite = /*#__PURE__*/function () {
         x: this.getX(),
         y: this.getY(),
         width: this.getWidth(),
-        hieght: this.getHeight(),
+        height: this.getHeight(),
         angle: this.getAngle(),
         originX: this.getOriginX(),
         originY: this.getOriginY(),
@@ -1997,36 +2034,123 @@ var Sprite = /*#__PURE__*/function () {
     key: "transform",
     value: function transform(trackNode, vercotr, prevEncodeData) {
       var _Track$TRACK_NODES = Track.TRACK_NODES(),
-          SELF = _Track$TRACK_NODES.SELF;
-          _Track$TRACK_NODES.LEFT_TOP;
-          _Track$TRACK_NODES.CENTER_TOP;
-          _Track$TRACK_NODES.RIGHT_TOP;
-          _Track$TRACK_NODES.RIGHT_CENTER;
-          _Track$TRACK_NODES.RIGHT_BOTTOM;
-          _Track$TRACK_NODES.CENTER_BOTTOM;
-          _Track$TRACK_NODES.LEFT_BOTTOM;
-          _Track$TRACK_NODES.LEFT_CETNER;
+          SELF = _Track$TRACK_NODES.SELF,
+          LEFT_TOP = _Track$TRACK_NODES.LEFT_TOP,
+          CENTER_TOP = _Track$TRACK_NODES.CENTER_TOP,
+          RIGHT_TOP = _Track$TRACK_NODES.RIGHT_TOP,
+          RIGHT_CENTER = _Track$TRACK_NODES.RIGHT_CENTER,
+          RIGHT_BOTTOM = _Track$TRACK_NODES.RIGHT_BOTTOM,
+          CENTER_BOTTOM = _Track$TRACK_NODES.CENTER_BOTTOM,
+          LEFT_BOTTOM = _Track$TRACK_NODES.LEFT_BOTTOM,
+          LEFT_CETNER = _Track$TRACK_NODES.LEFT_CETNER;
 
-      var verctorX = vercotr.x,
-          verctorY = vercotr.y;
-      var prevX = prevEncodeData.x,
-          prevY = prevEncodeData.y;
-          prevEncodeData.width;
-          prevEncodeData.height;
       this.fire(eventConstant.WILL_TRANSFORM, {
         target: this
       });
 
       switch (trackNode) {
         case SELF:
-          this.setX(prevX + verctorX);
-          this.setY(prevY + verctorY);
+          this._move(prevEncodeData, vercotr);
+
+          break;
+
+        case LEFT_TOP:
+        case CENTER_TOP:
+        case RIGHT_TOP:
+        case RIGHT_CENTER:
+        case RIGHT_BOTTOM:
+        case CENTER_BOTTOM:
+        case LEFT_BOTTOM:
+        case LEFT_CETNER:
+          this._resieze(trackNode, prevEncodeData, vercotr);
+
+          break;
       }
 
       this.fire(eventConstant.DID_TRANSFORM, {
         target: this
       });
+      return this;
     }
+    /**
+     * @description 移动
+     * @param {*} prevEncodeData
+     * @param {*} vercotr
+     */
+
+  }, {
+    key: "_move",
+    value: function _move(prevEncodeData, vercotr) {
+      var verctorX = vercotr.x,
+          verctorY = vercotr.y;
+      var prevX = prevEncodeData.x,
+          prevY = prevEncodeData.y;
+      this.setX(prevX + verctorX).setY(prevY + verctorY);
+    }
+    /**
+     * @description 缩放
+     * @param {*} trackNode
+     * @param {*} prevEncodeData
+     * @param {*} vercotr
+     */
+
+  }, {
+    key: "_resieze",
+    value: function _resieze(trackNode, prevEncodeData, vercotr) {
+      var verctorX = vercotr.x,
+          verctorY = vercotr.y;
+      var prevX = prevEncodeData.x,
+          prevY = prevEncodeData.y,
+          prevWidth = prevEncodeData.width,
+          prevHeight = prevEncodeData.height;
+
+      var _Track$TRACK_NODES2 = Track.TRACK_NODES(),
+          LEFT_TOP = _Track$TRACK_NODES2.LEFT_TOP,
+          CENTER_TOP = _Track$TRACK_NODES2.CENTER_TOP,
+          RIGHT_TOP = _Track$TRACK_NODES2.RIGHT_TOP,
+          RIGHT_CENTER = _Track$TRACK_NODES2.RIGHT_CENTER,
+          RIGHT_BOTTOM = _Track$TRACK_NODES2.RIGHT_BOTTOM,
+          CENTER_BOTTOM = _Track$TRACK_NODES2.CENTER_BOTTOM,
+          LEFT_BOTTOM = _Track$TRACK_NODES2.LEFT_BOTTOM,
+          LEFT_CETNER = _Track$TRACK_NODES2.LEFT_CETNER;
+
+      switch (trackNode) {
+        case LEFT_TOP:
+          this.setX(prevX + verctorX).setY(prevY + verctorY).setWidth(prevWidth - verctorX).setHeight(prevHeight - verctorY);
+          break;
+
+        case CENTER_TOP:
+          this.setY(prevY + verctorY).setHeight(prevHeight - verctorY);
+          break;
+
+        case RIGHT_TOP:
+          this.setY(prevY + verctorY).setWidth(prevWidth + verctorX).setHeight(prevHeight - verctorY);
+          break;
+
+        case RIGHT_CENTER:
+          this.setWidth(prevWidth + verctorX);
+          break;
+
+        case RIGHT_BOTTOM:
+          this.setWidth(prevWidth + verctorX).setHeight(prevHeight + verctorY);
+          break;
+
+        case CENTER_BOTTOM:
+          this.setHeight(prevHeight + verctorY);
+          break;
+
+        case LEFT_BOTTOM:
+          this.setX(prevX + verctorX).setWidth(prevWidth - verctorX).setHeight(prevHeight + verctorY);
+          break;
+
+        case LEFT_CETNER:
+          this.setX(prevX + verctorX).setWidth(prevWidth - verctorX);
+          break;
+      }
+    }
+  }, {
+    key: "_rotate",
+    value: function _rotate() {}
     /**
      * @description 删除对象
      */
@@ -2058,7 +2182,7 @@ var Sprite = /*#__PURE__*/function () {
      * @param {object} point
      * @param {number} point.x
      * @param {number} point.y
-     * @returns 
+     * @returns
      */
 
   }, {
@@ -2096,7 +2220,7 @@ var Text = /*#__PURE__*/function (_Sprite) {
     _this._fillColor = _this.extendsValue(props.fillColor, '#FFFFFF');
     _this._strokeColor = _this.extendsValue(props.strokeColor, '#FFFFFF');
     _this._value = _this.extendsValue(props.value, ['Enter Your Text']);
-    _this._supportNodes = [0, 2, 4, 6];
+    _this._supportNodes = [0, 2, 3, 4, 6, 7];
     _this._fontBoundingBoxAscent = 0;
 
     _this.initSize();

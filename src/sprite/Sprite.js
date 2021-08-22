@@ -35,7 +35,7 @@ class Sprite {
       x: this.getX(),
       y: this.getY(),
       width: this.getWidth(),
-      hieght: this.getHeight(),
+      height: this.getHeight(),
       angle: this.getAngle(),
       originX: this.getOriginX(),
       originY: this.getOriginY(),
@@ -425,7 +425,8 @@ class Sprite {
    */
   renderTrack(ctx) {
     this._track =
-      this._track || new Track({ supportNodes: this._supportNodes, owner: this });
+      this._track ||
+      new Track({ supportNodes: this._supportNodes, owner: this });
     this._track.render(ctx);
   }
 
@@ -449,17 +450,98 @@ class Sprite {
       LEFT_BOTTOM,
       LEFT_CETNER,
     } = Track.TRACK_NODES();
-    const {x: verctorX, y: verctorY} = vercotr;
-    const {x: prevX, y: prevY, width: prevWidth, height: prevHeight} = prevEncodeData;
     this.fire(eventConstant.WILL_TRANSFORM, { target: this });
     switch (trackNode) {
       case SELF:
-        this.setX(prevX + verctorX);
-        this.setY(prevY + verctorY);
+        this._move(prevEncodeData, vercotr);
+        break;
+      case LEFT_TOP:
+      case CENTER_TOP:
+      case RIGHT_TOP:
+      case RIGHT_CENTER:
+      case RIGHT_BOTTOM:
+      case CENTER_BOTTOM:
+      case LEFT_BOTTOM:
+      case LEFT_CETNER:
+        this._resieze(trackNode, prevEncodeData, vercotr);
+        break;
       default:
     }
     this.fire(eventConstant.DID_TRANSFORM, { target: this });
+    return this;
   }
+
+  /**
+   * @description 移动
+   * @param {*} prevEncodeData
+   * @param {*} vercotr
+   */
+  _move(prevEncodeData, vercotr) {
+    const { x: verctorX, y: verctorY } = vercotr;
+    const { x: prevX, y: prevY } = prevEncodeData;
+    this.setX(prevX + verctorX).setY(prevY + verctorY);
+  }
+
+  /**
+   * @description 缩放
+   * @param {*} trackNode
+   * @param {*} prevEncodeData
+   * @param {*} vercotr
+   */
+  _resieze(trackNode, prevEncodeData, vercotr) {
+    const { x: verctorX, y: verctorY } = vercotr;
+    const {
+      x: prevX,
+      y: prevY,
+      width: prevWidth,
+      height: prevHeight,
+    } = prevEncodeData;
+    const {
+      LEFT_TOP,
+      CENTER_TOP,
+      RIGHT_TOP,
+      RIGHT_CENTER,
+      RIGHT_BOTTOM,
+      CENTER_BOTTOM,
+      LEFT_BOTTOM,
+      LEFT_CETNER,
+    } = Track.TRACK_NODES();
+    switch (trackNode) {
+      case LEFT_TOP:
+        this.setX(prevX + verctorX)
+          .setY(prevY + verctorY)
+          .setWidth(prevWidth - verctorX)
+          .setHeight(prevHeight - verctorY);
+        break;
+      case CENTER_TOP:
+        this.setY(prevY + verctorY).setHeight(prevHeight - verctorY);
+        break;
+      case RIGHT_TOP:
+        this.setY(prevY + verctorY)
+          .setWidth(prevWidth + verctorX)
+          .setHeight(prevHeight - verctorY);
+        break;
+      case RIGHT_CENTER:
+        this.setWidth(prevWidth + verctorX);
+        break;
+      case RIGHT_BOTTOM:
+        this.setWidth(prevWidth + verctorX).setHeight(prevHeight + verctorY);
+        break;
+      case CENTER_BOTTOM:
+        this.setHeight(prevHeight + verctorY);
+        break;
+      case LEFT_BOTTOM:
+        this.setX(prevX + verctorX)
+          .setWidth(prevWidth - verctorX)
+          .setHeight(prevHeight + verctorY);
+        break;
+      case LEFT_CETNER:
+        this.setX(prevX + verctorX).setWidth(prevWidth - verctorX);
+        break;
+    }
+  }
+
+  _rotate() {}
 
   /**
    * @description 删除对象
@@ -486,7 +568,7 @@ class Sprite {
    * @param {object} point
    * @param {number} point.x
    * @param {number} point.y
-   * @returns 
+   * @returns
    */
   calcTrackNode(point) {
     return this._track.clacTrackNodeWithPoint(point);

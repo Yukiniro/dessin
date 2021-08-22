@@ -16,6 +16,7 @@ class Canvas {
     this._recordPoint = null;
     this._recordTrackNode = track.TRACK_NODES().NONE;
     this._recordSpriteData = null;
+    this._viewRect = null;
     this._fireEvent = this._fireEvent.bind(this);
 
     this._initView();
@@ -75,9 +76,15 @@ class Canvas {
    * @param {*} mouseEvent
    */
   _fireEvent(mouseEvent) {
+    const cursorPoint = util.calcCursorPoint(mouseEvent);
+    const offsetCursorPoint = {
+      x: cursorPoint.x - this._viewRect.x,
+      y: cursorPoint.y - this._viewRect.y,
+    };
     switch (mouseEvent.type) {
       case 'mousedown':
-        this._recordPoint = util.calcCursorPoint(mouseEvent);
+        this._recordPoint = offsetCursorPoint;
+        this._unbindEvent();
         this._bindEventForBody();
         this._recordSprite = this._getTopSprite(this._recordPoint);
         this._hasMousedown = true;
@@ -93,15 +100,26 @@ class Canvas {
         break;
       case 'dblclick':
         break;
-      case 'mousemove':
+      case 'mousemove': {
+        
         if (this._recordSprite) {
-          const curPoint = util.calcCursorPoint(mouseEvent);
-          const vercotr = util.calcVertor(this._recordPoint, curPoint);
-          this._recordSprite.transform(this._recordTrackNode, vercotr, this._recordSpriteData);
+          const vercotr = util.calcVertor(this._recordPoint, offsetCursorPoint);
+          this._recordSprite.transform(
+            this._recordTrackNode,
+            vercotr,
+            this._recordSpriteData
+          );
           this.render();
+        } else {
+          const hoverSprite = this._getTopSprite(offsetCursorPoint);
+          if (hoverSprite) {
+            const hoverTrackNode = hoverSprite.calcTrackNode(offsetCursorPoint);
+          }
         }
         break;
+      }
       case 'mouseup':
+        this._bindEvent();
         this._unbindEventForBody();
         this._hasMousedown = false;
         this._recordSprite = null;
@@ -169,9 +187,22 @@ class Canvas {
     this._lowerCanvas.height = height;
     this._upperCanvas.width = width;
     this._upperCanvas.height = height;
-
+    this._updateViewRect();
     this.render();
     this.renderTrack();
+  }
+
+  /**
+   * @description 更新视图相对于浏览器的位置尺寸信息
+   */
+  _updateViewRect() {
+    const viewRect = this._upperCanvas.getBoundingClientRect();
+    this._viewRect = {
+      x: viewRect.left,
+      y: viewRect.top,
+      width: viewRect.width,
+      height: viewRect.height,
+    };
   }
 
   /**

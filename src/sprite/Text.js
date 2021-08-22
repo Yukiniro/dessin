@@ -17,7 +17,7 @@ class Text extends Sprite {
     this._fillColor = this.extendsValue(props.fillColor, '#FFFFFF');
     this._strokeColor = this.extendsValue(props.strokeColor, '#FFFFFF');
     this._value = this.extendsValue(props.value, ['Enter Your Text']);
-    this._supportNodes = [0, 2, 4, 6];
+    this._supportNodes = [0, 2, 3, 4, 6, 7];
     this._fontBoundingBoxAscent = 0;
 
     this.initSize();
