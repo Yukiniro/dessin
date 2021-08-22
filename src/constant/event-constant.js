@@ -15,7 +15,7 @@ export default {
   MOUSE_MOVE: 'mousemove',
   MOUSE_UP: 'mouseup',
   CLICK: 'click',
-  DBCLICK: 'dbclick',
+  DBLCLICK: 'dblclick',
   DRAG: 'drag',
   DRAG_START: 'dragstart',
   DRAG_END: 'dragend',

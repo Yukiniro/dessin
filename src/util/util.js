@@ -214,5 +214,82 @@ export default (function () {
      * @description 空函数
      */
     emptyFunc: function () {},
+
+    /**
+     * @description 判断点是否在框内
+     * @param {object} point 
+     * @param {number} point.x
+     * @param {number} point.y
+     * @param {object} rect
+     * @param {number} rect.x
+     * @param {number} rect.y
+     * @param {number} rect.width
+     * @param {number} rect.height
+     * @param {number} angle
+     * @returns {boolean}
+     */
+    isPointInRect: function (point, rect, angle = 0) {
+      const {x: px, y: py} = point;
+      const {x, y, width, height} = rect;
+      return px >= x && px <= x + width && py >= y && py <= y + height;
+    },
+
+    /**
+     * @description 计算鼠标位置
+     * @param {MouseEvent} mouseEvent 
+     * @returns 
+     */
+    calcCursorPoint: function (mouseEvent) {
+      return {
+        x: mouseEvent.clientX,
+        y: mouseEvent.clientY,
+      }
+    },
+
+    /**
+     * @description 计算两点之间的距离
+     * @param {object} point1 
+     * @param {number} point1.x 
+     * @param {number} point1.y
+     * @param {object} point2
+     * @param {number} point2.x 
+     * @param {number} point2.y
+     * @returns 
+     */
+    calcDistance: function (point1, point2) {
+      const {x: x1, y: y1} = point1;
+      const {x: x2, y: y2} = point2;
+      const offsetX = Math.abs(x2 - x1);
+      const offsetY = Math.abs(y2 - y1);
+      return Math.sqrt(Math.pow(offsetX, 2) + Math.pow(offsetY, 2));
+    },
+
+    /**
+     * @description 计算point2相对于point1的向量
+     * @param {object} point1 
+     * @param {number} point1.x 
+     * @param {number} point1.y
+     * @param {object} point2
+     * @param {number} point2.x 
+     * @param {number} point2.y
+     * @returns 
+     */
+    calcVertor: function (point1, point2) {
+      const {x: x1, y: y1} = point1;
+      const {x: x2, y: y2} = point2;
+      return {
+        x: x2 - x1,
+        y: y2 - y1,
+      }
+    },
+
+    /**
+     * @description 清楚指定画布
+     * @param {*} canvas 
+     */
+    clearCanvas: function (canvas) {
+      canvas.width = canvas.width;
+      canvas.height = canvas.height;
+    }
   };
 })();

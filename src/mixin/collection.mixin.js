@@ -61,5 +61,13 @@ export default (function () {
     includes: function (item) {
       return _items.includes(item);
     },
+
+    /**
+     * @description 返回所有的项
+     * @returns 
+     */
+    all: function () {
+      return _items;
+    },
   };
 })();

@@ -3,9 +3,11 @@ import eventConstant from '../constant/event-constant';
 import observableMixin from '../mixin/observable.mixin';
 import util from '../util/util';
 import Track from './track';
+import { v4 } from 'uuid';
 
 class Sprite {
   constructor(props = {}) {
+    this._id = v4();
     this._type = this.extendsValue(props.type, '');
     this._x = this.extendsValue(props.x, 0);
     this._y = this.extendsValue(props.y, 0);
@@ -19,6 +21,7 @@ class Sprite {
     this._opacity = this.extendsValue(props.opacity, 1);
     this._value = this.extendsValue(props.value, '');
     this._supportNodes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1];
+    this._evented = this.extendsValue(props._evented, true);
     this._selected = false;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
@@ -27,6 +30,7 @@ class Sprite {
 
   encode() {
     return {
+      id: this.id,
       type: this.type,
       x: this.getX(),
       y: this.getY(),
@@ -43,6 +47,7 @@ class Sprite {
   }
 
   decode(data) {
+    this._id = this.extendsValue(data.id, v4());
     this._type = this.extendsValue(data.type, this.getType());
     this._x = this.extendsValue(data.x, this.getX());
     this._y = this.extendsValue(data.y, this.getY());
@@ -66,6 +71,39 @@ class Sprite {
    */
   get type() {
     return this._type;
+  }
+
+  /**
+   * @description 返回渲染框的信息
+   */
+  get rect() {
+    return {
+      ...this.getPos(),
+      ...this.getSize(),
+    };
+  }
+
+  /**
+   * @description 返回id
+   */
+  get id() {
+    return this._id;
+  }
+
+  /**
+   * @description 设置是否支持事件
+   * @param {boolean} isSupport
+   */
+  setEventSupport(isSupport) {
+    this._evented = isSupport;
+  }
+
+  /**
+   * @description 返回是否支持事件
+   * @returns
+   */
+  getEventSuppor() {
+    return this._evented;
   }
 
   /**
@@ -387,22 +425,71 @@ class Sprite {
    */
   renderTrack(ctx) {
     this._track =
-      this._track || new Track({ supportNodes: this._supportNodes });
-    this._track.render(ctx, this._x, this._y, this._width, this._height);
+      this._track || new Track({ supportNodes: this._supportNodes, owner: this });
+    this._track.render(ctx);
   }
 
   /**
    * @description 事件交互
+   * @param {number} trackNode 控制器节点类型
+   * @param {object} verctor 交互向量
+   * @param {number} verctor.x
+   * @param {number} verctor.y
+   * @param {object} prevEncodeData
    */
-  transform() {
+  transform(trackNode, vercotr, prevEncodeData) {
+    const {
+      SELF,
+      LEFT_TOP,
+      CENTER_TOP,
+      RIGHT_TOP,
+      RIGHT_CENTER,
+      RIGHT_BOTTOM,
+      CENTER_BOTTOM,
+      LEFT_BOTTOM,
+      LEFT_CETNER,
+    } = Track.TRACK_NODES();
+    const {x: verctorX, y: verctorY} = vercotr;
+    const {x: prevX, y: prevY, width: prevWidth, height: prevHeight} = prevEncodeData;
     this.fire(eventConstant.WILL_TRANSFORM, { target: this });
-    this.fire(eventConstant.DID_TRANSFORM, { target: thsi });
+    switch (trackNode) {
+      case SELF:
+        this.setX(prevX + verctorX);
+        this.setY(prevY + verctorY);
+      default:
+    }
+    this.fire(eventConstant.DID_TRANSFORM, { target: this });
   }
 
+  /**
+   * @description 删除对象
+   */
   destroy() {
     this.fire(eventConstant.WILL_DESTROY, { target: this });
     this.resetListener();
     this.fire(eventConstant.DID_DESTROY);
+  }
+
+  /**
+   * @description 判断点是否在对象内
+   * @param {object} point
+   * @param {number} point.x
+   * @param {number} point.y
+   * @returns {boolean}
+   */
+  isPointInSelf(point) {
+    return util.isPointInRect(point, this.rect);
+  }
+
+  /**
+   * @description 计算指定point在sprite中的控制器节点类型
+   * @param {object} point
+   * @param {number} point.x
+   * @param {number} point.y
+   * @returns 
+   */
+  calcTrackNode(point) {
+    return this._track.clacTrackNodeWithPoint(point);
   }
 }
 

@@ -31,7 +31,7 @@
 鼠标弹起
 ### click
 点击
-### dbclick
+### dblclick
 双击
 ### drag
 拖动

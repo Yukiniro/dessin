@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "./node_modules/.bin/rollup --config rollup.config.dev.js",
+    "dev": "./node_modules/.bin/rollup --config rollup.config.dev.js --watch",
     "build": "./node_modules/.bin/rollup --config rollup.config.prod.js"
   },
   "repository": {
@@ -36,6 +36,7 @@
     "rollup-plugin-filesize": "^9.1.1",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^1.1.0",
-    "rollup-plugin-uglify": "^6.0.4"
+    "rollup-plugin-uglify": "^6.0.4",
+    "uuid": "^8.3.2"
   }
 }

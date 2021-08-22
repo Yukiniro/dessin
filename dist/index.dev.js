@@ -534,7 +534,92 @@ var util = (function () {
     /**
      * @description 空函数
      */
-    emptyFunc: function emptyFunc() {}
+    emptyFunc: function emptyFunc() {},
+
+    /**
+     * @description 判断点是否在框内
+     * @param {object} point 
+     * @param {number} point.x
+     * @param {number} point.y
+     * @param {object} rect
+     * @param {number} rect.x
+     * @param {number} rect.y
+     * @param {number} rect.width
+     * @param {number} rect.height
+     * @param {number} angle
+     * @returns {boolean}
+     */
+    isPointInRect: function isPointInRect(point, rect) {
+      var px = point.x,
+          py = point.y;
+      var x = rect.x,
+          y = rect.y,
+          width = rect.width,
+          height = rect.height;
+      return px >= x && px <= x + width && py >= y && py <= y + height;
+    },
+
+    /**
+     * @description 计算鼠标位置
+     * @param {MouseEvent} mouseEvent 
+     * @returns 
+     */
+    calcCursorPoint: function calcCursorPoint(mouseEvent) {
+      return {
+        x: mouseEvent.clientX,
+        y: mouseEvent.clientY
+      };
+    },
+
+    /**
+     * @description 计算两点之间的距离
+     * @param {object} point1 
+     * @param {number} point1.x 
+     * @param {number} point1.y
+     * @param {object} point2
+     * @param {number} point2.x 
+     * @param {number} point2.y
+     * @returns 
+     */
+    calcDistance: function calcDistance(point1, point2) {
+      var x1 = point1.x,
+          y1 = point1.y;
+      var x2 = point2.x,
+          y2 = point2.y;
+      var offsetX = Math.abs(x2 - x1);
+      var offsetY = Math.abs(y2 - y1);
+      return Math.sqrt(Math.pow(offsetX, 2) + Math.pow(offsetY, 2));
+    },
+
+    /**
+     * @description 计算point2相对于point1的向量
+     * @param {object} point1 
+     * @param {number} point1.x 
+     * @param {number} point1.y
+     * @param {object} point2
+     * @param {number} point2.x 
+     * @param {number} point2.y
+     * @returns 
+     */
+    calcVertor: function calcVertor(point1, point2) {
+      var x1 = point1.x,
+          y1 = point1.y;
+      var x2 = point2.x,
+          y2 = point2.y;
+      return {
+        x: x2 - x1,
+        y: y2 - y1
+      };
+    },
+
+    /**
+     * @description 清楚指定画布
+     * @param {*} canvas 
+     */
+    clearCanvas: function clearCanvas(canvas) {
+      canvas.width = canvas.width;
+      canvas.height = canvas.height;
+    }
   };
 })();
 
@@ -600,6 +685,14 @@ var collection = (function () {
      */
     includes: function includes(item) {
       return _items.includes(item);
+    },
+
+    /**
+     * @description 返回所有的项
+     * @returns 
+     */
+    all: function all() {
+      return _items;
     }
   };
 })();
@@ -653,213 +746,6 @@ var observableMixin = (function () {
   };
 })();
 
-var event = (function () {
-  var _view = null;
-  var _owner = null;
-  var _isMouseDown = false;
-  var _isMouseDrag = false;
-
-  function onMouseDown(e) {
-    _isMouseDown = true;
-
-    _owner.fireEvent(constant.MOUSE_DOWN, e);
-
-    util.addEventListener(document.body, 'mouseup', onMouseUp);
-  }
-
-  function onMouseMove(e) {
-    var MOUSE_HOVER = constant.MOUSE_HOVER,
-        MOUSE_DRAG = constant.MOUSE_DRAG,
-        MOUSE_MOVE = constant.MOUSE_MOVE;
-
-    _owner.fireEvent(MOUSE_MOVE, e);
-
-    if (_isMouseDown) {
-      _owner.fireEvent(MOUSE_DRAG, e);
-
-      _isMouseDrag = true;
-    } else {
-      _owner.fireEvent(MOUSE_HOVER, e);
-    }
-  }
-
-  function onMouseUp(e) {
-    var MOUSE_UP = constant.MOUSE_UP,
-        MOUSE_DROP = constant.MOUSE_DROP;
-
-    _owner.fireEvent(MOUSE_UP, e);
-
-    if (_isMouseDrag) {
-      _owner.fireEvent(MOUSE_DROP, e);
-
-      _isMouseDrag = false;
-    }
-
-    _isMouseDown = false;
-    util.removeEventListener(document.body, 'mouseup', onMouseUp);
-  }
-
-  function bindEvent() {
-    util.addEventListener(_view, 'mousedown', onMouseDown);
-    util.addEventListener(_view, 'mousemove', onMouseMove);
-  }
-
-  function unbindEvent() {
-    util.removeEventListener(_view, 'mousedown', onMouseDown);
-    util.removeEventListener(_view, 'mousemove', onMouseMove);
-  }
-
-  return {
-    /**
-     * @description 绑定视图及事件
-     * @param {*} owner
-     * @param {*} view
-     */
-    bindView: function bindView(owner, view) {
-      if (_view) {
-        unbindEvent();
-      }
-
-      _view = view;
-      _owner = owner;
-      bindEvent();
-    }
-  };
-})();
-
-var Canvas = /*#__PURE__*/function () {
-  function Canvas() {
-    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    _classCallCheck(this, Canvas);
-
-    this._lowerCanvas = props && props.canvas; // 渲染视图
-
-    this._upperCanvas = document.createElement('canvas'); // 事件响应、辅助线视图
-
-    this._size = {
-      width: 500,
-      height: 500
-    };
-    this._viewResponse = 1; // 实际渲染与最终成像之间的比例关系
-
-    this._initView();
-
-    this._updateView();
-  }
-  /**
-   * @description 初始化视图
-   */
-
-
-  _createClass(Canvas, [{
-    key: "_initView",
-    value: function _initView() {
-      var parent = this._lowerCanvas.parentNode;
-      var parentPositionStyle = parent.style.position;
-      parent.insertBefore(this._upperCanvas, this._lowerCanvas.nextSibling);
-
-      if (!parentPositionStyle || parentPositionStyle === 'static') {
-        util.css(parent, {
-          position: 'relative'
-        });
-      }
-
-      util.css(this._lowerCanvas, {
-        position: 'absolute'
-      });
-      util.css(this._upperCanvas, {
-        position: 'absolute'
-      });
-      event.bindView(this, this._upperCanvas);
-    }
-    /**
-     * @description 更新视图尺寸
-     */
-
-  }, {
-    key: "_updateView",
-    value: function _updateView() {
-      var _this$_size = this._size,
-          width = _this$_size.width,
-          height = _this$_size.height;
-      this._lowerCanvas.width = width;
-      this._lowerCanvas.height = height;
-      this._upperCanvas.width = width;
-      this._upperCanvas.height = height;
-      this.render();
-    }
-    /**
-     * @description 清空画布
-     */
-
-  }, {
-    key: "_clear",
-    value: function _clear() {
-      var _this$getSize = this.getSize(),
-          width = _this$getSize.width,
-          height = _this$getSize.height;
-
-      this._lowerCanvas.getContext('2d').clearRect(0, 0, width, height);
-    }
-    /**
-     * @description 渲染
-     */
-
-  }, {
-    key: "render",
-    value: function render() {
-      var _this = this;
-
-      this.forEachItem(function (sprite) {
-        sprite.render(_this._lowerCanvas.getContext('2d'));
-        sprite.renderTrack(_this._upperCanvas.getContext('2d'));
-      });
-    }
-    /**
-     * @description 返回返回尺寸
-     * @returns {object} size
-     * @returns {number} size.widht
-     * @returns {number} size.height
-     */
-
-  }, {
-    key: "getSize",
-    value: function getSize() {
-      return this._size;
-    }
-    /**
-     * @description 设置视图尺寸
-     * @param {object} size 
-     * @param {number} size.width
-     * @param {number} size.height 
-     * @returns 
-     */
-
-  }, {
-    key: "setSize",
-    value: function setSize(size) {
-      this._size = _objectSpread2({}, size);
-
-      this._updateView();
-
-      return this;
-    }
-  }, {
-    key: "fireEvent",
-    value: function fireEvent() {}
-  }]);
-
-  return Canvas;
-}();
-
-util.mixin(Canvas.prototype, collection);
-util.mixin(Canvas.prototype, observableMixin);
-
-var config = {
-  perPixel: 1
-};
-
 var eventConstant = {
   CREATED: 'created',
   WILL_TRANSFORM: 'willtransform',
@@ -877,7 +763,7 @@ var eventConstant = {
   MOUSE_MOVE: 'mousemove',
   MOUSE_UP: 'mouseup',
   CLICK: 'click',
-  DBCLICK: 'dbclick',
+  DBLCLICK: 'dblclick',
   DRAG: 'drag',
   DRAG_START: 'dragstart',
   DRAG_END: 'dragend',
@@ -913,125 +799,191 @@ var Track = /*#__PURE__*/function () {
     this._rotateNodeOffset = 10;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
+    this._owner = props.owner;
   }
+  /**
+   * @description 返回track节点类型
+   * @returns 
+   */
+
 
   _createClass(Track, [{
+    key: "owner",
+    get:
+    /**
+     * @description 返回其拥有者
+     */
+    function get() {
+      return this._owner;
+    }
+    /**
+     * @description 返回位置
+     */
+
+  }, {
+    key: "pos",
+    get: function get() {
+      return this._owner.getPos();
+    }
+    /**
+     * @description 返回尺寸
+     */
+
+  }, {
+    key: "size",
+    get: function get() {
+      return this._owner.getSize();
+    }
+    /**
+     * @description 返回旋转角度
+     */
+
+  }, {
+    key: "angle",
+    get: function get() {
+      return this._owner.getAngle();
+    }
+    /**
+     * @description 返回位置尺寸信息
+     */
+
+  }, {
+    key: "rect",
+    get: function get() {
+      return _objectSpread2(_objectSpread2({}, this.pos), this.size);
+    }
+  }, {
     key: "extendsValue",
     value: function extendsValue(value, defalultValue) {
       return util.isUndefined(value) ? defalultValue : value;
     }
     /**
-     * @description 渲染缓存
-     * @param {number} width
-     * @param {number} height
-     */
-
-  }, {
-    key: "renderCache",
-    value: function renderCache(width, height) {
-      this._cacheView.width = width;
-      this._cacheView.height = height;
-
-      this._cacheCtx.save();
-
-      this._cacheCtx.strokeStyle = this._lineColor;
-
-      this._cacheCtx.strokeRect(this._nodeRadius, this._nodeRadius, width - this._nodeRadius * 2, height - this._nodeRadius * 2);
-
-      this._cacheCtx.restore();
-
-      this._renderNodes(width, height);
-    }
-    /**
      * @description 渲染控制器
      * @param {context} ctx
-     * @param {number} x
-     * @param {number} y
-     * @param {number} width
-     * @param {number} height
      */
 
   }, {
     key: "render",
-    value: function render(ctx, x, y, width, height) {
-      var rect = {
-        x: x - this._nodeRadius,
-        y: y - this._nodeRadius,
-        width: width + this._nodeRadius * 2,
-        height: height + this._nodeRadius * 2
+    value: function render(ctx) {
+      this._renderNodes(ctx);
+
+      this._renderLines(ctx);
+    }
+    /**
+     * @description 计算指定point在控制器中的节点类型
+     * @param {obeject} point 
+     * @param {number} point.x
+     * @param {number} point.y
+     * @returns 
+     */
+
+  }, {
+    key: "clacTrackNodeWithPoint",
+    value: function clacTrackNodeWithPoint(point) {
+      var _this = this;
+
+      var findIndex = this._supportNodes.findIndex(function (node) {
+        var nodePos = _this._calcNodePos(node);
+
+        var nodeRect = {
+          x: nodePos.x - _this._nodeRadius,
+          y: nodePos.y - _this._nodeRadius,
+          width: _this._nodeRadius * 2,
+          height: _this._nodeRadius * 2
+        };
+        return util.isPointInRect(point, nodeRect);
+      });
+
+      if (findIndex === -1) {
+        if (util.isPointInRect(point, this.rect)) {
+          return _TRACK_NODES.SELF;
+        } else {
+          return _TRACK_NODES.NONE;
+        }
+      } else {
+        return this._supportNodes[findIndex];
+      }
+    }
+    /**
+     * @description 計算
+     * @param {number} node 
+     * @returns 
+     */
+
+  }, {
+    key: "_calcNodePos",
+    value: function _calcNodePos(node) {
+      var rect = this.rect;
+      var pos = {
+        x: 0,
+        y: 0
       };
-      this.renderCache(width, height);
-      ctx.drawImage(this._cacheView, rect.x, rect.y, rect.width, rect.height);
+
+      switch (node) {
+        case 0:
+          pos = util.calePointInRect(constant.LEFT_TOP, rect);
+          break;
+
+        case 1:
+          pos = util.calePointInRect(constant.CENTER_TOP, rect);
+          break;
+
+        case 2:
+          pos = util.calePointInRect(constant.RIGHT_TOP, rect);
+          break;
+
+        case 3:
+          pos = util.calePointInRect(constant.RIGHT_CENTER, rect);
+          break;
+
+        case 4:
+          pos = util.calePointInRect(constant.RIGHT_BOTTOM, rect);
+          break;
+
+        case 5:
+          pos = util.calePointInRect(constant.CENTER_BOTTOM, rect);
+          break;
+
+        case 6:
+          pos = util.calePointInRect(constant.LEFT_BOTTOM, rect);
+          break;
+
+        case 7:
+          pos = util.calePointInRect(constant.LEFT_CENTER, rect);
+          break;
+
+        case 9:
+          pos = {
+            x: width / 2,
+            y: this._nodeRadius - this._rotateNodeOffset
+          };
+          break;
+
+        default:
+          throw new Error(constant.ARGUMENT_ERROR);
+      }
+
+      return pos;
     }
     /**
      * @description 渲染所有控制点
-     * @param {number} width
-     * @param {number} height
+    * @param {*} ctx
      */
 
   }, {
     key: "_renderNodes",
-    value: function _renderNodes(width, height) {
-      var _this = this;
+    value: function _renderNodes(ctx) {
+      var _this2 = this;
 
       this._supportNodes.forEach(function (node) {
-        var point = {
-          x: 0,
-          y: 0
-        };
-        var rect = {
-          x: _this._nodeRadius,
-          y: _this._nodeRadius,
-          width: width - _this._nodeRadius * 2,
-          height: height - _this._nodeRadius * 2
-        };
+        var pos = _this2._calcNodePos(node);
 
-        switch (node) {
-          case 0:
-            point = util.calePointInRect(constant.LEFT_TOP, rect);
-            break;
-
-          case 1:
-            point = util.calePointInRect(constant.CENTER_TOP, rect);
-            break;
-
-          case 2:
-            point = util.calePointInRect(constant.RIGHT_TOP, rect);
-            break;
-
-          case 3:
-            point = util.calePointInRect(constant.RIGHT_CENTER, rect);
-            break;
-
-          case 4:
-            point = util.calePointInRect(constant.RIGHT_BOTTOM, rect);
-            break;
-
-          case 5:
-            point = util.calePointInRect(constant.CENTER_BOTTOM, rect);
-            break;
-
-          case 6:
-            point = util.calePointInRect(constant.LEFT_BOTTOM, rect);
-            break;
-
-          case 7:
-            point = util.calePointInRect(constant.LEFT_CENTER, rect);
-            break;
-
-          case 9:
-            point = {
-              x: width / 2,
-              y: _this._nodeRadius - _this._rotateNodeOffset
-            };
-            break;
-        }
-
-        _this._renderNode(point);
+        _this2._renderNode(ctx, pos);
       });
     }
     /**
      * @description 渲染控制点
+     * @param {*} ctx
      * @param {object} point
      * @param {number} point.x
      * @param {number} point.y
@@ -1039,18 +991,60 @@ var Track = /*#__PURE__*/function () {
 
   }, {
     key: "_renderNode",
-    value: function _renderNode(point) {
-      this._cacheCtx.save();
+    value: function _renderNode(ctx, point) {
+      ctx.save();
+      ctx.fillStyle = this._nodeColor;
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, this._nodeRadius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+    /**
+     * @description 
+     * @param {HTMLCanvasContext} ctx 
+     */
 
-      this._cacheCtx.fillStyle = this._nodeColor;
+  }, {
+    key: "_renderLines",
+    value: function _renderLines(ctx) {
+      var pointLeftTop = this._calcNodePos(_TRACK_NODES.LEFT_TOP);
 
-      this._cacheCtx.beginPath();
+      var pointRightTop = this._calcNodePos(_TRACK_NODES.RIGHT_TOP);
 
-      this._cacheCtx.arc(point.x, point.y, this._nodeRadius, 0, Math.PI * 2);
+      var pointLeftBottom = this._calcNodePos(_TRACK_NODES.LEFT_BOTTOM);
 
-      this._cacheCtx.fill();
+      var pointRightBottom = this._calcNodePos(_TRACK_NODES.RIGHT_BOTTOM);
 
-      this._cacheCtx.restore();
+      this._renderLine(ctx, pointLeftTop, pointRightTop);
+
+      this._renderLine(ctx, pointRightTop, pointRightBottom);
+
+      this._renderLine(ctx, pointRightBottom, pointLeftBottom);
+
+      this._renderLine(ctx, pointLeftBottom, pointLeftTop);
+    }
+    /**
+     * @description 在指定ctx上绘制pointFrom、pointTo之间的线条
+     * @param {*} ctx 
+     * @param {object} pointFrom 
+     * @param {number} pointFrom.x
+     * @param {number} pointFrom.y 
+     * @param {object} pointTo
+     * @param {number} pointTo.x
+     * @param {number} pointTo.y
+     */
+
+  }, {
+    key: "_renderLine",
+    value: function _renderLine(ctx, pointFrom, pointTo) {
+      ctx.save();
+      ctx.lineColor = this._lineColor;
+      ctx.beginPath();
+      ctx.moveTo(pointFrom.x, pointFrom.y);
+      ctx.lineTo(pointTo.x, pointTo.y);
+      ctx.stroke();
+      ctx.closePath();
+      ctx.restore();
     }
   }], [{
     key: "TRACK_NODES",
@@ -1062,12 +1056,412 @@ var Track = /*#__PURE__*/function () {
   return Track;
 }();
 
+var Canvas = /*#__PURE__*/function () {
+  function Canvas() {
+    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Canvas);
+
+    this._lowerCanvas = props && props.canvas; // 渲染视图
+
+    this._upperCanvas = document.createElement('canvas'); // 事件响应、辅助线视图
+
+    this._size = {
+      width: 500,
+      height: 500
+    };
+    this._viewResponse = 1; // 实际渲染与最终成像之间的比例关系
+
+    this._body = document.body;
+    this._willOperateSprite = null; // 将要正在控制的对象
+
+    this._hasMousedown = false; // 鼠标是否已经按下，区分划过、拖动
+
+    this._recordSprite = null; // 当前正在控制的对象
+
+    this._recordPoint = null;
+    this._recordTrackNode = Track.TRACK_NODES().NONE;
+    this._recordSpriteData = null;
+    this._fireEvent = this._fireEvent.bind(this);
+
+    this._initView();
+
+    this._bindEvent();
+
+    this._updateView();
+  }
+  /**
+   * @description 初始化视图
+   */
+
+
+  _createClass(Canvas, [{
+    key: "_initView",
+    value: function _initView() {
+      if (!this._lowerCanvas) {
+        throw new Error('You have to bind a canvas!');
+      } else {
+        var parent = this._lowerCanvas.parentNode;
+        var parentPositionStyle = parent.style.position;
+        parent.insertBefore(this._upperCanvas, this._lowerCanvas.nextSibling);
+
+        if (!parentPositionStyle || parentPositionStyle === 'static') {
+          util.css(parent, {
+            position: 'relative'
+          });
+        }
+
+        util.css(this._lowerCanvas, {
+          position: 'absolute'
+        });
+        util.css(this._upperCanvas, {
+          position: 'absolute',
+          'pointer-events': 'none'
+        });
+      }
+    }
+  }, {
+    key: "_bindEvent",
+    value: function _bindEvent() {
+      this._lowerCanvas.addEventListener('mousedown', this._fireEvent);
+
+      this._lowerCanvas.addEventListener('clcik', this._fireEvent);
+
+      this._lowerCanvas.addEventListener('dblclick', this._fireEvent);
+
+      this._lowerCanvas.addEventListener('mousemove', this._fireEvent);
+    }
+  }, {
+    key: "_unbindEvent",
+    value: function _unbindEvent() {
+      this._lowerCanvas.removeEventListener('mousedown', this._fireEvent);
+
+      this._lowerCanvas.removeEventListener('clcik', this._fireEvent);
+
+      this._lowerCanvas.removeEventListener('dblclick', this._fireEvent);
+
+      this._lowerCanvas.removeEventListener('mouseover', this._fireEvent);
+    }
+  }, {
+    key: "_bindEventForBody",
+    value: function _bindEventForBody() {
+      this._body.addEventListener('mousemove', this._fireEvent);
+
+      this._body.addEventListener('mouseup', this._fireEvent);
+    }
+  }, {
+    key: "_unbindEventForBody",
+    value: function _unbindEventForBody() {
+      this._body.removeEventListener('mousemove', this._fireEvent);
+
+      this._body.removeEventListener('mouseup', this._fireEvent);
+    }
+    /**
+     * @description 触发鼠标事件
+     * @param {*} mouseEvent
+     */
+
+  }, {
+    key: "_fireEvent",
+    value: function _fireEvent(mouseEvent) {
+      switch (mouseEvent.type) {
+        case 'mousedown':
+          this._recordPoint = util.calcCursorPoint(mouseEvent);
+
+          this._bindEventForBody();
+
+          this._recordSprite = this._getTopSprite(this._recordPoint);
+          this._hasMousedown = true;
+
+          if (this._recordSprite) {
+            this._recordTrackNode = this._recordSprite.calcTrackNode(this._recordPoint);
+            this._recordSpriteData = this._recordSprite.encode();
+            this.selectSprite(this._recordSprite);
+          }
+
+          break;
+
+        case 'click':
+          break;
+
+        case 'dblclick':
+          break;
+
+        case 'mousemove':
+          if (this._recordSprite) {
+            var curPoint = util.calcCursorPoint(mouseEvent);
+            var vercotr = util.calcVertor(this._recordPoint, curPoint);
+
+            this._recordSprite.transform(this._recordTrackNode, vercotr, this._recordSpriteData);
+
+            this.render();
+          }
+
+          break;
+
+        case 'mouseup':
+          this._unbindEventForBody();
+
+          this._hasMousedown = false;
+          this._recordSprite = null;
+          this._recordPoint = null;
+          this._hasMousedown = false;
+          break;
+      }
+
+      this.renderTrack();
+    }
+    /**
+     * @description 选中指定id的对象并反选其他对象
+     * @param {*} id
+     */
+
+  }, {
+    key: "selectSprite",
+    value: function selectSprite(id) {
+      if (!id) return this.deselectAll();
+      this.forEachItem(function (item) {
+        if (item.id === id) {
+          if (!item.isSelect()) item.select();
+        } else {
+          if (item.isSelected()) item.deselect();
+        }
+      });
+      return this;
+    }
+    /**
+     * @description 返回其他所有对象
+     */
+
+  }, {
+    key: "deselectAll",
+    value: function deselectAll() {
+      this.forEachItem(function (item) {
+        if (item.isSelect()) item.deselect();
+      });
+      return this;
+    }
+    /**
+     * @description 获取最顶层的对象
+     * @returns {sprite}
+     */
+
+  }, {
+    key: "_getTopSprite",
+    value: function _getTopSprite(point) {
+      var top = null;
+      var allItems = this.all();
+
+      for (var i = 0; i < this.size(); i++) {
+        var curItem = allItems[i];
+
+        if (curItem && curItem.isPointInSelf(point)) {
+          top = curItem;
+          break;
+        }
+      }
+
+      return top;
+    }
+    /**
+     * @description 更新视图尺寸
+     */
+
+  }, {
+    key: "_updateView",
+    value: function _updateView() {
+      var _this$_size = this._size,
+          width = _this$_size.width,
+          height = _this$_size.height;
+      this._lowerCanvas.width = width;
+      this._lowerCanvas.height = height;
+      this._upperCanvas.width = width;
+      this._upperCanvas.height = height;
+      this.render();
+      this.renderTrack();
+    }
+    /**
+     * @description 清空画布
+     */
+
+  }, {
+    key: "_clear",
+    value: function _clear() {
+      var _this$getSize = this.getSize(),
+          width = _this$getSize.width,
+          height = _this$getSize.height;
+
+      this._lowerCanvas.getContext('2d').clearRect(0, 0, width, height);
+    }
+    /**
+     * @description 清楚主视图画布
+     */
+
+  }, {
+    key: "clearLowerCanvas",
+    value: function clearLowerCanvas() {
+      util.clearCanvas(this._lowerCanvas);
+    }
+    /**
+     * @description 清楚控制器画布
+     */
+
+  }, {
+    key: "clearUpperCanvas",
+    value: function clearUpperCanvas() {
+      util.clearCanvas(this._upperCanvas);
+    }
+    /**
+     * @description 渲染
+     */
+
+  }, {
+    key: "render",
+    value: function render() {
+      var _this = this;
+
+      this.clearLowerCanvas();
+      this.forEachItem(function (sprite) {
+        sprite.render(_this._lowerCanvas.getContext('2d'));
+      });
+      this.renderTrack();
+    }
+    /**
+     * @description 渲染控制器
+     */
+
+  }, {
+    key: "renderTrack",
+    value: function renderTrack() {
+      var _this2 = this;
+
+      this.clearUpperCanvas();
+      this.forEachItem(function (sprite) {
+        sprite.renderTrack(_this2._upperCanvas.getContext('2d'));
+      });
+    }
+    /**
+     * @description 返回返回尺寸
+     * @returns {object} size
+     * @returns {number} size.widht
+     * @returns {number} size.height
+     */
+
+  }, {
+    key: "getSize",
+    value: function getSize() {
+      return this._size;
+    }
+    /**
+     * @description 设置视图尺寸
+     * @param {object} size
+     * @param {number} size.width
+     * @param {number} size.height
+     * @returns
+     */
+
+  }, {
+    key: "setSize",
+    value: function setSize(size) {
+      this._size = _objectSpread2({}, size);
+
+      this._updateView();
+
+      return this;
+    }
+  }]);
+
+  return Canvas;
+}();
+
+util.mixin(Canvas.prototype, collection);
+util.mixin(Canvas.prototype, observableMixin);
+
+var config = {
+  perPixel: 1
+};
+
+// Unique ID creation requires a high quality random # generator. In the browser we therefore
+// require the crypto API and do not support built-in fallback to lower quality random number
+// generators (like Math.random()).
+var getRandomValues;
+var rnds8 = new Uint8Array(16);
+function rng() {
+  // lazy load so that environments that need to polyfill have a chance to do so
+  if (!getRandomValues) {
+    // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation. Also,
+    // find the complete implementation of crypto (msCrypto) on IE11.
+    getRandomValues = typeof crypto !== 'undefined' && crypto.getRandomValues && crypto.getRandomValues.bind(crypto) || typeof msCrypto !== 'undefined' && typeof msCrypto.getRandomValues === 'function' && msCrypto.getRandomValues.bind(msCrypto);
+
+    if (!getRandomValues) {
+      throw new Error('crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported');
+    }
+  }
+
+  return getRandomValues(rnds8);
+}
+
+var REGEX = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
+
+function validate(uuid) {
+  return typeof uuid === 'string' && REGEX.test(uuid);
+}
+
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */
+
+var byteToHex = [];
+
+for (var i = 0; i < 256; ++i) {
+  byteToHex.push((i + 0x100).toString(16).substr(1));
+}
+
+function stringify(arr) {
+  var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0; // Note: Be careful editing this code!  It's been tuned for performance
+  // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
+
+  var uuid = (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + '-' + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + '-' + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + '-' + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + '-' + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase(); // Consistency check for valid UUID.  If this throws, it's likely due to one
+  // of the following:
+  // - One or more input array values don't map to a hex octet (leading to
+  // "undefined" in the uuid)
+  // - Invalid input values for the RFC `version` or `variant` fields
+
+  if (!validate(uuid)) {
+    throw TypeError('Stringified UUID is invalid');
+  }
+
+  return uuid;
+}
+
+function v4(options, buf, offset) {
+  options = options || {};
+  var rnds = options.random || (options.rng || rng)(); // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+
+  rnds[6] = rnds[6] & 0x0f | 0x40;
+  rnds[8] = rnds[8] & 0x3f | 0x80; // Copy bytes to buffer, if provided
+
+  if (buf) {
+    offset = offset || 0;
+
+    for (var i = 0; i < 16; ++i) {
+      buf[offset + i] = rnds[i];
+    }
+
+    return buf;
+  }
+
+  return stringify(rnds);
+}
+
 var Sprite = /*#__PURE__*/function () {
   function Sprite() {
     var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     _classCallCheck(this, Sprite);
 
+    this._id = v4();
     this._type = this.extendsValue(props.type, '');
     this._x = this.extendsValue(props.x, 0);
     this._y = this.extendsValue(props.y, 0);
@@ -1081,6 +1475,7 @@ var Sprite = /*#__PURE__*/function () {
     this._opacity = this.extendsValue(props.opacity, 1);
     this._value = this.extendsValue(props.value, '');
     this._supportNodes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1];
+    this._evented = this.extendsValue(props._evented, true);
     this._selected = false;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
@@ -1091,6 +1486,7 @@ var Sprite = /*#__PURE__*/function () {
     key: "encode",
     value: function encode() {
       return {
+        id: this.id,
         type: this.type,
         x: this.getX(),
         y: this.getY(),
@@ -1108,6 +1504,7 @@ var Sprite = /*#__PURE__*/function () {
   }, {
     key: "decode",
     value: function decode(data) {
+      this._id = this.extendsValue(data.id, v4());
       this._type = this.extendsValue(data.type, this.getType());
       this._x = this.extendsValue(data.x, this.getX());
       this._y = this.extendsValue(data.y, this.getY());
@@ -1134,6 +1531,44 @@ var Sprite = /*#__PURE__*/function () {
     key: "type",
     get: function get() {
       return this._type;
+    }
+    /**
+     * @description 返回渲染框的信息
+     */
+
+  }, {
+    key: "rect",
+    get: function get() {
+      return _objectSpread2(_objectSpread2({}, this.getPos()), this.getSize());
+    }
+    /**
+     * @description 返回id
+     */
+
+  }, {
+    key: "id",
+    get: function get() {
+      return this._id;
+    }
+    /**
+     * @description 设置是否支持事件
+     * @param {boolean} isSupport
+     */
+
+  }, {
+    key: "setEventSupport",
+    value: function setEventSupport(isSupport) {
+      this._evented = isSupport;
+    }
+    /**
+     * @description 返回是否支持事件
+     * @returns
+     */
+
+  }, {
+    key: "getEventSuppor",
+    value: function getEventSuppor() {
+      return this._evented;
     }
     /**
      * @description 返回类型
@@ -1543,25 +1978,59 @@ var Sprite = /*#__PURE__*/function () {
     key: "renderTrack",
     value: function renderTrack(ctx) {
       this._track = this._track || new Track({
-        supportNodes: this._supportNodes
+        supportNodes: this._supportNodes,
+        owner: this
       });
 
-      this._track.render(ctx, this._x, this._y, this._width, this._height);
+      this._track.render(ctx);
     }
     /**
      * @description 事件交互
+     * @param {number} trackNode 控制器节点类型
+     * @param {object} verctor 交互向量
+     * @param {number} verctor.x
+     * @param {number} verctor.y
+     * @param {object} prevEncodeData
      */
 
   }, {
     key: "transform",
-    value: function transform() {
+    value: function transform(trackNode, vercotr, prevEncodeData) {
+      var _Track$TRACK_NODES = Track.TRACK_NODES(),
+          SELF = _Track$TRACK_NODES.SELF;
+          _Track$TRACK_NODES.LEFT_TOP;
+          _Track$TRACK_NODES.CENTER_TOP;
+          _Track$TRACK_NODES.RIGHT_TOP;
+          _Track$TRACK_NODES.RIGHT_CENTER;
+          _Track$TRACK_NODES.RIGHT_BOTTOM;
+          _Track$TRACK_NODES.CENTER_BOTTOM;
+          _Track$TRACK_NODES.LEFT_BOTTOM;
+          _Track$TRACK_NODES.LEFT_CETNER;
+
+      var verctorX = vercotr.x,
+          verctorY = vercotr.y;
+      var prevX = prevEncodeData.x,
+          prevY = prevEncodeData.y;
+          prevEncodeData.width;
+          prevEncodeData.height;
       this.fire(eventConstant.WILL_TRANSFORM, {
         target: this
       });
+
+      switch (trackNode) {
+        case SELF:
+          this.setX(prevX + verctorX);
+          this.setY(prevY + verctorY);
+      }
+
       this.fire(eventConstant.DID_TRANSFORM, {
-        target: thsi
+        target: this
       });
     }
+    /**
+     * @description 删除对象
+     */
+
   }, {
     key: "destroy",
     value: function destroy() {
@@ -1570,6 +2039,32 @@ var Sprite = /*#__PURE__*/function () {
       });
       this.resetListener();
       this.fire(eventConstant.DID_DESTROY);
+    }
+    /**
+     * @description 判断点是否在对象内
+     * @param {object} point
+     * @param {number} point.x
+     * @param {number} point.y
+     * @returns {boolean}
+     */
+
+  }, {
+    key: "isPointInSelf",
+    value: function isPointInSelf(point) {
+      return util.isPointInRect(point, this.rect);
+    }
+    /**
+     * @description 计算指定point在sprite中的控制器节点类型
+     * @param {object} point
+     * @param {number} point.x
+     * @param {number} point.y
+     * @returns 
+     */
+
+  }, {
+    key: "calcTrackNode",
+    value: function calcTrackNode(point) {
+      return this._track.clacTrackNodeWithPoint(point);
     }
   }]);
 
