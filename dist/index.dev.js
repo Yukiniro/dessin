@@ -538,7 +538,7 @@ var util = (function () {
 
     /**
      * @description 判断点是否在框内
-     * @param {object} point 
+     * @param {object} point
      * @param {number} point.x
      * @param {number} point.y
      * @param {object} rect
@@ -561,8 +561,8 @@ var util = (function () {
 
     /**
      * @description 计算鼠标位置
-     * @param {MouseEvent} mouseEvent 
-     * @returns 
+     * @param {MouseEvent} mouseEvent
+     * @returns
      */
     calcCursorPoint: function calcCursorPoint(mouseEvent) {
       return {
@@ -573,13 +573,13 @@ var util = (function () {
 
     /**
      * @description 计算两点之间的距离
-     * @param {object} point1 
-     * @param {number} point1.x 
+     * @param {object} point1
+     * @param {number} point1.x
      * @param {number} point1.y
      * @param {object} point2
-     * @param {number} point2.x 
+     * @param {number} point2.x
      * @param {number} point2.y
-     * @returns 
+     * @returns
      */
     calcDistance: function calcDistance(point1, point2) {
       var x1 = point1.x,
@@ -593,13 +593,13 @@ var util = (function () {
 
     /**
      * @description 计算point2相对于point1的向量
-     * @param {object} point1 
-     * @param {number} point1.x 
+     * @param {object} point1
+     * @param {number} point1.x
      * @param {number} point1.y
      * @param {object} point2
-     * @param {number} point2.x 
+     * @param {number} point2.x
      * @param {number} point2.y
-     * @returns 
+     * @returns
      */
     calcVertor: function calcVertor(point1, point2) {
       var x1 = point1.x,
@@ -614,11 +614,55 @@ var util = (function () {
 
     /**
      * @description 清楚指定画布
-     * @param {*} canvas 
+     * @param {*} canvas
      */
     clearCanvas: function clearCanvas(canvas) {
       canvas.width = canvas.width;
       canvas.height = canvas.height;
+    },
+
+    /**
+     * @description 角度转弧度
+     * @param {number} angle
+     * @returns
+     */
+    angleToRadian: function angleToRadian(angle) {
+      return angle / 180 * Math.PI;
+    },
+
+    /**
+     * @description 弧度转角度
+     * @param {number} radian
+     * @returns
+     */
+    radianToAngle: function radianToAngle(radian) {
+      return radian / Math.PI * 180;
+    },
+
+    /**
+     * @description 保留指定位数小数点
+     * @param {number} value
+     * @param {number} digits
+     * @returns
+     */
+    toFixed: function toFixed(value, digits) {
+      return Number(Number(value).toFixed(digits));
+    },
+
+    /**
+     * @description 限定角度值在0 -- 360之间
+     * @param {number} angle 
+     * @returns 
+     */
+    fixAngle: function fixAngle(angle) {
+      var value = angle;
+
+      while (value < 0 || value > 360) {
+        if (value < 0) value += 360;
+        if (value > 360) value -= 360;
+      }
+
+      return value;
     }
   };
 })();
@@ -865,9 +909,22 @@ var Track = /*#__PURE__*/function () {
   }, {
     key: "render",
     value: function render(ctx) {
+      var _this$rect = this.rect,
+          x = _this$rect.x,
+          y = _this$rect.y,
+          width = _this$rect.width,
+          height = _this$rect.height;
+      var angle = this.angle;
+      ctx.save();
+      ctx.translate(x + width / 2, y + height / 2);
+      ctx.rotate(util.angleToRadian(angle));
+
       this._renderNodes(ctx);
 
       this._renderLines(ctx);
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.restore();
     }
     /**
      * @description 计算指定point在控制器中的节点类型
@@ -882,14 +939,18 @@ var Track = /*#__PURE__*/function () {
     value: function clacTrackNodeWithPoint(point) {
       var _this = this;
 
+      var nodeRadius = this._nodeRadius;
+
       var findIndex = this._supportNodes.findIndex(function (node) {
-        var nodePos = _this._calcNodePos(node);
+        var _this$_calcNodePos = _this._calcNodePos(node),
+            x = _this$_calcNodePos.x,
+            y = _this$_calcNodePos.y;
 
         var nodeRect = {
-          x: nodePos.x - _this._nodeRadius,
-          y: nodePos.y - _this._nodeRadius,
-          width: _this._nodeRadius * 2,
-          height: _this._nodeRadius * 2
+          x: x - nodeRadius,
+          y: y - nodeRadius,
+          width: nodeRadius * 2,
+          height: nodeRadius * 2
         };
         return util.isPointInRect(point, nodeRect);
       });
@@ -953,11 +1014,16 @@ var Track = /*#__PURE__*/function () {
           break;
 
         case 9:
-          pos = {
-            x: width / 2,
-            y: this._nodeRadius - this._rotateNodeOffset
-          };
-          break;
+          {
+            var _util$calePointInRect = util.calePointInRect(constant.CENTER_TOP, rect),
+                x = _util$calePointInRect.x,
+                y = _util$calePointInRect.y;
+            pos = {
+              x: x,
+              y: y - this._rotateNodeOffset
+            };
+            break;
+          }
 
         default:
           throw new Error(constant.ARGUMENT_ERROR);
@@ -977,6 +1043,14 @@ var Track = /*#__PURE__*/function () {
 
       this._supportNodes.forEach(function (node) {
         var pos = _this2._calcNodePos(node);
+
+        var _this2$rect = _this2.rect,
+            x = _this2$rect.x,
+            y = _this2$rect.y,
+            width = _this2$rect.width,
+            height = _this2$rect.height;
+        pos.x -= x + width / 2;
+        pos.y -= y + height / 2;
 
         _this2._renderNode(ctx, pos);
       });
@@ -1007,6 +1081,12 @@ var Track = /*#__PURE__*/function () {
   }, {
     key: "_renderLines",
     value: function _renderLines(ctx) {
+      var _this$rect2 = this.rect,
+          x = _this$rect2.x,
+          y = _this$rect2.y,
+          width = _this$rect2.width,
+          height = _this$rect2.height;
+
       var pointLeftTop = this._calcNodePos(_TRACK_NODES.LEFT_TOP);
 
       var pointRightTop = this._calcNodePos(_TRACK_NODES.RIGHT_TOP);
@@ -1014,6 +1094,15 @@ var Track = /*#__PURE__*/function () {
       var pointLeftBottom = this._calcNodePos(_TRACK_NODES.LEFT_BOTTOM);
 
       var pointRightBottom = this._calcNodePos(_TRACK_NODES.RIGHT_BOTTOM);
+
+      pointLeftTop.x -= x + width / 2;
+      pointLeftTop.y -= y + height / 2;
+      pointRightTop.x -= x + width / 2;
+      pointRightTop.y -= y + height / 2;
+      pointLeftBottom.x -= x + width / 2;
+      pointLeftBottom.y -= y + height / 2;
+      pointRightBottom.x -= x + width / 2;
+      pointRightBottom.y -= y + height / 2;
 
       this._renderLine(ctx, pointLeftTop, pointRightTop);
 
@@ -1199,9 +1288,9 @@ var Canvas = /*#__PURE__*/function () {
         case 'mousemove':
           {
             if (this._recordSprite) {
-              var vercotr = util.calcVertor(this._recordPoint, offsetCursorPoint);
+              var verctor = this._recordTrackNode === Track.TRACK_NODES().ROTATE ? offsetCursorPoint : util.calcVertor(this._recordPoint, offsetCursorPoint);
 
-              this._recordSprite.transform(this._recordTrackNode, vercotr, this._recordSpriteData);
+              this._recordSprite.transform(this._recordTrackNode, verctor, this._recordSpriteData);
 
               this.render();
             } else {
@@ -1273,7 +1362,7 @@ var Canvas = /*#__PURE__*/function () {
       for (var i = 0; i < this.size(); i++) {
         var curItem = allItems[i];
 
-        if (curItem && curItem.isPointInSelf(point)) {
+        if (curItem && curItem.calcTrackNode(point) !== Track.TRACK_NODES().NONE) {
           top = curItem;
           break;
         }
@@ -2032,7 +2121,7 @@ var Sprite = /*#__PURE__*/function () {
 
   }, {
     key: "transform",
-    value: function transform(trackNode, vercotr, prevEncodeData) {
+    value: function transform(trackNode, verctor, prevEncodeData) {
       var _Track$TRACK_NODES = Track.TRACK_NODES(),
           SELF = _Track$TRACK_NODES.SELF,
           LEFT_TOP = _Track$TRACK_NODES.LEFT_TOP,
@@ -2042,7 +2131,8 @@ var Sprite = /*#__PURE__*/function () {
           RIGHT_BOTTOM = _Track$TRACK_NODES.RIGHT_BOTTOM,
           CENTER_BOTTOM = _Track$TRACK_NODES.CENTER_BOTTOM,
           LEFT_BOTTOM = _Track$TRACK_NODES.LEFT_BOTTOM,
-          LEFT_CETNER = _Track$TRACK_NODES.LEFT_CETNER;
+          LEFT_CETNER = _Track$TRACK_NODES.LEFT_CETNER,
+          ROTATE = _Track$TRACK_NODES.ROTATE;
 
       this.fire(eventConstant.WILL_TRANSFORM, {
         target: this
@@ -2050,7 +2140,7 @@ var Sprite = /*#__PURE__*/function () {
 
       switch (trackNode) {
         case SELF:
-          this._move(prevEncodeData, vercotr);
+          this._move(prevEncodeData, verctor);
 
           break;
 
@@ -2062,9 +2152,12 @@ var Sprite = /*#__PURE__*/function () {
         case CENTER_BOTTOM:
         case LEFT_BOTTOM:
         case LEFT_CETNER:
-          this._resieze(trackNode, prevEncodeData, vercotr);
+          this._resieze(trackNode, prevEncodeData, verctor);
 
           break;
+
+        case ROTATE:
+          this._rotate(verctor);
       }
 
       this.fire(eventConstant.DID_TRANSFORM, {
@@ -2075,14 +2168,14 @@ var Sprite = /*#__PURE__*/function () {
     /**
      * @description 移动
      * @param {*} prevEncodeData
-     * @param {*} vercotr
+     * @param {*} verctor
      */
 
   }, {
     key: "_move",
-    value: function _move(prevEncodeData, vercotr) {
-      var verctorX = vercotr.x,
-          verctorY = vercotr.y;
+    value: function _move(prevEncodeData, verctor) {
+      var verctorX = verctor.x,
+          verctorY = verctor.y;
       var prevX = prevEncodeData.x,
           prevY = prevEncodeData.y;
       this.setX(prevX + verctorX).setY(prevY + verctorY);
@@ -2091,14 +2184,14 @@ var Sprite = /*#__PURE__*/function () {
      * @description 缩放
      * @param {*} trackNode
      * @param {*} prevEncodeData
-     * @param {*} vercotr
+     * @param {*} verctor
      */
 
   }, {
     key: "_resieze",
-    value: function _resieze(trackNode, prevEncodeData, vercotr) {
-      var verctorX = vercotr.x,
-          verctorY = vercotr.y;
+    value: function _resieze(trackNode, prevEncodeData, verctor) {
+      var verctorX = verctor.x,
+          verctorY = verctor.y;
       var prevX = prevEncodeData.x,
           prevY = prevEncodeData.y,
           prevWidth = prevEncodeData.width,
@@ -2148,9 +2241,25 @@ var Sprite = /*#__PURE__*/function () {
           break;
       }
     }
+    /**
+     * @description 旋转
+     * @param {*} verctor
+     */
+
   }, {
     key: "_rotate",
-    value: function _rotate() {}
+    value: function _rotate(verctor) {
+      var angle;
+      var centerPos = util.calePointInRect(constant.CENTER, this.rect);
+
+      var _util$calcVertor = util.calcVertor(centerPos, verctor),
+          x = _util$calcVertor.x,
+          y = _util$calcVertor.y;
+
+      angle = util.radianToAngle(Math.atan2(-y, x));
+      angle = util.fixAngle(90 - angle);
+      this.setAngle(angle);
+    }
     /**
      * @description 删除对象
      */
@@ -2220,7 +2329,7 @@ var Text = /*#__PURE__*/function (_Sprite) {
     _this._fillColor = _this.extendsValue(props.fillColor, '#FFFFFF');
     _this._strokeColor = _this.extendsValue(props.strokeColor, '#FFFFFF');
     _this._value = _this.extendsValue(props.value, ['Enter Your Text']);
-    _this._supportNodes = [0, 2, 3, 4, 6, 7];
+    _this._supportNodes = [0, 2, 3, 4, 6, 7, 9];
     _this._fontBoundingBoxAscent = 0;
 
     _this.initSize();
@@ -2530,10 +2639,17 @@ var Text = /*#__PURE__*/function (_Sprite) {
     value: function render(ctx) {
       var WILL_RENDER = eventConstant.WILL_RENDER,
           DID_RENDER = eventConstant.DID_RENDER;
+      var horizontalOffset = this._width / 2;
+      var verticalOffset = this._height / 2;
       this.fire(WILL_RENDER, {
         target: this
       });
-      ctx.drawImage(this._cacheView, this._x, this._y, this._width, this._height);
+      ctx.save();
+      ctx.translate(this._x + horizontalOffset, this._y + verticalOffset);
+      ctx.rotate(util.angleToRadian(this._angle));
+      ctx.drawImage(this._cacheView, -horizontalOffset, -verticalOffset, this._width, this._height);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.restore();
       this.fire(DID_RENDER, {
         target: this
       });

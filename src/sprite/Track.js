@@ -86,8 +86,15 @@ class Track {
    * @param {context} ctx
    */
   render(ctx) {
+    const {x, y, width, height} = this.rect;
+    const angle = this.angle;
+    ctx.save();
+    ctx.translate(x + width / 2, y + height / 2);
+    ctx.rotate(util.angleToRadian(angle));
     this._renderNodes(ctx);
     this._renderLines(ctx);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.restore();
   }
 
   /**
@@ -98,13 +105,14 @@ class Track {
    * @returns 
    */
   clacTrackNodeWithPoint(point) {
+    const nodeRadius = this._nodeRadius;
     let findIndex = this._supportNodes.findIndex(node => {
-      let nodePos = this._calcNodePos(node);
-      let nodeRect = {
-        x: nodePos.x - this._nodeRadius,
-        y: nodePos.y - this._nodeRadius,
-        width: this._nodeRadius * 2,
-        height: this._nodeRadius * 2,
+      const {x, y} = this._calcNodePos(node);
+      const nodeRect = {
+        x: x - nodeRadius,
+        y: y - nodeRadius,
+        width: nodeRadius * 2,
+        height: nodeRadius * 2,
       };
 
       return util.isPointInRect(point, nodeRect);
@@ -154,12 +162,14 @@ class Track {
       case 7:
         pos = util.calePointInRect(constant.LEFT_CENTER, rect);
         break;
-      case 9:
+      case 9: {
+        const {x, y} = util.calePointInRect(constant.CENTER_TOP, rect);;
         pos = {
-          x: width / 2,
-          y: this._nodeRadius - this._rotateNodeOffset,
+          x,
+          y: y - this._rotateNodeOffset,
         };
         break;
+      }
       default:
         throw new Error(constant.ARGUMENT_ERROR);
     }
@@ -173,7 +183,10 @@ class Track {
    */
   _renderNodes(ctx) {
     this._supportNodes.forEach(node => {
-      let pos = this._calcNodePos(node);
+      const pos = this._calcNodePos(node);
+      const {x, y, width, height} = this.rect;
+      pos.x -= (x + width / 2);
+      pos.y -= (y + height / 2);
       this._renderNode(ctx, pos);
     });
   }
@@ -199,10 +212,19 @@ class Track {
    * @param {HTMLCanvasContext} ctx 
    */
   _renderLines(ctx) {
+    const {x, y, width, height} = this.rect;
     const pointLeftTop = this._calcNodePos(TRACK_NODES.LEFT_TOP);
     const pointRightTop = this._calcNodePos(TRACK_NODES.RIGHT_TOP);
     const pointLeftBottom = this._calcNodePos(TRACK_NODES.LEFT_BOTTOM);
     const pointRightBottom = this._calcNodePos(TRACK_NODES.RIGHT_BOTTOM);
+    pointLeftTop.x -= (x + width / 2);
+    pointLeftTop.y -= (y + height / 2);
+    pointRightTop.x -= (x + width / 2);
+    pointRightTop.y -= (y + height / 2);
+    pointLeftBottom.x -= (x + width / 2);
+    pointLeftBottom.y -= (y + height / 2);
+    pointRightBottom.x -= (x + width / 2);
+    pointRightBottom.y -= (y + height / 2);
     this._renderLine(ctx, pointLeftTop, pointRightTop);
     this._renderLine(ctx, pointRightTop, pointRightBottom);
     this._renderLine(ctx, pointRightBottom, pointLeftBottom);

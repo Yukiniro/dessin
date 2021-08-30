@@ -2,6 +2,8 @@ import util from './util/util';
 import collection from './mixin/collection.mixin';
 import observable from './mixin/observable.mixin';
 import track from './sprite/track';
+import constant from './constant/constant';
+import Track from './sprite/track';
 
 class Canvas {
   constructor(props = {}) {
@@ -89,9 +91,7 @@ class Canvas {
         this._recordSprite = this._getTopSprite(this._recordPoint);
         this._hasMousedown = true;
         if (this._recordSprite) {
-          this._recordTrackNode = this._recordSprite.calcTrackNode(
-            this._recordPoint
-          );
+          this._recordTrackNode = this._recordSprite.calcTrackNode(this._recordPoint);
           this._recordSpriteData = this._recordSprite.encode();
           this.selectSprite(this._recordSprite);
         }
@@ -101,14 +101,12 @@ class Canvas {
       case 'dblclick':
         break;
       case 'mousemove': {
-        
         if (this._recordSprite) {
-          const vercotr = util.calcVertor(this._recordPoint, offsetCursorPoint);
-          this._recordSprite.transform(
-            this._recordTrackNode,
-            vercotr,
-            this._recordSpriteData
-          );
+          const verctor =
+            this._recordTrackNode === Track.TRACK_NODES().ROTATE
+              ? offsetCursorPoint
+              : util.calcVertor(this._recordPoint, offsetCursorPoint);
+          this._recordSprite.transform(this._recordTrackNode, verctor, this._recordSpriteData);
           this.render();
         } else {
           const hoverSprite = this._getTopSprite(offsetCursorPoint);
@@ -169,7 +167,7 @@ class Canvas {
     let allItems = this.all();
     for (let i = 0; i < this.size(); i++) {
       const curItem = allItems[i];
-      if (curItem && curItem.isPointInSelf(point)) {
+      if (curItem && curItem.calcTrackNode(point) !== Track.TRACK_NODES().NONE) {
         top = curItem;
         break;
       }

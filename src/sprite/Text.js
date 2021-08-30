@@ -17,7 +17,7 @@ class Text extends Sprite {
     this._fillColor = this.extendsValue(props.fillColor, '#FFFFFF');
     this._strokeColor = this.extendsValue(props.strokeColor, '#FFFFFF');
     this._value = this.extendsValue(props.value, ['Enter Your Text']);
-    this._supportNodes = [0, 2, 3, 4, 6, 7];
+    this._supportNodes = [0, 2, 3, 4, 6, 7, 9];
     this._fontBoundingBoxAscent = 0;
 
     this.initSize();
@@ -265,8 +265,15 @@ class Text extends Sprite {
 
   render(ctx) {
     const { WILL_RENDER, DID_RENDER } = eventConstant;
+    const horizontalOffset = this._width / 2;
+    const verticalOffset = this._height / 2;
     this.fire(WILL_RENDER, { target: this });
-    ctx.drawImage(this._cacheView, this._x, this._y, this._width, this._height);
+    ctx.save();
+    ctx.translate(this._x + horizontalOffset, this._y + verticalOffset);
+    ctx.rotate(util.angleToRadian(this._angle));
+    ctx.drawImage(this._cacheView, -horizontalOffset, -verticalOffset, this._width, this._height);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.restore();
     this.fire(DID_RENDER, { target: this });
   }
 }
