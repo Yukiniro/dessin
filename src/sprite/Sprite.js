@@ -437,8 +437,18 @@ class Sprite {
    * @param {object} prevEncodeData
    */
   transform(trackNode, verctor, prevEncodeData) {
-    const { SELF, LEFT_TOP, CENTER_TOP, RIGHT_TOP, RIGHT_CENTER, RIGHT_BOTTOM, CENTER_BOTTOM, LEFT_BOTTOM, LEFT_CETNER, ROTATE } =
-      Track.TRACK_NODES();
+    const {
+      SELF,
+      LEFT_TOP,
+      CENTER_TOP,
+      RIGHT_TOP,
+      RIGHT_CENTER,
+      RIGHT_BOTTOM,
+      CENTER_BOTTOM,
+      LEFT_BOTTOM,
+      LEFT_CETNER,
+      ROTATE,
+    } = Track.TRACK_NODES();
     this.fire(eventConstant.WILL_TRANSFORM, { target: this });
     switch (trackNode) {
       case SELF:
@@ -480,42 +490,58 @@ class Sprite {
    * @param {*} verctor
    */
   _resieze(trackNode, prevEncodeData, verctor) {
-    const { x: verctorX, y: verctorY } = verctor;
-    const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevEncodeData;
-    const { LEFT_TOP, CENTER_TOP, RIGHT_TOP, RIGHT_CENTER, RIGHT_BOTTOM, CENTER_BOTTOM, LEFT_BOTTOM, LEFT_CETNER } = Track.TRACK_NODES();
+    const { x: verctorX, y: verctorY } = util.calcPointWithAngle(verctor, this._angle);
+    const preRect = {
+      x: prevEncodeData.x,
+      y: prevEncodeData.y,
+      width: prevEncodeData.width,
+      height: prevEncodeData.height,
+    };
+    const preRectWithAngle = util.calcRectWithAngle(preRect, this._angle);
+    const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = preRectWithAngle;
+    const nextRectWithAngle = { ...preRectWithAngle };
+    let nextRect = null;
+    const { LEFT_TOP, CENTER_TOP, RIGHT_TOP, RIGHT_CENTER, RIGHT_BOTTOM, CENTER_BOTTOM, LEFT_BOTTOM, LEFT_CETNER } =
+      Track.TRACK_NODES();
     switch (trackNode) {
       case LEFT_TOP:
-        this.setX(prevX + verctorX)
-          .setY(prevY + verctorY)
-          .setWidth(prevWidth - verctorX)
-          .setHeight(prevHeight - verctorY);
+        nextRectWithAngle.x = prevX + verctorX;
+        nextRectWithAngle.y = prevY + verctorY;
+        nextRectWithAngle.width = prevWidth - verctorX;
+        nextRectWithAngle.height = prevHeight - verctorY;
         break;
       case CENTER_TOP:
-        this.setY(prevY + verctorY).setHeight(prevHeight - verctorY);
+        nextRectWithAngle.y = prevY + verctorY;
+        nextRectWithAngle.height = prevHeight - verctorY;
         break;
       case RIGHT_TOP:
-        this.setY(prevY + verctorY)
-          .setWidth(prevWidth + verctorX)
-          .setHeight(prevHeight - verctorY);
+        nextRectWithAngle.y = prevY + verctorY;
+        nextRectWithAngle.width = prevWidth + verctorX;
+        nextRectWithAngle.height = prevHeight - verctorY;
         break;
       case RIGHT_CENTER:
-        this.setWidth(prevWidth + verctorX);
+        nextRectWithAngle.width = prevWidth + verctorX;
         break;
       case RIGHT_BOTTOM:
-        this.setWidth(prevWidth + verctorX).setHeight(prevHeight + verctorY);
+        nextRectWithAngle.width = prevWidth + verctorX;
+        nextRectWithAngle.height = prevHeight + verctorY;
         break;
       case CENTER_BOTTOM:
-        this.setHeight(prevHeight + verctorY);
+        nextRectWithAngle.height = prevHeight + verctorY;
         break;
       case LEFT_BOTTOM:
-        this.setX(prevX + verctorX)
-          .setWidth(prevWidth - verctorX)
-          .setHeight(prevHeight + verctorY);
+        nextRectWithAngle.x = prevX + verctorX;
+        nextRectWithAngle.width = prevWidth - verctorX;
+        nextRectWithAngle.height = prevHeight + verctorY;
         break;
       case LEFT_CETNER:
-        this.setX(prevX + verctorX).setWidth(prevWidth - verctorX);
+        nextRectWithAngle.x = prevX + verctorX;
+        nextRectWithAngle.width = prevWidth - verctorX;
         break;
     }
+
+    nextRect = util.calcRectWithAngle(nextRectWithAngle, -this._angle);
+    this.setX(nextRect.x).setY(nextRect.y).setWidth(nextRect.width).setHeight(nextRect.height);
   }
 
   /**
@@ -525,7 +551,7 @@ class Sprite {
   _rotate(verctor) {
     let angle;
     const centerPos = util.calePointInRect(constant.CENTER, this.rect);
-    const {x, y} = util.calcVertor(centerPos, verctor);
+    const { x, y } = util.calcVertor(centerPos, verctor);
     angle = util.radianToAngle(Math.atan2(-y, x));
     angle = util.fixAngle(90 - angle);
     this.setAngle(angle);
