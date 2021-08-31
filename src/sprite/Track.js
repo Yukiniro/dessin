@@ -105,9 +105,11 @@ class Track {
    * @returns 
    */
   clacTrackNodeWithPoint(point) {
+    const pointWithAngle = util.calcPointWithAngle(point, this.angle);
+    const rectWithAngle = util.calcRectWithAngle(this.rect, this.angle);
     const nodeRadius = this._nodeRadius;
-    let findIndex = this._supportNodes.findIndex(node => {
-      const {x, y} = this._calcNodePos(node);
+    const findIndex = this._supportNodes.findIndex(node => {
+      const {x, y} = this._calcNodePos(node, true);
       const nodeRect = {
         x: x - nodeRadius,
         y: y - nodeRadius,
@@ -115,11 +117,11 @@ class Track {
         height: nodeRadius * 2,
       };
 
-      return util.isPointInRect(point, nodeRect);
+      return util.isPointInRect(pointWithAngle, nodeRect);
     });
 
     if (findIndex === -1) {
-      if (util.isPointInRect(point, this.rect)) {
+      if (util.isPointInRect(pointWithAngle, rectWithAngle)) {
         return TRACK_NODES.SELF;
       } else {
         return TRACK_NODES.NONE;
@@ -130,12 +132,13 @@ class Track {
   }
 
   /**
-   * @description 計算
+   * @description 計算指定节点类型的位置信息
    * @param {number} node 
+   * @param {boolean} useAngle 
    * @returns 
    */
-  _calcNodePos(node) {
-    const rect = this.rect;
+  _calcNodePos(node, useAngle) {
+    const rect = useAngle ? util.calcRectWithAngle(this.rect, this.angle) : this.rect;
     let pos = {x: 0, y: 0};
     switch (node) {
       case 0:

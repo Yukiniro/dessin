@@ -168,8 +168,12 @@ export default (function () {
 
     /**
      * @description 计算rect中点的位置
-     * @param {*} type
-     * @param {*} rect
+     * @param {string} type
+     * @param {object} rect
+     * @param {number} rect.x
+     * @param {number} rect.y
+     * @param {number} rect.width
+     * @param {number} rect.height
      * @returns
      */
     calePointInRect: function (type, rect) {
@@ -321,8 +325,8 @@ export default (function () {
 
     /**
      * @description 限定角度值在0 -- 360之间
-     * @param {number} angle 
-     * @returns 
+     * @param {number} angle
+     * @returns
      */
     fixAngle(angle) {
       let value = angle;
@@ -331,6 +335,49 @@ export default (function () {
         if (value > 360) value -= 360;
       }
       return value;
+    },
+
+    /**
+     * @description 计算point在canvas坐标系旋转angle后的新坐标
+     * @param {object} point 
+     * @param {number} point.x
+     * @param {number} point.y
+     * @param {number} angle 
+     * @returns 
+     */
+    calcPointWithAngle(point, angle) {
+      const {x, y} = point;
+      const radian = this.angleToRadian(angle);
+      const nextX = x * Math.cos(radian) + y * Math.sin(radian);
+      const nextY = y * Math.cos(radian) - x * Math.sin(radian);
+      return {
+        x: nextX,
+        y: nextY,
+      }
+    },
+
+    /**
+     * @description 计算rect在canvas坐标系旋转angle后的新rect
+     * @param {object} rect 
+     * @param {number} rect.x
+     * @param {number} rect.y
+     * @param {number} rect.width 
+     * @param {number} rect.height
+     * @param {number} angle 
+     * @returns 
+     */
+    calcRectWithAngle(rect, angle) {
+      const {width, height} = rect;
+      const centerPoint = this.calePointInRect(constant.CENTER, rect);
+      const nextCenterPoint = this.calcPointWithAngle(centerPoint, angle);
+      const nextX = nextCenterPoint.x - width / 2;
+      const nextY = nextCenterPoint.y - height / 2;
+      return {
+        x: nextX,
+        y: nextY,
+        width,
+        height,
+      }
     }
   };
 })();

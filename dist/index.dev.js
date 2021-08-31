@@ -449,8 +449,12 @@ var util = (function () {
 
     /**
      * @description 计算rect中点的位置
-     * @param {*} type
-     * @param {*} rect
+     * @param {string} type
+     * @param {object} rect
+     * @param {number} rect.x
+     * @param {number} rect.y
+     * @param {number} rect.width
+     * @param {number} rect.height
      * @returns
      */
     calePointInRect: function calePointInRect(type, rect) {
@@ -651,8 +655,8 @@ var util = (function () {
 
     /**
      * @description 限定角度值在0 -- 360之间
-     * @param {number} angle 
-     * @returns 
+     * @param {number} angle
+     * @returns
      */
     fixAngle: function fixAngle(angle) {
       var value = angle;
@@ -663,6 +667,51 @@ var util = (function () {
       }
 
       return value;
+    },
+
+    /**
+     * @description 计算point在canvas坐标系旋转angle后的新坐标
+     * @param {object} point 
+     * @param {number} point.x
+     * @param {number} point.y
+     * @param {number} angle 
+     * @returns 
+     */
+    calcPointWithAngle: function calcPointWithAngle(point, angle) {
+      var x = point.x,
+          y = point.y;
+      var radian = this.angleToRadian(angle);
+      var nextX = x * Math.cos(radian) + y * Math.sin(radian);
+      var nextY = y * Math.cos(radian) - x * Math.sin(radian);
+      return {
+        x: nextX,
+        y: nextY
+      };
+    },
+
+    /**
+     * @description 计算rect在canvas坐标系旋转angle后的新rect
+     * @param {object} rect 
+     * @param {number} rect.x
+     * @param {number} rect.y
+     * @param {number} rect.width 
+     * @param {number} rect.height
+     * @param {number} angle 
+     * @returns 
+     */
+    calcRectWithAngle: function calcRectWithAngle(rect, angle) {
+      var width = rect.width,
+          height = rect.height;
+      var centerPoint = this.calePointInRect(constant.CENTER, rect);
+      var nextCenterPoint = this.calcPointWithAngle(centerPoint, angle);
+      var nextX = nextCenterPoint.x - width / 2;
+      var nextY = nextCenterPoint.y - height / 2;
+      return {
+        x: nextX,
+        y: nextY,
+        width: width,
+        height: height
+      };
     }
   };
 })();
@@ -939,10 +988,12 @@ var Track = /*#__PURE__*/function () {
     value: function clacTrackNodeWithPoint(point) {
       var _this = this;
 
+      var pointWithAngle = util.calcPointWithAngle(point, this.angle);
+      var rectWithAngle = util.calcRectWithAngle(this.rect, this.angle);
       var nodeRadius = this._nodeRadius;
 
       var findIndex = this._supportNodes.findIndex(function (node) {
-        var _this$_calcNodePos = _this._calcNodePos(node),
+        var _this$_calcNodePos = _this._calcNodePos(node, true),
             x = _this$_calcNodePos.x,
             y = _this$_calcNodePos.y;
 
@@ -952,11 +1003,11 @@ var Track = /*#__PURE__*/function () {
           width: nodeRadius * 2,
           height: nodeRadius * 2
         };
-        return util.isPointInRect(point, nodeRect);
+        return util.isPointInRect(pointWithAngle, nodeRect);
       });
 
       if (findIndex === -1) {
-        if (util.isPointInRect(point, this.rect)) {
+        if (util.isPointInRect(pointWithAngle, rectWithAngle)) {
           return _TRACK_NODES.SELF;
         } else {
           return _TRACK_NODES.NONE;
@@ -966,15 +1017,16 @@ var Track = /*#__PURE__*/function () {
       }
     }
     /**
-     * @description 計算
+     * @description 計算指定节点类型的位置信息
      * @param {number} node 
+     * @param {boolean} useAngle 
      * @returns 
      */
 
   }, {
     key: "_calcNodePos",
-    value: function _calcNodePos(node) {
-      var rect = this.rect;
+    value: function _calcNodePos(node, useAngle) {
+      var rect = useAngle ? util.calcRectWithAngle(this.rect, this.angle) : this.rect;
       var pos = {
         x: 0,
         y: 0
