@@ -553,7 +553,7 @@ class Sprite {
     const centerPos = util.calePointInRect(constant.CENTER, this.rect);
     const { x, y } = util.calcVertor(centerPos, verctor);
     angle = util.radianToAngle(Math.atan2(-y, x));
-    angle = util.fixAngle(90 - angle);
+    angle = util.fixAngle(util.adsorbAngle(90 - angle));
     this.setAngle(angle);
   }
 

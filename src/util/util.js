@@ -332,9 +332,22 @@ export default (function () {
       let value = angle;
       while (value < 0 || value > 360) {
         if (value < 0) value += 360;
-        if (value > 360) value -= 360;
+        if (value >= 360) value -= 360;
       }
       return value;
+    },
+
+    /**
+     * @description 吸附角度
+     * @param {number} angle 
+     * @param {number} offset 吸附差值
+     * @returns 
+     */
+    adsorbAngle(angle, offset = 6) {
+      const angleToAbsorb = [0, 90, 180, 270, 360];
+      const ang = this.fixAngle(angle);
+      const index = angleToAbsorb.findIndex(value => Math.abs(value - ang) <= offset);
+      return index === -1 ? ang : angleToAbsorb[index]; 
     },
 
     /**
