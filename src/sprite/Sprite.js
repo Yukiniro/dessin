@@ -414,9 +414,18 @@ class Sprite {
   /**
    * @description 渲染元素
    */
-  render() {
-    this.fire(eventConstant.WILL_RENDER, { target: this });
-    this.fire(eventConstant.DID_RENDER, { target: this });
+  render(ctx) {
+    const { WILL_RENDER, DID_RENDER } = eventConstant;
+    const horizontalOffset = this._width / 2;
+    const verticalOffset = this._height / 2;
+    this.fire(WILL_RENDER, { target: this });
+    ctx.save();
+    ctx.translate(this._x + horizontalOffset, this._y + verticalOffset);
+    ctx.rotate(util.angleToRadian(this._angle));
+    ctx.drawImage(this._cacheView, -horizontalOffset, -verticalOffset, this._width, this._height);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.restore();
+    this.fire(DID_RENDER, { target: this });
   }
 
   /**

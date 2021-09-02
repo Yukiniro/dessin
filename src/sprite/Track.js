@@ -174,7 +174,6 @@ class Track {
         break;
       }
       default:
-        throw new Error(constant.ARGUMENT_ERROR);
     }
 
     return pos;

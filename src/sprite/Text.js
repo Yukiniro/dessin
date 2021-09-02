@@ -255,26 +255,11 @@ class Text extends Sprite {
     this._cacheCtx.font = `${this._fontStyle} ${this._fontWeight} ${fontSize}px ${this._fontFamily}`;
     this._cacheCtx.fillStyle = this._fillColor;
     this._cacheCtx.strokeStyle = this._strokeColor;
-    // this._cacheCtx.textBaseline = 'top';
     this._cacheCtx.textAlign = this._textAlign;
     this._value.forEach((text, index) => {
       y = index * this._lineHeight * fontSize + this._fontBoundingBoxAscent;
       this._cacheCtx.fillText(text, x, y);
     });
-  }
-
-  render(ctx) {
-    const { WILL_RENDER, DID_RENDER } = eventConstant;
-    const horizontalOffset = this._width / 2;
-    const verticalOffset = this._height / 2;
-    this.fire(WILL_RENDER, { target: this });
-    ctx.save();
-    ctx.translate(this._x + horizontalOffset, this._y + verticalOffset);
-    ctx.rotate(util.angleToRadian(this._angle));
-    ctx.drawImage(this._cacheView, -horizontalOffset, -verticalOffset, this._width, this._height);
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.restore();
-    this.fire(DID_RENDER, { target: this });
   }
 }
 
