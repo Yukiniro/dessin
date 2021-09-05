@@ -176,7 +176,7 @@ export default (function () {
      * @param {number} rect.height
      * @returns
      */
-    calePointInRect: function (type, rect) {
+    calcPointInRect: function (type, rect) {
       let { x, y, width, height } = rect;
       let point = { x: 0, y: 0 };
       switch (type) {
@@ -210,6 +210,45 @@ export default (function () {
         default:
       }
 
+      return point;
+    },
+
+    /**
+     * @description 计算对角的位置信息
+     * @param {*} type 
+     * @param {*} rect 
+     * @returns 
+     */
+    calcDiagonalInRect: function (type, rect) {
+      let point = { x: 0, y: 0 };
+      switch (type) {
+        case constant.LEFT_TOP:
+          point = this.calcPointInRect(constant.RIGHT_BOTTOM, rect);
+          break;
+        case constant.CENTER_TOP:
+          point = this.calcPointInRect(constant.CENTER_BOTTOM, rect);
+          break;
+        case constant.RIGHT_TOP:
+          point = this.calcPointInRect(constant.LEFT_BOTTOM, rect);
+          break;
+        case constant.RIGHT_CENTER:
+          point = this.calcPointInRect(constant.LEFT_CENTER, rect);
+          break;
+        case constant.RIGHT_BOTTOM:
+          point = this.calcPointInRect(constant.LEFT_TOP, rect);
+          break;
+        case constant.CENTER_BOTTOM:
+          point = this.calcPointInRect(constant.CENTER_TOP, rect);
+          break;
+        case constant.LEFT_BOTTOM:
+          point = this.calcPointInRect(constant.RIGHT_TOP, rect);
+          break;
+        case constant.LEFT_CENTER:
+          point = this.calcPointInRect(constant.RIGHT_CENTER, rect);
+          break;
+        default:
+          point = this.calcPointInRect(type, rect);
+      }
       return point;
     },
 
@@ -339,49 +378,49 @@ export default (function () {
 
     /**
      * @description 吸附角度
-     * @param {number} angle 
+     * @param {number} angle
      * @param {number} offset 吸附差值
-     * @returns 
+     * @returns
      */
     adsorbAngle(angle, offset = 6) {
       const angleToAbsorb = [0, 90, 180, 270, 360];
       const ang = this.fixAngle(angle);
-      const index = angleToAbsorb.findIndex(value => Math.abs(value - ang) <= offset);
-      return index === -1 ? ang : angleToAbsorb[index]; 
+      const index = angleToAbsorb.findIndex((value) => Math.abs(value - ang) <= offset);
+      return index === -1 ? ang : angleToAbsorb[index];
     },
 
     /**
      * @description 计算point在canvas坐标系旋转angle后的新坐标
-     * @param {object} point 
+     * @param {object} point
      * @param {number} point.x
      * @param {number} point.y
-     * @param {number} angle 
-     * @returns 
+     * @param {number} angle
+     * @returns
      */
     calcPointWithAngle(point, angle) {
-      const {x, y} = point;
+      const { x, y } = point;
       const radian = this.angleToRadian(angle);
       const nextX = x * Math.cos(radian) + y * Math.sin(radian);
       const nextY = y * Math.cos(radian) - x * Math.sin(radian);
       return {
         x: nextX,
         y: nextY,
-      }
+      };
     },
 
     /**
      * @description 计算rect在canvas坐标系旋转angle后的新rect
-     * @param {object} rect 
+     * @param {object} rect
      * @param {number} rect.x
      * @param {number} rect.y
-     * @param {number} rect.width 
+     * @param {number} rect.width
      * @param {number} rect.height
-     * @param {number} angle 
-     * @returns 
+     * @param {number} angle
+     * @returns
      */
     calcRectWithAngle(rect, angle) {
-      const {width, height} = rect;
-      const centerPoint = this.calePointInRect(constant.CENTER, rect);
+      const { width, height } = rect;
+      const centerPoint = this.calcPointInRect(constant.CENTER, rect);
       const nextCenterPoint = this.calcPointWithAngle(centerPoint, angle);
       const nextX = nextCenterPoint.x - width / 2;
       const nextY = nextCenterPoint.y - height / 2;
@@ -390,7 +429,7 @@ export default (function () {
         y: nextY,
         width,
         height,
-      }
-    }
+      };
+    },
   };
 })();

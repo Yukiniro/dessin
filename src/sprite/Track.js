@@ -71,10 +71,7 @@ class Track {
    * @description 返回位置尺寸信息
    */
   get rect() {
-    return {
-      ...this.pos,
-      ...this.size,
-    }
+    return this._owner.rect;
   }
 
   extendsValue(value, defalultValue) {
@@ -142,31 +139,31 @@ class Track {
     let pos = {x: 0, y: 0};
     switch (node) {
       case 0:
-        pos = util.calePointInRect(constant.LEFT_TOP, rect);
+        pos = util.calcPointInRect(constant.LEFT_TOP, rect);
         break;
       case 1:
-        pos = util.calePointInRect(constant.CENTER_TOP, rect);
+        pos = util.calcPointInRect(constant.CENTER_TOP, rect);
         break;
       case 2:
-        pos = util.calePointInRect(constant.RIGHT_TOP, rect);
+        pos = util.calcPointInRect(constant.RIGHT_TOP, rect);
         break;
       case 3:
-        pos = util.calePointInRect(constant.RIGHT_CENTER, rect);
+        pos = util.calcPointInRect(constant.RIGHT_CENTER, rect);
         break;
       case 4:
-        pos = util.calePointInRect(constant.RIGHT_BOTTOM, rect);
+        pos = util.calcPointInRect(constant.RIGHT_BOTTOM, rect);
         break;
       case 5:
-        pos = util.calePointInRect(constant.CENTER_BOTTOM, rect);
+        pos = util.calcPointInRect(constant.CENTER_BOTTOM, rect);
         break;
       case 6:
-        pos = util.calePointInRect(constant.LEFT_BOTTOM, rect);
+        pos = util.calcPointInRect(constant.LEFT_BOTTOM, rect);
         break;
       case 7:
-        pos = util.calePointInRect(constant.LEFT_CENTER, rect);
+        pos = util.calcPointInRect(constant.LEFT_CENTER, rect);
         break;
       case 9: {
-        const {x, y} = util.calePointInRect(constant.CENTER_TOP, rect);;
+        const {x, y} = util.calcPointInRect(constant.CENTER_TOP, rect);;
         pos = {
           x,
           y: y - this._rotateNodeOffset,

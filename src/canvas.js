@@ -119,6 +119,9 @@ class Canvas {
       case 'mouseup':
         this._bindEvent();
         this._unbindEventForBody();
+        if (this._recordSprite) {
+          this._recordSprite.renderCache();
+        }
         this._hasMousedown = false;
         this._recordSprite = null;
         this._recordPoint = null;

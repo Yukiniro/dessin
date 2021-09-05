@@ -1,4 +1,4 @@
-import { ZCanvas, ZText, ZRect } from '../../dist/index.dev.js';
+import { ZCanvas, ZText, ZRect, ZCircle } from '../../dist/index.dev.js';
 
 let canvasView = document.getElementById('canvas');
 let canvas = new ZCanvas({ canvas: canvasView });
@@ -11,10 +11,17 @@ let text = new ZText({
 let rect = new ZRect({
   x: 20, 
   y: 20,
-  width: 100,
+  width: 120,
   height: 100,
   value: '#0F0',
+});
+let circle = new ZCircle({
+  x: 150, 
+  y: 20,
+  radius: 30,
+  value: '#00F',
 })
 canvas.add(text);
 canvas.add(rect);
+canvas.add(circle);
 canvas.render();

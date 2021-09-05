@@ -167,7 +167,7 @@ class Sprite {
    * @returns {number} size.height
    */
   getSize() {
-    return { width: this._width, height: this._height };
+    return { width: this.getWidth(), height: this.getHeight() };
   }
 
   /**
@@ -416,13 +416,14 @@ class Sprite {
    */
   render(ctx) {
     const { WILL_RENDER, DID_RENDER } = eventConstant;
-    const horizontalOffset = this._width / 2;
-    const verticalOffset = this._height / 2;
+    const { x, y, width, height } = this.rect;
+    const horizontalOffset = width / 2;
+    const verticalOffset = height / 2;
     this.fire(WILL_RENDER, { target: this });
     ctx.save();
-    ctx.translate(this._x + horizontalOffset, this._y + verticalOffset);
+    ctx.translate(x + horizontalOffset, y + verticalOffset);
     ctx.rotate(util.angleToRadian(this._angle));
-    ctx.drawImage(this._cacheView, -horizontalOffset, -verticalOffset, this._width, this._height);
+    ctx.drawImage(this._cacheView, -horizontalOffset, -verticalOffset, width, height);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.restore();
     this.fire(DID_RENDER, { target: this });
@@ -508,48 +509,60 @@ class Sprite {
     };
     const preRectWithAngle = util.calcRectWithAngle(preRect, this._angle);
     const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = preRectWithAngle;
+    const ratio = prevWidth / prevHeight;
+    const { x: diagonalX, y: diagonalY } = util.calcDiagonalInRect(trackNode, preRectWithAngle);
     const nextRectWithAngle = { ...preRectWithAngle };
-    let nextRect = null;
-    const { LEFT_TOP, CENTER_TOP, RIGHT_TOP, RIGHT_CENTER, RIGHT_BOTTOM, CENTER_BOTTOM, LEFT_BOTTOM, LEFT_CETNER } =
-      Track.TRACK_NODES();
+    const {
+      LEFT_TOP,
+      CENTER_TOP,
+      RIGHT_TOP,
+      RIGHT_CENTER,
+      RIGHT_BOTTOM,
+      CENTER_BOTTOM,
+      LEFT_BOTTOM,
+      LEFT_CETNER,
+    } = Track.TRACK_NODES();
     switch (trackNode) {
-      case LEFT_TOP:
-        nextRectWithAngle.x = prevX + verctorX;
-        nextRectWithAngle.y = prevY + verctorY;
+      case LEFT_TOP: {
         nextRectWithAngle.width = prevWidth - verctorX;
-        nextRectWithAngle.height = prevHeight - verctorY;
+        nextRectWithAngle.height = nextRectWithAngle.width / ratio;
+        nextRectWithAngle.x = diagonalX - nextRectWithAngle.width;
+        nextRectWithAngle.y = diagonalY - nextRectWithAngle.height;
         break;
+      }
       case CENTER_TOP:
         nextRectWithAngle.y = prevY + verctorY;
         nextRectWithAngle.height = prevHeight - verctorY;
         break;
       case RIGHT_TOP:
-        nextRectWithAngle.y = prevY + verctorY;
         nextRectWithAngle.width = prevWidth + verctorX;
-        nextRectWithAngle.height = prevHeight - verctorY;
+        nextRectWithAngle.height = nextRectWithAngle.width / ratio;
+        nextRectWithAngle.y = diagonalY - nextRectWithAngle.height;
         break;
       case RIGHT_CENTER:
         nextRectWithAngle.width = prevWidth + verctorX;
         break;
       case RIGHT_BOTTOM:
         nextRectWithAngle.width = prevWidth + verctorX;
-        nextRectWithAngle.height = prevHeight + verctorY;
+        nextRectWithAngle.height = nextRectWithAngle.width / ratio;
         break;
       case CENTER_BOTTOM:
         nextRectWithAngle.height = prevHeight + verctorY;
         break;
       case LEFT_BOTTOM:
-        nextRectWithAngle.x = prevX + verctorX;
         nextRectWithAngle.width = prevWidth - verctorX;
-        nextRectWithAngle.height = prevHeight + verctorY;
+        nextRectWithAngle.height = nextRectWithAngle.width / ratio;
+        nextRectWithAngle.x = diagonalX - nextRectWithAngle.width;
         break;
       case LEFT_CETNER:
         nextRectWithAngle.x = prevX + verctorX;
         nextRectWithAngle.width = prevWidth - verctorX;
         break;
+      default:
+        break;
     }
 
-    nextRect = util.calcRectWithAngle(nextRectWithAngle, -this._angle);
+    const nextRect = util.calcRectWithAngle(nextRectWithAngle, -this._angle);
     this.setX(nextRect.x).setY(nextRect.y).setWidth(nextRect.width).setHeight(nextRect.height);
   }
 
@@ -559,7 +572,7 @@ class Sprite {
    */
   _rotate(verctor) {
     let angle;
-    const centerPos = util.calePointInRect(constant.CENTER, this.rect);
+    const centerPos = util.calcPointInRect(constant.CENTER, this.rect);
     const { x, y } = util.calcVertor(centerPos, verctor);
     angle = util.radianToAngle(Math.atan2(-y, x));
     angle = util.fixAngle(util.adsorbAngle(90 - angle));
