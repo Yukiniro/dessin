@@ -25,7 +25,7 @@ class Sprite {
     this._selected = false;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
-    this._track = null;
+    this._track = new Track({ supportNodes: this._supportNodes, owner: this });;
   }
 
   encode() {
@@ -434,7 +434,6 @@ class Sprite {
    * @param {*} ctx
    */
   renderTrack(ctx) {
-    this._track = this._track || new Track({ supportNodes: this._supportNodes, owner: this });
     this._track.render(ctx);
   }
 

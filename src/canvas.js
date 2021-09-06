@@ -93,7 +93,9 @@ class Canvas {
         if (this._recordSprite) {
           this._recordTrackNode = this._recordSprite.calcTrackNode(this._recordPoint);
           this._recordSpriteData = this._recordSprite.encode();
-          this.selectSprite(this._recordSprite);
+          this.selectSprite(this._recordSprite.id);
+        } else {
+          this.deselectAll();
         }
         break;
       case 'click':
@@ -135,13 +137,13 @@ class Canvas {
 
   /**
    * @description 选中指定id的对象并反选其他对象
-   * @param {*} id
+   * @param {string} id
    */
   selectSprite(id) {
     if (!id) return this.deselectAll();
     this.forEachItem((item) => {
       if (item.id === id) {
-        if (!item.isSelect()) item.select();
+        if (!item.isSelected()) item.select();
       } else {
         if (item.isSelected()) item.deselect();
       }
@@ -155,7 +157,7 @@ class Canvas {
    */
   deselectAll() {
     this.forEachItem((item) => {
-      if (item.isSelect()) item.deselect();
+      if (item.isSelected()) item.deselect();
     });
 
     return this;
@@ -163,17 +165,19 @@ class Canvas {
 
   /**
    * @description 获取最顶层的对象
+   * @param {object} point
+   * @param {number} point.x
+   * @param {number} point.y
    * @returns {sprite}
    */
   _getTopSprite(point) {
     let top = null;
-    let allItems = this.all();
-    for (let i = 0; i < this.size(); i++) {
-      const curItem = allItems[i];
-      if (curItem && curItem.calcTrackNode(point) !== Track.TRACK_NODES().NONE) {
-        top = curItem;
-        break;
-      }
+    let index = this.size();
+    const allItems = this.all();
+    const { NONE } = Track.TRACK_NODES();
+    while (!top && index > 0) {
+      let curItem = allItems[--index];
+      top = curItem.calcTrackNode(point) !== NONE && curItem;
     }
 
     return top;
@@ -246,7 +250,9 @@ class Canvas {
   renderTrack() {
     this.clearUpperCanvas();
     this.forEachItem((sprite) => {
-      sprite.renderTrack(this._upperCanvas.getContext('2d'));
+      if (sprite.isSelected()) {
+        sprite.renderTrack(this._upperCanvas.getContext('2d'));
+      }
     });
   }
 
