@@ -1,7 +1,7 @@
 {
-  "name": "canvas-core",
+  "name": "drawn",
   "version": "1.0.0",
-  "description": "基于canvas渲染的2d图形渲染库",
+  "description": "基于canvas渲染的图形渲染库。",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Yukiniro/canvas-core.git"
+    "url": "git+https://github.com/Yukiniro/drawn.git"
   },
   "keywords": [
     "canvas",
@@ -21,9 +21,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Yukiniro/canvas-core/issues"
+    "url": "https://github.com/Yukiniro/drawn/issues"
   },
-  "homepage": "https://github.com/Yukiniro/canvas-core#readme",
+  "homepage": "https://github.com/Yukiniro/drawn#readme",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0"
   },
