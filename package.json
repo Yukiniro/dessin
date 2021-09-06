@@ -1,7 +1,7 @@
 {
-  "name": "drawn",
-  "version": "1.0.0",
-  "description": "基于canvas渲染的图形渲染库。",
+  "name": "dessin",
+  "version": "0.0.2",
+  "description": "一个基于canvas的JavaScript渲染库。",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Yukiniro/drawn.git"
+    "url": "git+https://github.com/Yukiniro/dessin.git"
   },
   "keywords": [
     "canvas",
@@ -19,11 +19,11 @@
     "library"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Yukiniro/drawn/issues"
+    "url": "https://github.com/Yukiniro/dessin/issues"
   },
-  "homepage": "https://github.com/Yukiniro/drawn#readme",
+  "homepage": "https://github.com/Yukiniro/dessin#readme",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0"
   },
