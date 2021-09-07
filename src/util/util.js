@@ -29,8 +29,8 @@ export default (function () {
         if (Array.isArray(source)) {
           return source.map((item) => this.deepClone(item));
         } else {
-          let result = {};
-          for (let key in source) {
+          const result = {};
+          for (const key in source) {
             if (hasOwnProperty.call(source, key)) {
               result[key] = this.deepClone(source[key]);
             }
@@ -60,7 +60,7 @@ export default (function () {
       if (!Array.isArray(array)) {
         throw constant.ARGUMENT_ERROR;
       }
-      let index = array.indexof(item);
+      const index = array.indexof(item);
       if (index !== -1) {
         array.splice(index, 1);
       }
@@ -108,7 +108,7 @@ export default (function () {
      * @param {*} style
      */
     css: function (element, style) {
-      for (let key in style) {
+      for (const key in style) {
         if (hasOwnProperty.call(style, key)) {
           element.style[key] = style[key];
         }
@@ -127,10 +127,10 @@ export default (function () {
      * @returns
      */
     calcTextSize: function (ctx, value, options = {}) {
-      let { fontSize, fontFamily, fontStyle, fontWeight } = options;
+      const { fontSize, fontFamily, fontStyle, fontWeight } = options;
       ctx.save();
       ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
-      let { width, fontBoundingBoxAscent, fontBoundingBoxDescent } = ctx.measureText(value);
+      const { width, fontBoundingBoxAscent, fontBoundingBoxDescent } = ctx.measureText(value);
       ctx.restore();
       return {
         width,
@@ -153,9 +153,9 @@ export default (function () {
      * @param {array} options.dash 虚线数据，[]为实线
      */
     renderLine: function (ctx, startPos, endPos, color, options) {
-      let { x: startX, y: startY } = startPos;
-      let { x: endX, y: endY } = endPos;
-      let dash = (options && options.dash) || [];
+      const { x: startX, y: startY } = startPos;
+      const { x: endX, y: endY } = endPos;
+      const dash = (options && options.dash) || [];
       ctx.save();
       ctx.fillStyle = color;
       ctx.beginPath();
@@ -177,7 +177,7 @@ export default (function () {
      * @returns
      */
     calcPointInRect: function (type, rect) {
-      let { x, y, width, height } = rect;
+      const { x, y, width, height } = rect;
       let point = { x: 0, y: 0 };
       switch (type) {
         case constant.LEFT_TOP:
@@ -215,9 +215,9 @@ export default (function () {
 
     /**
      * @description 计算对角的位置信息
-     * @param {*} type 
-     * @param {*} rect 
-     * @returns 
+     * @param {*} type
+     * @param {*} rect
+     * @returns
      */
     calcDiagonalInRect: function (type, rect) {
       let point = { x: 0, y: 0 };
@@ -326,11 +326,13 @@ export default (function () {
     },
 
     /**
-     * @description 清楚指定画布
+     * @description 清除指定画布
      * @param {*} canvas
      */
     clearCanvas: function (canvas) {
+      // eslint-disable-next-line no-self-assign
       canvas.width = canvas.width;
+      // eslint-disable-next-line no-self-assign
       canvas.height = canvas.height;
     },
 

@@ -22,4 +22,4 @@ export default {
   DRAG_ENTER: 'dragenter',
   DRAG_LEAVE: 'dragleave',
   DROP: 'drop',
-}
+};

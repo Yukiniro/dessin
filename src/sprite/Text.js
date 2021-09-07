@@ -1,6 +1,5 @@
 import config from '../config/config';
 import constant from '../constant/constant';
-import eventConstant from '../constant/event-constant';
 import util from '../util/util';
 import Sprite from './sprite';
 
@@ -58,13 +57,13 @@ class Text extends Sprite {
   _calcSize() {
     return this._value.reduce(
       (finalValue, text) => {
-        let opstions = {
+        const opstions = {
           fontSize: this._fontSize,
           fontFamily: this._fontFamily,
           fontStyle: this._fontStyle,
           fontWeight: this._fontWeight,
         };
-        let { width, height, fontBoundingBoxAscent } = util.calcTextSize(
+        const { width, height, fontBoundingBoxAscent } = util.calcTextSize(
           this._cacheCtx,
           text,
           opstions
@@ -227,18 +226,18 @@ class Text extends Sprite {
    * @description 初始化尺寸
    */
   initSize() {
-    let { width, height, fontBoundingBoxAscent } = this._calcSize();
+    const { width, height, fontBoundingBoxAscent } = this._calcSize();
     this.setSize({ width, height });
     this._fontBoundingBoxAscent = fontBoundingBoxAscent;
   }
 
   renderCache() {
-    let { perPixel } = config;
+    const { perPixel } = config;
     let x = 0;
     let y = 0;
-    let width = this._width * perPixel;
-    let height = this._height * perPixel;
-    let fontSize = this._fontSize * perPixel;
+    const width = this._width * perPixel;
+    const height = this._height * perPixel;
+    const fontSize = this._fontSize * perPixel;
     switch (this._textAlign) {
       case 'left':
         break;

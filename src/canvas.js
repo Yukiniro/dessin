@@ -1,8 +1,6 @@
 import util from './util/util';
 import collection from './mixin/collection.mixin';
 import observable from './mixin/observable.mixin';
-import track from './sprite/track';
-import constant from './constant/constant';
 import Track from './sprite/track';
 
 class Canvas {
@@ -16,7 +14,7 @@ class Canvas {
     this._hasMousedown = false; // 鼠标是否已经按下，区分划过、拖动
     this._recordSprite = null; // 当前正在控制的对象
     this._recordPoint = null;
-    this._recordTrackNode = track.TRACK_NODES().NONE;
+    this._recordTrackNode = Track.TRACK_NODES().NONE;
     this._recordSpriteData = null;
     this._viewRect = null;
     this._fireEvent = this._fireEvent.bind(this);
@@ -33,8 +31,8 @@ class Canvas {
     if (!this._lowerCanvas) {
       throw new Error('You have to bind a canvas!');
     } else {
-      let parent = this._lowerCanvas.parentNode;
-      let parentPositionStyle = parent.style.position;
+      const parent = this._lowerCanvas.parentNode;
+      const parentPositionStyle = parent.style.position;
       parent.insertBefore(this._upperCanvas, this._lowerCanvas.nextSibling);
       if (!parentPositionStyle || parentPositionStyle === 'static') {
         util.css(parent, { position: 'relative' });
@@ -113,6 +111,8 @@ class Canvas {
         } else {
           const hoverSprite = this._getTopSprite(offsetCursorPoint);
           if (hoverSprite) {
+            // TODO 渲染hover的track
+            // eslint-disable-next-line no-unused-vars
             const hoverTrackNode = hoverSprite.calcTrackNode(offsetCursorPoint);
           }
         }
@@ -176,7 +176,7 @@ class Canvas {
     const allItems = this.all();
     const { NONE } = Track.TRACK_NODES();
     while (!top && index > 0) {
-      let curItem = allItems[--index];
+      const curItem = allItems[--index];
       top = curItem.calcTrackNode(point) !== NONE && curItem;
     }
 
@@ -187,7 +187,7 @@ class Canvas {
    * @description 更新视图尺寸
    */
   _updateView() {
-    let { width, height } = this._size;
+    const { width, height } = this._size;
     this._lowerCanvas.width = width;
     this._lowerCanvas.height = height;
     this._upperCanvas.width = width;
@@ -214,7 +214,7 @@ class Canvas {
    * @description 清空画布
    */
   _clear() {
-    let { width, height } = this.getSize();
+    const { width, height } = this.getSize();
     this._lowerCanvas.getContext('2d').clearRect(0, 0, width, height);
   }
 

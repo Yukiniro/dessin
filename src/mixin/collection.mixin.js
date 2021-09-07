@@ -1,7 +1,7 @@
 import util from '../util/util';
 
 export default (function () {
-  let _items = [];
+  const _items = [];
   return {
     /**
      * @descrition 添加某个元素
@@ -64,7 +64,7 @@ export default (function () {
 
     /**
      * @description 返回所有的项
-     * @returns 
+     * @returns
      */
     all: function () {
       return _items;

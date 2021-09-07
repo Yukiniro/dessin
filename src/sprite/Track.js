@@ -1,5 +1,4 @@
 import constant from '../constant/constant';
-import eventConstant from '../constant/event-constant';
 import util from '../util/util';
 
 const TRACK_NODES = {
@@ -18,10 +17,7 @@ const TRACK_NODES = {
 
 class Track {
   constructor(props = {}) {
-    this._supportNodes = this.extendsValue(
-      props.supportNodes,
-      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1]
-    );
+    this._supportNodes = this.extendsValue(props.supportNodes, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1]);
     this._lineColor = this.extendsValue(props.lineColor, '#08b9ff');
     this._nodeColor = this.extendsValue(props.nodeColor, '#adadad');
     this._nodeRadius = this.extendsValue(props.nodeRadius, 4);
@@ -33,7 +29,7 @@ class Track {
 
   /**
    * @description 返回track节点类型
-   * @returns 
+   * @returns
    */
   static TRACK_NODES() {
     return TRACK_NODES;
@@ -83,7 +79,7 @@ class Track {
    * @param {context} ctx
    */
   render(ctx) {
-    const {x, y, width, height} = this.rect;
+    const { x, y, width, height } = this.rect;
     const angle = this.angle;
     ctx.save();
     ctx.translate(x + width / 2, y + height / 2);
@@ -96,17 +92,17 @@ class Track {
 
   /**
    * @description 计算指定point在控制器中的节点类型
-   * @param {obeject} point 
+   * @param {obeject} point
    * @param {number} point.x
    * @param {number} point.y
-   * @returns 
+   * @returns
    */
   clacTrackNodeWithPoint(point) {
     const pointWithAngle = util.calcPointWithAngle(point, this.angle);
     const rectWithAngle = util.calcRectWithAngle(this.rect, this.angle);
     const nodeRadius = this._nodeRadius;
-    const findIndex = this._supportNodes.findIndex(node => {
-      const {x, y} = this._calcNodePos(node, true);
+    const findIndex = this._supportNodes.findIndex((node) => {
+      const { x, y } = this._calcNodePos(node, true);
       const nodeRect = {
         x: x - nodeRadius,
         y: y - nodeRadius,
@@ -130,13 +126,13 @@ class Track {
 
   /**
    * @description 計算指定节点类型的位置信息
-   * @param {number} node 
-   * @param {boolean} useAngle 
-   * @returns 
+   * @param {number} node
+   * @param {boolean} useAngle
+   * @returns
    */
   _calcNodePos(node, useAngle) {
     const rect = useAngle ? util.calcRectWithAngle(this.rect, this.angle) : this.rect;
-    let pos = {x: 0, y: 0};
+    let pos = { x: 0, y: 0 };
     switch (node) {
       case 0:
         pos = util.calcPointInRect(constant.LEFT_TOP, rect);
@@ -163,7 +159,7 @@ class Track {
         pos = util.calcPointInRect(constant.LEFT_CENTER, rect);
         break;
       case 9: {
-        const {x, y} = util.calcPointInRect(constant.CENTER_TOP, rect);;
+        const { x, y } = util.calcPointInRect(constant.CENTER_TOP, rect);
         pos = {
           x,
           y: y - this._rotateNodeOffset,
@@ -178,14 +174,14 @@ class Track {
 
   /**
    * @description 渲染所有控制点
-  * @param {*} ctx
+   * @param {*} ctx
    */
   _renderNodes(ctx) {
-    this._supportNodes.forEach(node => {
+    this._supportNodes.forEach((node) => {
       const pos = this._calcNodePos(node);
-      const {x, y, width, height} = this.rect;
-      pos.x -= (x + width / 2);
-      pos.y -= (y + height / 2);
+      const { x, y, width, height } = this.rect;
+      pos.x -= x + width / 2;
+      pos.y -= y + height / 2;
       this._renderNode(ctx, pos);
     });
   }
@@ -207,23 +203,23 @@ class Track {
   }
 
   /**
-   * @description 
-   * @param {HTMLCanvasContext} ctx 
+   * @description
+   * @param {HTMLCanvasContext} ctx
    */
   _renderLines(ctx) {
-    const {x, y, width, height} = this.rect;
+    const { x, y, width, height } = this.rect;
     const pointLeftTop = this._calcNodePos(TRACK_NODES.LEFT_TOP);
     const pointRightTop = this._calcNodePos(TRACK_NODES.RIGHT_TOP);
     const pointLeftBottom = this._calcNodePos(TRACK_NODES.LEFT_BOTTOM);
     const pointRightBottom = this._calcNodePos(TRACK_NODES.RIGHT_BOTTOM);
-    pointLeftTop.x -= (x + width / 2);
-    pointLeftTop.y -= (y + height / 2);
-    pointRightTop.x -= (x + width / 2);
-    pointRightTop.y -= (y + height / 2);
-    pointLeftBottom.x -= (x + width / 2);
-    pointLeftBottom.y -= (y + height / 2);
-    pointRightBottom.x -= (x + width / 2);
-    pointRightBottom.y -= (y + height / 2);
+    pointLeftTop.x -= x + width / 2;
+    pointLeftTop.y -= y + height / 2;
+    pointRightTop.x -= x + width / 2;
+    pointRightTop.y -= y + height / 2;
+    pointLeftBottom.x -= x + width / 2;
+    pointLeftBottom.y -= y + height / 2;
+    pointRightBottom.x -= x + width / 2;
+    pointRightBottom.y -= y + height / 2;
     this._renderLine(ctx, pointLeftTop, pointRightTop);
     this._renderLine(ctx, pointRightTop, pointRightBottom);
     this._renderLine(ctx, pointRightBottom, pointLeftBottom);
@@ -232,10 +228,10 @@ class Track {
 
   /**
    * @description 在指定ctx上绘制pointFrom、pointTo之间的线条
-   * @param {*} ctx 
-   * @param {object} pointFrom 
+   * @param {*} ctx
+   * @param {object} pointFrom
    * @param {number} pointFrom.x
-   * @param {number} pointFrom.y 
+   * @param {number} pointFrom.y
    * @param {object} pointTo
    * @param {number} pointTo.x
    * @param {number} pointTo.y

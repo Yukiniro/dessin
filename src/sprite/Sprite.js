@@ -25,7 +25,7 @@ class Sprite {
     this._selected = false;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
-    this._track = new Track({ supportNodes: this._supportNodes, owner: this });;
+    this._track = new Track({ supportNodes: this._supportNodes, owner: this });
   }
 
   encode() {
@@ -475,6 +475,7 @@ class Sprite {
         break;
       case ROTATE:
         this._rotate(verctor);
+        break;
       default:
     }
     this.fire(eventConstant.DID_TRANSFORM, { target: this });
