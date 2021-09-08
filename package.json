@@ -51,10 +51,10 @@
     "uuid": "^8.3.2"
   },
   "lint-staged": {
-    "*.js": [
-      "npx prettier --write",
-      "npx eslint --cache",
-      "git add ."
+    "src/**/*.js": [
+      "prettier --write",
+      "eslint --cache",
+      "git add"
     ]
   }
 }
