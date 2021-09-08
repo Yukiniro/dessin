@@ -1,6 +1,6 @@
 node_modules/
 dist/
 .eslintrc.js
-.prettier.config.js
-.rollup.config.dev.js
-.rollup.config.prod.js
+prettier.config.js
+rollup.config.dev.js
+rollup.config.prod.js

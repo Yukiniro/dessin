@@ -299,6 +299,7 @@ export default (function () {
      * @returns
      */
     calcDistance: function (point1, point2) {
+      let a;
       const { x: x1, y: y1 } = point1;
       const { x: x2, y: y2 } = point2;
       const offsetX = Math.abs(x2 - x1);
