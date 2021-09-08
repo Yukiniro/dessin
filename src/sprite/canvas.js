@@ -1,7 +1,7 @@
-import util from './util/util';
-import collection from './mixin/collection.mixin';
-import observable from './mixin/observable.mixin';
-import Track from './sprite/track';
+import util from '../util/util';
+import collection from '../mixin/collection.mixin';
+import observable from '../mixin/observable.mixin';
+import Track from './track';
 
 class Canvas {
   constructor(props = {}) {
@@ -271,7 +271,7 @@ class Canvas {
    * @param {object} size
    * @param {number} size.width
    * @param {number} size.height
-   * @returns
+   * @return {object}
    */
   setSize(size) {
     this._size = { ...size };

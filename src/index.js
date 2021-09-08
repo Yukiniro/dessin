@@ -1,4 +1,4 @@
-import Canvas from './Canvas';
+import Canvas from './sprite/canvas';
 import Text from './sprite/text';
 import Rect from './sprite/rect';
 import Circle from './sprite/circle';

@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "./node_modules/.bin/rollup --config rollup.config.dev.js --watch",
     "build": "./node_modules/.bin/rollup --config rollup.config.prod.js",
+    "doc": "npx esdoc",
     "eslint": "npx eslint src/**/*.js",
     "eslint && fix": "npx eslint src/**/*.js --fix",
     "prettier": "npx prettier --write src/**/*.js"
@@ -33,6 +34,9 @@
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
+    "esdoc": "^1.1.0",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-standard-plugin": "^1.0.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
