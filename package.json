@@ -9,8 +9,7 @@
     "build": "./node_modules/.bin/rollup --config rollup.config.prod.js",
     "eslint": "npx eslint src/**/*.js",
     "eslint && fix": "npx eslint src/**/*.js --fix",
-    "prettier": "npx prettier --write src/**/*.js",
-    "prepare": "husky install"
+    "prettier": "npx prettier --write src/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -53,8 +52,9 @@
   },
   "lint-staged": {
     "*.js": [
-      "git add .",
-      "eslint"
+      "npx prettier --write",
+      "npx eslint --cache",
+      "git add ."
     ]
   }
 }

@@ -299,7 +299,6 @@ export default (function () {
      * @returns
      */
     calcDistance: function (point1, point2) {
-      let a;
       const { x: x1, y: y1 } = point1;
       const { x: x2, y: y2 } = point2;
       const offsetX = Math.abs(x2 - x1);
@@ -309,7 +308,7 @@ export default (function () {
 
     /**
      * @description 计算point2相对于point1的向量
-     * @param {object} point1
+  bject} point1
      * @param {number} point1.x
      * @param {number} point1.y
      * @param {object} point2
