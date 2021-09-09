@@ -44,20 +44,26 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^5.1.0",
+    "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
     "rollup": "^2.56.1",
     "rollup-plugin-filesize": "^9.1.1",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^1.1.0",
-    "rollup-plugin-uglify": "^6.0.4"
+    "rollup-plugin-uglify": "^6.0.4",
+    "yorkie": "^2.0.0"
   },
   "dependencies": {
     "uuid": "^8.3.2"
   },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
   "lint-staged": {
     "src/**/*.js": [
-      "prettier --write",
-      "eslint --cache",
+      "git add",
+      "npx prettier --write",
+      "npx eslint --fix",
       "git add"
     ]
   }
