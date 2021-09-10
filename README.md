@@ -2,7 +2,12 @@
 [![license](https://img.shields.io/apm/l/dessin?style=flat-square)](https://github.com/Yukiniro/dessin/blob/main/LICENSE)
 
 # Introdution
- 一个基于canvas的JavaScript渲染库
+ 一个基于canvas的JavaScript渲染库。是一个玩具级项目，所以尽量不要用在正式项目中。
+
+# Fetures
+- 完全基于canvas渲染
+- 支持文字、矩形、圆形等
+- 链式API
 
 # Install
 ```bash
@@ -10,7 +15,7 @@ npm i dessin
 ```
 # Getting Started
 ```javascript
-import { ZCanvas, ZText, ZRect, ZCircle } from '../../dist/index.dev.js';
+import { ZCanvas, ZText, ZRect, ZCircle } from 'dessin';
 
 let canvasView = document.getElementById('canvas');
 let canvas = new ZCanvas({ canvas: canvasView });
