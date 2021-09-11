@@ -1,9 +1,10 @@
 {
   "name": "dessin",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "一个基于canvas的JavaScript渲染库。",
-  "main": "index.js",
+  "main": "dist/dessin.js",
   "scripts": {
+    "publish": "npm run build && npm publish",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "./node_modules/.bin/rollup --config rollup.config.dev.js --watch",
     "build": "./node_modules/.bin/rollup --config rollup.config.prod.js",
@@ -22,7 +23,7 @@
     "2d",
     "library"
   ],
-  "author": "",
+  "author": "ZhangHao",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Yukiniro/dessin/issues"

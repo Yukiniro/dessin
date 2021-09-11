@@ -14,12 +14,29 @@ console.log(nodeResolve);
 
 module.exports = {
   input: resolve('src/index.js'),
-  output: {
-    file: resolve('dist/index.dev.js'),
-    format: 'esm',
-    name: 'zCanvas',
-    sourcemap: true,
-  },
+  output: [
+    {
+      file: resolve('dist/dessin.js'),
+      format: 'esm',
+      sourcemap: true,
+    },
+    {
+      file: resolve('dist/dessin.esm.js'),
+      format: 'esm',
+      sourcemap: true,
+    },
+    {
+      file: resolve('dist/index.umd.js'),
+      format: 'umd',
+      name: 'Dessin',
+      sourcemap: true,
+    },
+    {
+      file: resolve('dist/index.cjs.js'),
+      format: 'cjs',
+      sourcemap: true,
+    }
+  ],
   plugins: [
     livereload(),
     server({

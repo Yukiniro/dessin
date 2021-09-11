@@ -1,4 +1,4 @@
-import { ZCanvas, ZText, ZRect, ZCircle } from '../../dist/index.dev.js';
+import { ZCanvas, ZText, ZRect, ZCircle } from '../../dist/dessin.js';
 
 let canvasView = document.getElementById('canvas');
 let canvas = new ZCanvas({ canvas: canvasView });
