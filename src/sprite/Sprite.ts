@@ -13,26 +13,27 @@ import {
   adsorbAngle,
   radianToAngle,
   calcVertor,
+  extendsValue,
 } from '../util/util';
 import Track from './track';
 import { v4 } from 'uuid';
-import { Pos, Rect, Size, SpriteJSON } from '../types/types';
+import { EncodeJSON, Pos, Rect, Size, SpriteJSON } from '../types/types';
 import ObservableMixin from '../mixin/observable.mixin';
 import Base from './Base';
 
 class Sprite extends ObservableMixin(Base) {
-  protected _id: string;
-  protected _type: string;
-  protected _x: number;
-  protected _y: number;
-  protected _width: number;
-  protected _height: number;
-  protected _angle: number;
-  protected _originX: number;
-  protected _originY: number;
-  protected _flipX: number;
-  protected _flipY: number;
-  protected _opacity: number;
+  protected _id: string = v4();
+  protected _type: string = 'Sprite';
+  protected _x: number = 0;
+  protected _y: number = 0;
+  protected _width: number = 0;
+  protected _height: number = 0;
+  protected _angle: number = 0;
+  protected _originX: number = 0;
+  protected _originY: number = 0;
+  protected _flipX: number = 0;
+  protected _flipY: number = 0;
+  protected _opacity: number = 1;
   protected _supportNodes: Array<number>;
   protected _evented: boolean;
   protected _selected: boolean;
@@ -42,61 +43,46 @@ class Sprite extends ObservableMixin(Base) {
 
   constructor(props: SpriteJSON = {}) {
     super();
-    this.extendsValue('id', props.id, v4());
-    this.extendsValue('type', props.type, 'Sprite');
-    this.extendsValue('x', props.x, 0);
-    this.extendsValue('y', props.y, 0);
-    this.extendsValue('width', props.width, 0);
-    this.extendsValue('height', props.height, 0);
-    this.extendsValue('angle', props.angle, 0);
-    this.extendsValue('originX', props.originX, 0);
-    this.extendsValue('originY', props.originY, 0);
-    this.extendsValue('flipX', props.flipX, 0);
-    this.extendsValue('flipY', props.flipY, 0);
-    this.extendsValue('opacity', props.opacity, 1);
     this._supportNodes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1];
     this._evented = true;
     this._selected = false;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
     this._track = new Track({ supportNodes: this._supportNodes, owner: this });
+    this.fromJSON(props);
   }
 
   toJSON(): SpriteJSON {
     return {
       id: this.id,
       type: this.type,
-      x: this.getX(),
-      y: this.getY(),
-      width: this.getWidth(),
-      height: this.getHeight(),
-      angle: this.getAngle(),
-      originX: this.getOriginX(),
-      originY: this.getOriginY(),
-      flipX: this.getFlipX(),
-      flipY: this.getFlipY(),
-      opacity: this.getOpacity(),
+      x: this._x,
+      y: this._y,
+      width: this._width,
+      height: this._height,
+      angle: this._angle,
+      originX: this._originX,
+      originY: this._originY,
+      flipX: this._flipX,
+      flipY: this._flipY,
+      opacity: this._opacity,
     };
   }
 
   fromJSON(data: SpriteJSON): this {
-    this.extendsValue('id', data.id, this._id);
-    this.extendsValue('type', data.type, this._type);
-    this.extendsValue('x', data.x, this._x);
-    this.extendsValue('y', data.y, this._y);
-    this.extendsValue('width', data.width, this._width);
-    this.extendsValue('height', data.height, this._height);
-    this.extendsValue('angle', data.angle, this._angle);
-    this.extendsValue('originX', data.originX, this._originX);
-    this.extendsValue('originY', data.originY, this._originY);
-    this.extendsValue('flipX', data.flipX, this._flipX);
-    this.extendsValue('flipY', data.flipY, this._flipY);
-    this.extendsValue('opacity', data.opacity, this._opacity);
+    extendsValue.call(this, 'id', data.id, this._id);
+    extendsValue.call(this, 'type', data.type, this._type);
+    extendsValue.call(this, 'x', data.x, this._x);
+    extendsValue.call(this, 'y', data.y, this._y);
+    extendsValue.call(this, 'width', data.width, this._width);
+    extendsValue.call(this, 'height', data.height, this._height);
+    extendsValue.call(this, 'angle', data.angle, this._angle);
+    extendsValue.call(this, 'originX', data.originX, this._originX);
+    extendsValue.call(this, 'originY', data.originY, this._originY);
+    extendsValue.call(this, 'flipX', data.flipX, this._flipX);
+    extendsValue.call(this, 'flipY', data.flipY, this._flipY);
+    extendsValue.call(this, 'opacity', data.opacity, this._opacity);
     return this;
-  }
-
-  protected extendsValue(key: string, value: any, defalultValue: any): void {
-    this[`_${key}`] = isUndefined(value) ? defalultValue : value;
   }
 
   /**
@@ -426,7 +412,7 @@ class Sprite extends ObservableMixin(Base) {
   /**
    * @description 渲染元素
    */
-  render(ctx) {
+  render(ctx: CanvasRenderingContext2D) {
     const { WILL_RENDER, DID_RENDER } = eventConstant;
     const { x, y, width, height } = this.rect;
     const horizontalOffset = width / 2;
@@ -445,7 +431,7 @@ class Sprite extends ObservableMixin(Base) {
    * @description 渲染控制器
    * @param {*} ctx
    */
-  renderTrack(ctx) {
+  renderTrack(ctx: CanvasRenderingContext2D) {
     this._track.render(ctx);
   }
 
@@ -457,7 +443,7 @@ class Sprite extends ObservableMixin(Base) {
    * @param {number} verctor.y
    * @param {object} prevEncodeData
    */
-  transform(trackNode, verctor, prevEncodeData) {
+  transform(trackNode: number, verctor: Pos, prevEncodeData: object) {
     const {
       SELF,
       LEFT_TOP,
@@ -499,7 +485,7 @@ class Sprite extends ObservableMixin(Base) {
    * @param {*} prevEncodeData
    * @param {*} verctor
    */
-  _move(prevEncodeData, verctor) {
+  _move(prevEncodeData: EncodeJSON, verctor: Pos) {
     const { x: verctorX, y: verctorY } = verctor;
     const { x: prevX, y: prevY } = prevEncodeData;
     this.setX(prevX + verctorX).setY(prevY + verctorY);
@@ -511,7 +497,7 @@ class Sprite extends ObservableMixin(Base) {
    * @param {*} prevEncodeData
    * @param {*} verctor
    */
-  _resieze(trackNode, prevEncodeData, verctor) {
+  _resieze(trackNode: number, prevEncodeData: EncodeJSON, verctor: Pos) {
     const { x: verctorX, y: verctorY } = calcPointWithAngle(verctor, this._angle);
     const preRect = {
       x: prevEncodeData.x,
@@ -582,7 +568,7 @@ class Sprite extends ObservableMixin(Base) {
    * @description 旋转
    * @param {*} verctor
    */
-  _rotate(verctor) {
+  _rotate(verctor: Pos) {
     let angle;
     const centerPos = calcPointInRect(constant.CENTER, this.rect);
     const { x, y } = calcVertor(centerPos, verctor);

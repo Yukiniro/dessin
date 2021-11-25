@@ -107,7 +107,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         this._hasMousedown = true;
         if (this._recordSprite) {
           this._recordTrackNode = this._recordSprite.calcTrackNode(this._recordPoint);
-          this._recordSpriteData = this._recordSprite.encode();
+          this._recordSpriteData = this._recordSprite.toJSON();
           this.selectSprite(this._recordSprite.id);
         } else {
           this.deselectAll();

@@ -6,12 +6,12 @@ import Sprite from './sprite';
 
 class Text extends Sprite {
   protected _fontSize: number = 36;
-  protected _fontStyle: string = 'noraml';
+  protected _fontStyle: string = 'normal';
   protected _fontWeight: number | string = 'normal';
   protected _fontFamily: string = 'sans-serif';
   protected _textAlign: string = 'center';
   protected _lineHeight: number = 1.2;
-  protected _fillColor: string = '#FFFFFF';
+  protected _fillColor: string = '#000000';
   protected _strokeColor: string = '#FFFFFF';
   protected _texts: Array<string> = ['Enter Your Text'];
   protected _fontBoundingBoxAscent: number = 0;
@@ -48,6 +48,7 @@ class Text extends Sprite {
     extendsValue.call(this, 'fontWeight', data.fontWeight, this._fontWeight);
     extendsValue.call(this, 'textAlign', data.textAlign, this._textAlign);
     extendsValue.call(this, 'lineHeight', data.lineHeight, this._lineHeight);
+    extendsValue.call(this, 'texts', deepClone(data.texts), this._texts);
     this.initSize();
     this.renderCache();
     return this;

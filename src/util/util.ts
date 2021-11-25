@@ -60,7 +60,7 @@ export function removeEventListener(
 
 export function css(element: HTMLElement, style: { [key: string]: any }): void {
   for (let key in style) {
-    if (hasOwnProperty.call(element, key)) {
+    if (hasOwnProperty.call(style, key)) {
       element.style[key as unknown as number] = style[key];
     }
   }
@@ -152,34 +152,34 @@ export function calcPointInRect(type: number, rect: Rect): Pos {
 }
 
 export function calcDiagonalInRect(type: number, rect: Rect): Pos {
-  let point = { x: 0, y: 0 };
+  let point = { x: 0, y: 0 } as Pos;
   switch (type) {
     case constant.LEFT_TOP:
-      point = this.calcPointInRect(constant.RIGHT_BOTTOM, rect);
+      point = calcPointInRect(constant.RIGHT_BOTTOM, rect);
       break;
     case constant.CENTER_TOP:
-      point = this.calcPointInRect(constant.CENTER_BOTTOM, rect);
+      point = calcPointInRect(constant.CENTER_BOTTOM, rect);
       break;
     case constant.RIGHT_TOP:
-      point = this.calcPointInRect(constant.LEFT_BOTTOM, rect);
+      point = calcPointInRect(constant.LEFT_BOTTOM, rect);
       break;
     case constant.RIGHT_CENTER:
-      point = this.calcPointInRect(constant.LEFT_CENTER, rect);
+      point = calcPointInRect(constant.LEFT_CENTER, rect);
       break;
     case constant.RIGHT_BOTTOM:
-      point = this.calcPointInRect(constant.LEFT_TOP, rect);
+      point = calcPointInRect(constant.LEFT_TOP, rect);
       break;
     case constant.CENTER_BOTTOM:
-      point = this.calcPointInRect(constant.CENTER_TOP, rect);
+      point = calcPointInRect(constant.CENTER_TOP, rect);
       break;
     case constant.LEFT_BOTTOM:
-      point = this.calcPointInRect(constant.RIGHT_TOP, rect);
+      point = calcPointInRect(constant.RIGHT_TOP, rect);
       break;
     case constant.LEFT_CENTER:
-      point = this.calcPointInRect(constant.RIGHT_CENTER, rect);
+      point = calcPointInRect(constant.RIGHT_CENTER, rect);
       break;
     default:
-      point = this.calcPointInRect(type, rect);
+      point = calcPointInRect(type, rect);
   }
   return point;
 }
@@ -285,7 +285,7 @@ export function fixAngle(angle: number): number {
  */
 export function adsorbAngle(angle: number, offset = 6): number {
   const angleToAbsorb = [0, 90, 180, 270, 360];
-  const ang = this.fixAngle(angle);
+  const ang = fixAngle(angle);
   const index = angleToAbsorb.findIndex((value) => Math.abs(value - ang) <= offset);
   return index === -1 ? ang : angleToAbsorb[index];
 }
@@ -300,7 +300,7 @@ export function adsorbAngle(angle: number, offset = 6): number {
  */
 export function calcPointWithAngle(point: Pos, angle: number): Pos {
   const { x, y } = point;
-  const radian = this.angleToRadian(angle);
+  const radian = angleToRadian(angle);
   const nextX = x * Math.cos(radian) + y * Math.sin(radian);
   const nextY = y * Math.cos(radian) - x * Math.sin(radian);
   return {
@@ -321,8 +321,8 @@ export function calcPointWithAngle(point: Pos, angle: number): Pos {
  */
 export function calcRectWithAngle(rect: Rect, angle: number): Rect {
   const { width, height } = rect;
-  const centerPoint = this.calcPointInRect(constant.CENTER, rect);
-  const nextCenterPoint = this.calcPointWithAngle(centerPoint, angle);
+  const centerPoint = calcPointInRect(constant.CENTER, rect);
+  const nextCenterPoint = calcPointWithAngle(centerPoint, angle);
   const nextX = nextCenterPoint.x - width / 2;
   const nextY = nextCenterPoint.y - height / 2;
   return {

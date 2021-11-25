@@ -1,5 +1,6 @@
 node_modules/
 dist/
+build/
 demo/
 .eslintrc.js
 prettier.config.js

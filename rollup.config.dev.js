@@ -5,13 +5,11 @@ const { babel } = require('@rollup/plugin-babel');
 const server = require('rollup-plugin-serve');
 const livereload = require('rollup-plugin-livereload');
 const fileSize = require('rollup-plugin-filesize');
-const typescript = require('@rollup/plugin-typescript');
+const typescript = require('rollup-plugin-typescript2');
 
 function resolve(filePath) {
   return path.resolve(__dirname, filePath);
 }
-
-console.log(nodeResolve);
 
 module.exports = {
   input: resolve('src/index.ts'),
@@ -19,23 +17,19 @@ module.exports = {
     {
       file: resolve('dist/dessin.js'),
       format: 'esm',
-      sourcemap: true,
     },
     {
       file: resolve('dist/dessin.esm.js'),
       format: 'esm',
-      sourcemap: true,
     },
     {
-      file: resolve('dist/index.umd.js'),
+      file: resolve('dist/dessin.umd.js'),
       format: 'umd',
       name: 'Dessin',
-      sourcemap: true,
     },
     {
-      file: resolve('dist/index.cjs.js'),
+      file: resolve('dist/dessin.cjs.js'),
       format: 'cjs',
-      sourcemap: true,
     }
   ],
   plugins: [
@@ -43,7 +37,7 @@ module.exports = {
     server({
       open: true,
       host: 'localhost',
-      port: 3000,  
+      port: 8080,
       contentBase: [''],
       openPage: '/demo/index.html'
     }),
@@ -51,7 +45,11 @@ module.exports = {
     nodeResolve(),
     typescript(),
     babel({
-      presets: ['@babel/preset-env'],
+      babelHelpers: 'bundled',
+      presets: [
+        '@babel/preset-env',
+        '@babel/preset-typescript',
+      ],
     }),
     fileSize(),
   ],

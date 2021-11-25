@@ -4,35 +4,33 @@ const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const { babel } = require('@rollup/plugin-babel');
 const { uglify } = require('rollup-plugin-uglify');
 const fileSize = require('rollup-plugin-filesize');
-const typescript = require('@rollup/plugin-typescript');
+const typescript = require('rollup-plugin-typescript2');
 
 function resolve(filePath) {
   return path.resolve(__dirname, filePath);
 }
 
-console.log(nodeResolve);
-
 module.exports = {
   input: resolve('src/index.ts'),
   output: [
     {
-      file: resolve('dist/dessin.js'),
+      file: resolve('build/dessin.js'),
       format: 'esm',
       sourcemap: true,
     },
     {
-      file: resolve('dist/dessin.esm.js'),
+      file: resolve('build/dessin.esm.js'),
       format: 'esm',
       sourcemap: true,
     },
     {
-      file: resolve('dist/index.umd.js'),
+      file: resolve('build/dessin.umd.js'),
       format: 'umd',
       name: 'Dessin',
       sourcemap: true,
     },
     {
-      file: resolve('dist/index.cjs.js'),
+      file: resolve('build/dessin.cjs.js'),
       format: 'cjs',
       sourcemap: true,
     }
@@ -42,7 +40,11 @@ module.exports = {
     nodeResolve(),
     typescript(),
     babel({
-      presets: ['@babel/preset-env'],
+      babelHelpers: 'bundled',
+      presets: [
+        '@babel/preset-env',
+        '@babel/preset-typescript',
+      ],
     }),
     uglify(),
     fileSize(),

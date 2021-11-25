@@ -1,5 +1,5 @@
 import constant from '../constant/constant';
-import { Pos, Rect, Size, TrackJSON, TrackNodes } from '../types/types';
+import { Pos, Rect, Size, TrackNodes, TrackWithOnwer } from '../types/types';
 import {
   angleToRadian,
   calcRectWithAngle,
@@ -22,10 +22,6 @@ const TRACK_NODES = {
   ROTATE: 9,
   NONE: -1,
 };
-
-interface TrackWithOnwer extends TrackJSON {
-  owner: any;
-}
 
 class Track {
   protected _supportNodes: Array<number>;

@@ -46,6 +46,12 @@ export interface CircleJSON extends SpriteJSON {
   radius?: number;
 }
 
+export interface TrackWithOnwer extends TrackJSON {
+  owner: any;
+}
+
+export type EncodeJSON = SpriteJSON | TextJSON | RectJSON | CircleJSON;
+
 export interface TrackJSON {
   supportNodes?: Array<number>;
   lineColor?: string;
