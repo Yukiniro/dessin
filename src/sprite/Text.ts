@@ -1,50 +1,56 @@
 import config from '../config/config';
 import constant from '../constant/constant';
-import util from '../util/util';
+import { TextJSON, TextSize } from '../types/types';
+import { extendsValue, calcTextSize, deepClone } from '../util/util';
 import Sprite from './sprite';
 
 class Text extends Sprite {
-  constructor(props = {}) {
+  protected _fontSize: number = 36;
+  protected _fontStyle: string = 'noraml';
+  protected _fontWeight: number | string = 'normal';
+  protected _fontFamily: string = 'sans-serif';
+  protected _textAlign: string = 'center';
+  protected _lineHeight: number = 1.2;
+  protected _fillColor: string = '#FFFFFF';
+  protected _strokeColor: string = '#FFFFFF';
+  protected _texts: Array<string> = ['Enter Your Text'];
+  protected _fontBoundingBoxAscent: number = 0;
+
+  constructor(props: TextJSON = {}) {
     super(props);
     this._type = constant.SPRITE_TYPE_TEXT;
-    this._fontSize = this.extendsValue(props.fontSize, 36);
-    this._fontStyle = this.extendsValue(props.fontStyle, 'normal');
-    this._fontWeight = this.extendsValue(props.fontWeight, 'normal');
-    this._fontFamily = this.extendsValue(props.fontFamily, 'sans-serif');
-    this._textAlign = this.extendsValue(props.textAlign, 'center');
-    this._lineHeight = this.extendsValue(props.lineHeight, 1.2);
-    this._fillColor = this.extendsValue(props.fillColor, '#FFFFFF');
-    this._strokeColor = this.extendsValue(props.strokeColor, '#FFFFFF');
-    this._value = this.extendsValue(props.value, ['Enter Your Text']);
     this._supportNodes = [0, 2, 3, 4, 6, 7, 9];
     this._fontBoundingBoxAscent = 0;
-
+    this.fromJSON(props);
     this.initSize();
     this.renderCache();
   }
 
-  encode() {
+  toJSON(): TextJSON {
     return {
-      ...super.encode(),
-      fontSize: this.getFontSize(),
-      fontStyle: this.getFontStyle(),
-      fontWeight: this.getFontWeight(),
-      fontFamily: this.getFontFamily(),
-      textAlign: this.getTextAlign(),
-      lienHeight: this.getLineHeight(),
+      ...super.toJSON(),
+      fontSize: this._fontSize,
+      fontStyle: this._fontStyle,
+      fontWeight: this._fontWeight,
+      fontFamily: this._fontFamily,
+      textAlign: this._textAlign,
+      lineHeight: this._lineHeight,
+      fillColor: this._fillColor,
+      strokeColor: this._strokeColor,
+      texts: deepClone(this._texts),
     };
   }
 
-  decode(data) {
-    super.decode(data);
-    this._fontSize = this.extendsValue(data.fontSize, this.getFontSize());
-    this._fontStyle = this.extendsValue(data.fontStyle, this.getFontStyle());
-    this._fontWeight = this.extendsValue(data.fontWeight, this.getFontWeight());
-    this._textAlign = this.extendsValue(data.textAlign, this.getTextAlign());
-    this._lineHeight = this.extendsValue(data.lineHeight, this.getLineHeight());
-
+  fromJSON(data: TextJSON): this {
+    super.fromJSON(data);
+    extendsValue.call(this, 'fontSize', data.fontSize, this._fontSize);
+    extendsValue.call(this, 'fontStyle', data.fontStyle, this._fontStyle);
+    extendsValue.call(this, 'fontWeight', data.fontWeight, this._fontWeight);
+    extendsValue.call(this, 'textAlign', data.textAlign, this._textAlign);
+    extendsValue.call(this, 'lineHeight', data.lineHeight, this._lineHeight);
     this.initSize();
     this.renderCache();
+    return this;
   }
 
   /**
@@ -54,8 +60,8 @@ class Text extends Sprite {
    * @returns {number} info.height
    * @returns {number} info.fontBoundingBoxAscent
    */
-  _calcSize() {
-    return this._value.reduce(
+  _calcSize(): TextSize {
+    return this._texts.reduce(
       (finalValue, text) => {
         const opstions = {
           fontSize: this._fontSize,
@@ -63,7 +69,7 @@ class Text extends Sprite {
           fontStyle: this._fontStyle,
           fontWeight: this._fontWeight,
         };
-        const { width, height, fontBoundingBoxAscent } = util.calcTextSize(
+        const { width, height, fontBoundingBoxAscent } = calcTextSize(
           this._cacheCtx,
           text,
           opstions
@@ -82,7 +88,7 @@ class Text extends Sprite {
    * @description 返回字号
    * @returns
    */
-  getFontSize() {
+  getFontSize(): number {
     return this._fontSize;
   }
 
@@ -91,7 +97,7 @@ class Text extends Sprite {
    * @param {number} fontSize
    * @returns
    */
-  setFontSize(fontSize) {
+  setFontSize(fontSize: number): this {
     this._fontSize = fontSize;
     return this;
   }
@@ -100,7 +106,7 @@ class Text extends Sprite {
    * @description 返回字体样式
    * @returns
    */
-  getFontStyle() {
+  getFontStyle(): string {
     return this._fontStyle;
   }
 
@@ -109,7 +115,7 @@ class Text extends Sprite {
    * @param {string} fontStyle
    * @returns
    */
-  setFontStyle(fontStyle) {
+  setFontStyle(fontStyle: string): this {
     this._fontStyle = fontStyle;
     return this;
   }
@@ -118,7 +124,7 @@ class Text extends Sprite {
    * @description 返回字体粗细
    * @returns {string|number}
    */
-  getFontWeight() {
+  getFontWeight(): string | number {
     return this._fontWeight;
   }
 
@@ -127,7 +133,7 @@ class Text extends Sprite {
    * @param {string|number} fontWeight
    * @returns
    */
-  setFontWeight(fontWeight) {
+  setFontWeight(fontWeight: string | number): this {
     this._fontWeight = fontWeight;
     return this;
   }
@@ -136,7 +142,7 @@ class Text extends Sprite {
    * @description 返回字体
    * @returns {string}
    */
-  getFontFamily() {
+  getFontFamily(): string {
     return this._fontFamily;
   }
 
@@ -145,7 +151,7 @@ class Text extends Sprite {
    * @param {string} fontFamily
    * @returns
    */
-  setFontFamily(fontFamily) {
+  setFontFamily(fontFamily: string): this {
     this._fontFamily = fontFamily;
     return this;
   }
@@ -154,7 +160,7 @@ class Text extends Sprite {
    * @description 返回文字对齐
    * @returns {string}
    */
-  getTextAlign() {
+  getTextAlign(): string {
     return this._textAlign;
   }
 
@@ -163,7 +169,7 @@ class Text extends Sprite {
    * @param {string} textAlign
    * @returns
    */
-  setTextAlign(textAlign) {
+  setTextAlign(textAlign: string): this {
     this._textAlign = textAlign;
     return this;
   }
@@ -172,7 +178,7 @@ class Text extends Sprite {
    * @description 返回文字行高
    * @returns {number}
    */
-  getLineHeight() {
+  getLineHeight(): number {
     return this._lineHeight;
   }
 
@@ -181,7 +187,7 @@ class Text extends Sprite {
    * @param {number} lineHeight
    * @returns
    */
-  setLineHeight(lineHeight) {
+  setLineHeight(lineHeight: number): this {
     this._lineHeight = lineHeight;
     return this;
   }
@@ -190,16 +196,16 @@ class Text extends Sprite {
    * @description 返回填充颜色
    * @returns {string}
    */
-  getFillColor() {
+  getFillColor(): string {
     return this._fillColor;
   }
 
   /**
    * @description 设置填充颜色
-   * @param {*} color
+   * @param {string} color
    * @returns
    */
-  setFillColor(color) {
+  setFillColor(color: string): this {
     this._fillColor = color;
     return this;
   }
@@ -208,7 +214,7 @@ class Text extends Sprite {
    * @description 返回边框颜色
    * @returns
    */
-  getStrokeColor() {
+  getStrokeColor(): string {
     return this._strokeColor;
   }
 
@@ -217,7 +223,7 @@ class Text extends Sprite {
    * @param {string} color
    * @returns
    */
-  setStrokeColor(color) {
+  setStrokeColor(color: string): this {
     this._strokeColor = color;
     return this;
   }
@@ -225,13 +231,13 @@ class Text extends Sprite {
   /**
    * @description 初始化尺寸
    */
-  initSize() {
+  initSize(): void {
     const { width, height, fontBoundingBoxAscent } = this._calcSize();
     this.setSize({ width, height });
     this._fontBoundingBoxAscent = fontBoundingBoxAscent;
   }
 
-  renderCache() {
+  renderCache(): this {
     const { perPixel } = config;
     let x = 0;
     let y = 0;
@@ -254,11 +260,13 @@ class Text extends Sprite {
     this._cacheCtx.font = `${this._fontStyle} ${this._fontWeight} ${fontSize}px ${this._fontFamily}`;
     this._cacheCtx.fillStyle = this._fillColor;
     this._cacheCtx.strokeStyle = this._strokeColor;
-    this._cacheCtx.textAlign = this._textAlign;
-    this._value.forEach((text, index) => {
+    this._cacheCtx.textAlign = this._textAlign as CanvasTextAlign;
+    this._texts.forEach((text, index) => {
       y = index * this._lineHeight * fontSize + this._fontBoundingBoxAscent;
       this._cacheCtx.fillText(text, x, y);
     });
+
+    return this;
   }
 }
 

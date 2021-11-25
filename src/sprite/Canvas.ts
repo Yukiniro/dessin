@@ -1,10 +1,27 @@
-import util from '../util/util';
-import collection from '../mixin/collection.mixin';
-import observable from '../mixin/observable.mixin';
-import Track from './track';
+import { css, calcCursorPoint, calcVertor, clearCanvas } from '../util/util';
+import Track from './Track';
+import { Pos, Rect, Size } from '../types/types';
+import CollectionMixin from '../mixin/collection.mixin';
+import ObservableMixin from '../mixin/observable.mixin';
+import Base from './Base';
+import Sprite from './sprite';
 
-class Canvas {
-  constructor(props = {}) {
+class Canvas extends ObservableMixin(CollectionMixin(Base)) {
+  protected _size: Size = { width: 500, height: 500 };
+  protected _viewResponse: number = 1;
+  protected _lowerCanvas: HTMLCanvasElement;
+  protected _upperCanvas: HTMLCanvasElement;
+  protected _body: HTMLElement;
+  protected _willOperateSprite: any;
+  protected _hasMousedown: boolean;
+  protected _recordSprite: any;
+  protected _recordPoint: Pos;
+  protected _recordTrackNode: number;
+  protected _recordSpriteData: any;
+  protected _viewRect: Rect;
+
+  constructor(props: { canvas?: HTMLCanvasElement } = {}) {
+    super();
     this._lowerCanvas = props && props.canvas; // 渲染视图
     this._upperCanvas = document.createElement('canvas'); // 事件响应、辅助线视图
     this._size = { width: 500, height: 500 };
@@ -27,46 +44,46 @@ class Canvas {
   /**
    * @description 初始化视图
    */
-  _initView() {
+  _initView(): void {
     if (!this._lowerCanvas) {
       throw new Error('You have to bind a canvas!');
     } else {
-      const parent = this._lowerCanvas.parentNode;
+      const parent = this._lowerCanvas.parentNode as HTMLElement;
       const parentPositionStyle = parent.style.position;
       parent.insertBefore(this._upperCanvas, this._lowerCanvas.nextSibling);
       if (!parentPositionStyle || parentPositionStyle === 'static') {
-        util.css(parent, { position: 'relative' });
+        css(parent, { position: 'relative' });
       }
-      util.css(this._lowerCanvas, {
+      css(this._lowerCanvas, {
         position: 'absolute',
       });
-      util.css(this._upperCanvas, {
+      css(this._upperCanvas, {
         position: 'absolute',
         'pointer-events': 'none',
       });
     }
   }
 
-  _bindEvent() {
+  _bindEvent(): void {
     this._lowerCanvas.addEventListener('mousedown', this._fireEvent);
     this._lowerCanvas.addEventListener('clcik', this._fireEvent);
     this._lowerCanvas.addEventListener('dblclick', this._fireEvent);
     this._lowerCanvas.addEventListener('mousemove', this._fireEvent);
   }
 
-  _unbindEvent() {
+  _unbindEvent(): void {
     this._lowerCanvas.removeEventListener('mousedown', this._fireEvent);
     this._lowerCanvas.removeEventListener('clcik', this._fireEvent);
     this._lowerCanvas.removeEventListener('dblclick', this._fireEvent);
     this._lowerCanvas.removeEventListener('mouseover', this._fireEvent);
   }
 
-  _bindEventForBody() {
+  _bindEventForBody(): void {
     this._body.addEventListener('mousemove', this._fireEvent);
     this._body.addEventListener('mouseup', this._fireEvent);
   }
 
-  _unbindEventForBody() {
+  _unbindEventForBody(): void {
     this._body.removeEventListener('mousemove', this._fireEvent);
     this._body.removeEventListener('mouseup', this._fireEvent);
   }
@@ -75,8 +92,8 @@ class Canvas {
    * @description 触发鼠标事件
    * @param {*} mouseEvent
    */
-  _fireEvent(mouseEvent) {
-    const cursorPoint = util.calcCursorPoint(mouseEvent);
+  _fireEvent(mouseEvent: MouseEvent): void {
+    const cursorPoint = calcCursorPoint(mouseEvent);
     const offsetCursorPoint = {
       x: cursorPoint.x - this._viewRect.x,
       y: cursorPoint.y - this._viewRect.y,
@@ -105,7 +122,7 @@ class Canvas {
           const verctor =
             this._recordTrackNode === Track.TRACK_NODES().ROTATE
               ? offsetCursorPoint
-              : util.calcVertor(this._recordPoint, offsetCursorPoint);
+              : calcVertor(this._recordPoint, offsetCursorPoint);
           this._recordSprite.transform(this._recordTrackNode, verctor, this._recordSpriteData);
           this.render();
         } else {
@@ -139,7 +156,7 @@ class Canvas {
    * @description 选中指定id的对象并反选其他对象
    * @param {string} id
    */
-  selectSprite(id) {
+  selectSprite(id: string): this {
     if (!id) return this.deselectAll();
     this.forEachItem((item) => {
       if (item.id === id) {
@@ -170,7 +187,7 @@ class Canvas {
    * @param {number} point.y
    * @returns {sprite}
    */
-  _getTopSprite(point) {
+  _getTopSprite(point: Pos): Sprite {
     let top = null;
     let index = this.size();
     const allItems = this.all();
@@ -222,14 +239,14 @@ class Canvas {
    * @description 清楚主视图画布
    */
   clearLowerCanvas() {
-    util.clearCanvas(this._lowerCanvas);
+    clearCanvas(this._lowerCanvas);
   }
 
   /**
    * @description 清楚控制器画布
    */
   clearUpperCanvas() {
-    util.clearCanvas(this._upperCanvas);
+    clearCanvas(this._upperCanvas);
   }
 
   /**
@@ -262,7 +279,7 @@ class Canvas {
    * @returns {number} size.widht
    * @returns {number} size.height
    */
-  getSize() {
+  getSize(): Size {
     return this._size;
   }
 
@@ -273,14 +290,11 @@ class Canvas {
    * @param {number} size.height
    * @return {object}
    */
-  setSize(size) {
+  setSize(size: Size): this {
     this._size = { ...size };
     this._updateView();
     return this;
   }
 }
-
-util.mixin(Canvas.prototype, collection);
-util.mixin(Canvas.prototype, observable);
 
 export default Canvas;

@@ -4,6 +4,7 @@ const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const { babel } = require('@rollup/plugin-babel');
 const { uglify } = require('rollup-plugin-uglify');
 const fileSize = require('rollup-plugin-filesize');
+const typescript = require('@rollup/plugin-typescript');
 
 function resolve(filePath) {
   return path.resolve(__dirname, filePath);
@@ -12,7 +13,7 @@ function resolve(filePath) {
 console.log(nodeResolve);
 
 module.exports = {
-  input: resolve('src/index.js'),
+  input: resolve('src/index.ts'),
   output: [
     {
       file: resolve('dist/dessin.js'),
@@ -39,6 +40,7 @@ module.exports = {
   plugins: [
     commonjs(),
     nodeResolve(),
+    typescript(),
     babel({
       presets: ['@babel/preset-env'],
     }),

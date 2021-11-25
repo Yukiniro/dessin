@@ -1,34 +1,68 @@
 import constant from '../constant/constant';
 import eventConstant from '../constant/event-constant';
-import observableMixin from '../mixin/observable.mixin';
-import util from '../util/util';
+import {
+  angleToRadian,
+  isUndefined,
+  isObject,
+  calcPointWithAngle,
+  calcRectWithAngle,
+  calcDiagonalInRect,
+  calcPointInRect,
+  isPointInRect,
+  fixAngle,
+  adsorbAngle,
+  radianToAngle,
+  calcVertor,
+} from '../util/util';
 import Track from './track';
 import { v4 } from 'uuid';
+import { Pos, Rect, Size, SpriteJSON } from '../types/types';
+import ObservableMixin from '../mixin/observable.mixin';
+import Base from './Base';
 
-class Sprite {
-  constructor(props = {}) {
-    this._id = v4();
-    this._type = this.extendsValue(props.type, '');
-    this._x = this.extendsValue(props.x, 0);
-    this._y = this.extendsValue(props.y, 0);
-    this._width = this.extendsValue(props.width, 0);
-    this._height = this.extendsValue(props.height, 0);
-    this._angle = this.extendsValue(props.angle, 0);
-    this._originX = this.extendsValue(props.originX, 0);
-    this._originY = this.extendsValue(props.originY, 0);
-    this._flipX = this.extendsValue(props.flipX, 1);
-    this._flipY = this.extendsValue(props.flipY, 0);
-    this._opacity = this.extendsValue(props.opacity, 1);
-    this._value = this.extendsValue(props.value, '');
+class Sprite extends ObservableMixin(Base) {
+  protected _id: string;
+  protected _type: string;
+  protected _x: number;
+  protected _y: number;
+  protected _width: number;
+  protected _height: number;
+  protected _angle: number;
+  protected _originX: number;
+  protected _originY: number;
+  protected _flipX: number;
+  protected _flipY: number;
+  protected _opacity: number;
+  protected _supportNodes: Array<number>;
+  protected _evented: boolean;
+  protected _selected: boolean;
+  protected _cacheView: HTMLCanvasElement;
+  protected _cacheCtx: CanvasRenderingContext2D;
+  protected _track: Track;
+
+  constructor(props: SpriteJSON = {}) {
+    super();
+    this.extendsValue('id', props.id, v4());
+    this.extendsValue('type', props.type, 'Sprite');
+    this.extendsValue('x', props.x, 0);
+    this.extendsValue('y', props.y, 0);
+    this.extendsValue('width', props.width, 0);
+    this.extendsValue('height', props.height, 0);
+    this.extendsValue('angle', props.angle, 0);
+    this.extendsValue('originX', props.originX, 0);
+    this.extendsValue('originY', props.originY, 0);
+    this.extendsValue('flipX', props.flipX, 0);
+    this.extendsValue('flipY', props.flipY, 0);
+    this.extendsValue('opacity', props.opacity, 1);
     this._supportNodes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1];
-    this._evented = this.extendsValue(props._evented, true);
+    this._evented = true;
     this._selected = false;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
     this._track = new Track({ supportNodes: this._supportNodes, owner: this });
   }
 
-  encode() {
+  toJSON(): SpriteJSON {
     return {
       id: this.id,
       type: this.type,
@@ -42,41 +76,40 @@ class Sprite {
       flipX: this.getFlipX(),
       flipY: this.getFlipY(),
       opacity: this.getOpacity(),
-      value: this.getValue(),
     };
   }
 
-  decode(data) {
-    this._id = this.extendsValue(data.id, v4());
-    this._type = this.extendsValue(data.type, this.getType());
-    this._x = this.extendsValue(data.x, this.getX());
-    this._y = this.extendsValue(data.y, this.getY());
-    this._width = this.extendsValue(data.width, this.getWidth());
-    this._height = this.extendsValue(data.height, this.getHeight());
-    this._angle = this.extendsValue(data.angle, this.getAngle());
-    this._originX = this.extendsValue(data.originX, this.getOriginX());
-    this._originY = this.extendsValue(data.originY, this.getOriginY());
-    this._flipX = this.extendsValue(data.flipX, this.getFlipY());
-    this._flipY = this.extendsValue(data.flipY, this.getFlipY());
-    this._opacity = this.extendsValue(data.opacity, this.getOpacity());
-    this._value = this.extendsValue(data.value, this.getValue());
+  fromJSON(data: SpriteJSON): this {
+    this.extendsValue('id', data.id, this._id);
+    this.extendsValue('type', data.type, this._type);
+    this.extendsValue('x', data.x, this._x);
+    this.extendsValue('y', data.y, this._y);
+    this.extendsValue('width', data.width, this._width);
+    this.extendsValue('height', data.height, this._height);
+    this.extendsValue('angle', data.angle, this._angle);
+    this.extendsValue('originX', data.originX, this._originX);
+    this.extendsValue('originY', data.originY, this._originY);
+    this.extendsValue('flipX', data.flipX, this._flipX);
+    this.extendsValue('flipY', data.flipY, this._flipY);
+    this.extendsValue('opacity', data.opacity, this._opacity);
+    return this;
   }
 
-  extendsValue(value, defalultValue) {
-    return util.isUndefined(value) ? defalultValue : value;
+  protected extendsValue(key: string, value: any, defalultValue: any): void {
+    this[`_${key}`] = isUndefined(value) ? defalultValue : value;
   }
 
   /**
    * @description 返回类型
    */
-  get type() {
+  get type(): string {
     return this._type;
   }
 
   /**
    * @description 返回渲染框的信息
    */
-  get rect() {
+  get rect(): Rect {
     return {
       ...this.getPos(),
       ...this.getSize(),
@@ -86,7 +119,7 @@ class Sprite {
   /**
    * @description 返回id
    */
-  get id() {
+  get id(): string {
     return this._id;
   }
 
@@ -94,7 +127,7 @@ class Sprite {
    * @description 设置是否支持事件
    * @param {boolean} isSupport
    */
-  setEventSupport(isSupport) {
+  setEventSupport(isSupport: boolean): void {
     this._evented = isSupport;
   }
 
@@ -102,33 +135,15 @@ class Sprite {
    * @description 返回是否支持事件
    * @returns
    */
-  getEventSuppor() {
+  getEventSuppor(): boolean {
     return this._evented;
-  }
-
-  /**
-   * @description 返回类型
-   * @returns
-   */
-  getValue() {
-    return this._value;
-  }
-
-  /**
-   * @description 设置属性
-   * @param {*} value
-   * @returns
-   */
-  setValue(value) {
-    this._value = value;
-    return this;
   }
 
   /**
    * @description 返回宽度
    * @returns {number}
    */
-  getWidth() {
+  getWidth(): number {
     return this._width;
   }
 
@@ -137,7 +152,7 @@ class Sprite {
    * @param {number} width
    * @returns
    */
-  setWidth(width) {
+  setWidth(width: number): this {
     this._width = width;
     return this;
   }
@@ -155,7 +170,7 @@ class Sprite {
    * @param {number} height
    * @returns
    */
-  setHeight(height) {
+  setHeight(height: number): this {
     this._height = height;
     return this;
   }
@@ -166,7 +181,7 @@ class Sprite {
    * @returns {number} size.width
    * @returns {number} size.height
    */
-  getSize() {
+  getSize(): Size {
     return { width: this.getWidth(), height: this.getHeight() };
   }
 
@@ -177,8 +192,7 @@ class Sprite {
    * @param {number} size.height
    * @returns
    */
-  setSize(size) {
-    const { isUndefined, isObject } = util;
+  setSize(size: Size): this {
     if (!isObject(size)) throw new Error(constant.ARGUMENT_ERROR);
     if (!isUndefined(size.width)) this._width = size.width;
     if (!isUndefined(size.height)) this._height = size.height;
@@ -189,7 +203,7 @@ class Sprite {
    * @description 返回x轴坐标
    * @returns {number}
    */
-  getX() {
+  getX(): number {
     return this._x;
   }
 
@@ -198,7 +212,7 @@ class Sprite {
    * @param {number} x
    * @returns
    */
-  setX(x) {
+  setX(x: number): this {
     this._x = x;
     return this;
   }
@@ -207,7 +221,7 @@ class Sprite {
    * @description 返回y轴坐标
    * @returns {number} y
    */
-  getY() {
+  getY(): number {
     return this._y;
   }
 
@@ -216,7 +230,7 @@ class Sprite {
    * @param {number} y
    * @returns
    */
-  setY(y) {
+  setY(y: number): this {
     this._y = y;
     return this;
   }
@@ -238,8 +252,7 @@ class Sprite {
    * @param {number} position.y
    * @returns
    */
-  setPos(position) {
-    const { isObject, isUndefined } = util;
+  setPos(position: Pos): this {
     if (!isObject(position)) throw new Error(constant.ARGUMENT_ERROR);
     if (!isUndefined(position.x)) this._x = position.x;
     if (!isUndefined(position.y)) this._y = position.y;
@@ -250,7 +263,7 @@ class Sprite {
    * @description 返回透明度
    * @returns {number}
    */
-  getOpacity() {
+  getOpacity(): number {
     return this._opacity;
   }
 
@@ -258,7 +271,7 @@ class Sprite {
    * @description 设置透明度
    * @param {number} opacity
    */
-  setOpacity(opacity) {
+  setOpacity(opacity: number): this {
     this._opacity = opacity;
     return this;
   }
@@ -276,7 +289,7 @@ class Sprite {
    * @param {number} originX
    * @returns
    */
-  setOriginX(originX) {
+  setOriginX(originX: number): this {
     this._originX = originX;
     return this;
   }
@@ -294,7 +307,7 @@ class Sprite {
    * @param {*} originY
    * @returns
    */
-  setOriginY(originY) {
+  setOriginY(originY: number): this {
     this._originY = originY;
     return this;
   }
@@ -305,7 +318,7 @@ class Sprite {
    * @returns {number} origin.x
    * @returns {number} origin.y
    */
-  getOrigin() {
+  getOrigin(): Pos {
     return { x: this._originX, y: this._originY };
   }
 
@@ -316,8 +329,7 @@ class Sprite {
    * @param {number} origin.y
    * @returns
    */
-  setOrigin(origin) {
-    const { isObject, isUndefined } = util;
+  setOrigin(origin: Pos): this {
     if (!isObject(origin)) throw new Error(constant.ARGUMENT_ERROR);
     if (!isUndefined(origin.x)) this._originX = origin.x;
     if (!isUndefined(origin.y)) this._originY = origin.y;
@@ -328,7 +340,7 @@ class Sprite {
    * @description 返回旋转角度
    * @returns {number}
    */
-  getAngle() {
+  getAngle(): number {
     return this._angle;
   }
 
@@ -337,7 +349,7 @@ class Sprite {
    * @param {number} angle
    * @returns
    */
-  setAngle(angle) {
+  setAngle(angle: number): this {
     this._angle = angle;
     return this;
   }
@@ -346,7 +358,7 @@ class Sprite {
    * @description 返回水平翻转
    * @returns
    */
-  getFlipX() {
+  getFlipX(): number {
     return this._flipX;
   }
 
@@ -355,7 +367,7 @@ class Sprite {
    * @param {number} x
    * @returns
    */
-  setFlipX(x) {
+  setFlipX(x: number): this {
     this._flipX = x;
     return this;
   }
@@ -364,7 +376,7 @@ class Sprite {
    * @description 返回垂直翻转
    * @returns
    */
-  getFlipY() {
+  getFlipY(): number {
     return this._flipY;
   }
 
@@ -373,7 +385,7 @@ class Sprite {
    * @param {number} y
    * @returns
    */
-  setFlipY(y) {
+  setFlipY(y: number): this {
     this._flipY = y;
     return this;
   }
@@ -382,7 +394,7 @@ class Sprite {
    * @description 返回是否选中
    * @returns {boolean}
    */
-  isSelected() {
+  isSelected(): boolean {
     return this._selected;
   }
 
@@ -422,7 +434,7 @@ class Sprite {
     this.fire(WILL_RENDER, { target: this });
     ctx.save();
     ctx.translate(x + horizontalOffset, y + verticalOffset);
-    ctx.rotate(util.angleToRadian(this._angle));
+    ctx.rotate(angleToRadian(this._angle));
     ctx.drawImage(this._cacheView, -horizontalOffset, -verticalOffset, width, height);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.restore();
@@ -500,17 +512,17 @@ class Sprite {
    * @param {*} verctor
    */
   _resieze(trackNode, prevEncodeData, verctor) {
-    const { x: verctorX, y: verctorY } = util.calcPointWithAngle(verctor, this._angle);
+    const { x: verctorX, y: verctorY } = calcPointWithAngle(verctor, this._angle);
     const preRect = {
       x: prevEncodeData.x,
       y: prevEncodeData.y,
       width: prevEncodeData.width,
       height: prevEncodeData.height,
     };
-    const preRectWithAngle = util.calcRectWithAngle(preRect, this._angle);
+    const preRectWithAngle = calcRectWithAngle(preRect, this._angle);
     const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = preRectWithAngle;
     const ratio = prevWidth / prevHeight;
-    const { x: diagonalX, y: diagonalY } = util.calcDiagonalInRect(trackNode, preRectWithAngle);
+    const { x: diagonalX, y: diagonalY } = calcDiagonalInRect(trackNode, preRectWithAngle);
     const nextRectWithAngle = { ...preRectWithAngle };
     const {
       LEFT_TOP,
@@ -562,7 +574,7 @@ class Sprite {
         break;
     }
 
-    const nextRect = util.calcRectWithAngle(nextRectWithAngle, -this._angle);
+    const nextRect = calcRectWithAngle(nextRectWithAngle, -this._angle);
     this.setX(nextRect.x).setY(nextRect.y).setWidth(nextRect.width).setHeight(nextRect.height);
   }
 
@@ -572,10 +584,10 @@ class Sprite {
    */
   _rotate(verctor) {
     let angle;
-    const centerPos = util.calcPointInRect(constant.CENTER, this.rect);
-    const { x, y } = util.calcVertor(centerPos, verctor);
-    angle = util.radianToAngle(Math.atan2(-y, x));
-    angle = util.fixAngle(util.adsorbAngle(90 - angle));
+    const centerPos = calcPointInRect(constant.CENTER, this.rect);
+    const { x, y } = calcVertor(centerPos, verctor);
+    angle = radianToAngle(Math.atan2(-y, x));
+    angle = fixAngle(adsorbAngle(90 - angle));
     this.setAngle(angle);
   }
 
@@ -584,8 +596,8 @@ class Sprite {
    */
   destroy() {
     this.fire(eventConstant.WILL_DESTROY, { target: this });
-    this.resetListener();
     this.fire(eventConstant.DID_DESTROY);
+    this.resetListener();
   }
 
   /**
@@ -595,8 +607,8 @@ class Sprite {
    * @param {number} point.y
    * @returns {boolean}
    */
-  isPointInSelf(point) {
-    return util.isPointInRect(point, this.rect);
+  isPointInSelf(point: Pos): boolean {
+    return isPointInRect(point, this.rect);
   }
 
   /**
@@ -606,11 +618,9 @@ class Sprite {
    * @param {number} point.y
    * @returns
    */
-  calcTrackNode(point) {
+  calcTrackNode(point: Pos): number {
     return this._track.clacTrackNodeWithPoint(point);
   }
 }
-
-util.mixin(Sprite.prototype, observableMixin);
 
 export default Sprite;
