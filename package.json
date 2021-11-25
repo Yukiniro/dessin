@@ -58,9 +58,6 @@
     "uuid": "^8.3.2",
     "yorkie": "^2.0.0"
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
-  },
   "lint-staged": {
     "src/**/*.js": [
       "git add",
