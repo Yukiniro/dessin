@@ -21,7 +21,7 @@ export function deepClone(value: any): any {
     if (Array.isArray(value)) {
       return value.map((item) => deepClone(item));
     } else {
-      const result: {[key: string]: any} = {};
+      const result: { [key: string]: any } = {};
       for (let key in value) {
         if (hasOwnProperty.call(value, key)) {
           result[key] = value[key];
@@ -58,7 +58,7 @@ export function removeEventListener(
   target.removeEventListener(eventName, handler);
 }
 
-export function css(element: HTMLElement, style: {[key: string]: any}): void {
+export function css(element: HTMLElement, style: { [key: string]: any }): void {
   for (let key in style) {
     if (hasOwnProperty.call(element, key)) {
       element.style[key as unknown as number] = style[key];
