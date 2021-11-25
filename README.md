@@ -1,13 +1,15 @@
-# [dessin](https://github.com/Yukiniro/dessin)
-[![license](https://img.shields.io/apm/l/dessin?style=flat-square)](https://github.com/Yukiniro/dessin/blob/main/LICENSE)
-
+# [Dessin](https://github.com/Yukiniro/dessin)
+[![license](https://img.shields.io/static/v1?label=licence&message=MIT&color=blue&style=flat-square)](https://github.com/Yukiniro/dessin/blob/main/LICENSE)
+![npm type definitions](https://img.shields.io/npm/types/typescript?style=flat-square)
+![npm](https://img.shields.io/npm/v/dessin?style=flat-square&color=blue)
 # Introdution
- 一个基于canvas的JavaScript渲染库。
+Dessin is an HTML5 canvas render library witch is lightweight and clever. You can draw a rectangle,  a circle even a text to use dessin.
 
 # Fetures
-- 完全基于canvas渲染
-- 支持文字、矩形、圆形等
-- 链式API
+- Completely canvas based rendering
+- Supports text, rectangles, circles, and more...
+- Chain API
+- Import and export JSON data
 
 # Install
 ```bash
