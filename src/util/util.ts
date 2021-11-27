@@ -6,7 +6,7 @@ const { hasOwnProperty } = Object.prototype;
 /**
  * @desc Check whether the value is undefined
  * @param value
- * @returns {boolean}
+ * @return {boolean}
  */
 export function isUndefined(value: any): boolean {
   return value === void 0;
@@ -66,7 +66,9 @@ export function css(element: HTMLElement, style: { [key: string]: any }): void {
   }
 }
 
-// 计算文本尺寸
+/**
+ * @desc
+ */
 export function calcTextSize(
   ctx: CanvasRenderingContext2D,
   value: string,
@@ -107,12 +109,14 @@ export function renderLine(
 /**
  * @desc Get the position in the area
  * @param {string} type
- * @param {object} rect
+ * @param {Object} rect
  * @param {number} rect.x
  * @param {number} rect.y
  * @param {number} rect.width
  * @param {number} rect.height
- * @returns
+ * @return {Object}
+ * @property {number} x
+ * @property {number} y
  */
 export function calcPointInRect(type: number, rect: Rect): Pos {
   const { x, y, width, height } = rect;
@@ -151,6 +155,18 @@ export function calcPointInRect(type: number, rect: Rect): Pos {
   return point;
 }
 
+/**
+ * @desc Calculate the position of the diagonal of the points
+ * @param {number} type
+ * @param {Object} rect
+ * @property {number} rect.x
+ * @property {number} rect.y
+ * @property {number} rect.width
+ * @property {number} rect.height
+ * @return {Object}
+ * @property {number} x
+ * @property {number} y
+ */
 export function calcDiagonalInRect(type: number, rect: Rect): Pos {
   let point = { x: 0, y: 0 } as Pos;
   switch (type) {
@@ -200,14 +216,14 @@ export function calcCursorPoint(mouseEvent: MouseEvent) {
 }
 
 /**
- * @desc 计算两点之间的距离
- * @param {object} point1
- * @param {number} point1.x
- * @param {number} point1.y
- * @param {object} point2
- * @param {number} point2.x
- * @param {number} point2.y
- * @returns
+ * @desc Calculate the distance between two points
+ * @param {Object} point1
+ * @property {number} point1.x
+ * @property {number} point1.y
+ * @param {Object} point2
+ * @property {number} point2.x
+ * @property {number} point2.y
+ * @return {number}
  */
 export function calcDistance(point1: Pos, point2: Pos): number {
   const { x: x1, y: y1 } = point1;
@@ -218,15 +234,17 @@ export function calcDistance(point1: Pos, point2: Pos): number {
 }
 
 /**
-     * @description 计算point2相对于point1的向量
-  bject} point1
-     * @param {number} point1.x
-     * @param {number} point1.y
-     * @param {object} point2
-     * @param {number} point2.x
-     * @param {number} point2.y
-     * @returns
-     */
+ * @desc Take the vector point2 with respect to point1
+ * @param {Object} point1
+ * @property {number} point1.x
+ * @property {number} point1.y
+ * @param {Object} point2
+ * @property {number} point2.x
+ * @property {number} point2.y
+ * @return {Object}
+ * @property {Object} x
+ * @property {Object} y
+ */
 export function calcVertor(point1: Pos, point2: Pos): Pos {
   const { x: x1, y: y1 } = point1;
   const { x: x2, y: y2 } = point2;
@@ -241,20 +259,10 @@ export function clearCanvas(canvas: HTMLCanvasElement): void {
   canvas.height = canvas.height;
 }
 
-/**
- * @description 角度转弧度
- * @param {number} angle
- * @returns
- */
 export function angleToRadian(angle: number): number {
   return (angle / 180) * Math.PI;
 }
 
-/**
- * @description 弧度转角度
- * @param {number} radian
- * @returns
- */
 export function radianToAngle(radian: number): number {
   return (radian / Math.PI) * 180;
 }
@@ -264,9 +272,9 @@ export function toFixed(value: number, digits: number): number {
 }
 
 /**
- * @description 限定角度值在0 -- 360之间
+ * @desc Limit the Angle value between 0 and 360
  * @param {number} angle
- * @returns
+ * @return {number}
  */
 export function fixAngle(angle: number): number {
   let value = angle;
@@ -278,10 +286,10 @@ export function fixAngle(angle: number): number {
 }
 
 /**
- * @description 吸附角度
+ * @desc Adsorption Angle
  * @param {number} angle
- * @param {number} offset 吸附差值
- * @returns
+ * @param {number} [offset=6]
+ * @return {number}
  */
 export function adsorbAngle(angle: number, offset = 6): number {
   const angleToAbsorb = [0, 90, 180, 270, 360];
@@ -291,12 +299,14 @@ export function adsorbAngle(angle: number, offset = 6): number {
 }
 
 /**
- * @description 计算point在canvas坐标系旋转angle后的新坐标
- * @param {object} point
- * @param {number} point.x
- * @param {number} point.y
+ * @desc Calculates the new coordinates of point after Angle is rotated in the Canvas coordinate system
+ * @param {Object} point
+ * @property {number} point.x
+ * @property {number} point.y
  * @param {number} angle
- * @returns
+ * @return {Object}
+ * @property {number} x
+ * @property {number} y
  */
 export function calcPointWithAngle(point: Pos, angle: number): Pos {
   const { x, y } = point;
@@ -310,14 +320,17 @@ export function calcPointWithAngle(point: Pos, angle: number): Pos {
 }
 
 /**
- * @description 计算rect在canvas坐标系旋转angle后的新rect
- * @param {object} rect
- * @param {number} rect.x
- * @param {number} rect.y
- * @param {number} rect.width
- * @param {number} rect.height
+ * @desc Calculates the new rect of rect after rotation Angle in canvas coordinate system
+ * @param {Object} rect
+ * @property {number} rect.x
+ * @property {number} rect.y
+ * @property {number} rect.width
+ * @property {number} rect.height
  * @param {number} angle
- * @returns
+ * @return {Object}
+ * @return {Object}
+ * @return {Object}
+ * @return {Object}
  */
 export function calcRectWithAngle(rect: Rect, angle: number): Rect {
   const { width, height } = rect;

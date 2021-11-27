@@ -8,7 +8,7 @@ import {
   calcDiagonalInRect,
 } from '../util/util';
 import Track from './track';
-import { CircleJSON, Pos, Rect } from '../types/types';
+import { CircleJSON, EncodeJSON, Pos, Rect } from '../types/types';
 
 class Circle extends Sprite {
   protected _fillColor: string = '#FF0000';
@@ -46,10 +46,12 @@ class Circle extends Sprite {
   }
 
   /**
-   * @description 缩放
-   * @param {*} trackNode
-   * @param {*} prevEncodeData
-   * @param {*} verctor
+   * @desc
+   * @param {number} trackNode
+   * @param {EncodeJSON} prevEncodeData
+   * @param {Object} verctor
+   * @property {Object} verctor.x
+   * @property {Object} verctor.y
    */
   _resieze(trackNode: number, prevEncodeData: Rect, verctor: Pos): this {
     const { x: verctorX } = calcPointWithAngle(verctor, this._angle);
@@ -92,18 +94,10 @@ class Circle extends Sprite {
       .setRadius(nextRect.width / 2);
   }
 
-  /**
-   * @description 返回半径
-   * @returns
-   */
   getRadius(): number {
     return this._radius;
   }
 
-  /**
-   * @description 设置半径
-   * @param {number} radius
-   */
   setRadius(radius: number): this {
     this._radius = radius;
     return this;

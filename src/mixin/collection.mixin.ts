@@ -16,7 +16,7 @@ export default function CollectionMixin<TBase extends Constructor>(Base: TBase) 
     }
 
     /**
-     * @description 移除某个元素
+     * @desc 移除某个元素
      * @param {*} item
      */
     remove(item: any): void {
@@ -24,7 +24,7 @@ export default function CollectionMixin<TBase extends Constructor>(Base: TBase) 
     }
 
     /**
-     * @description 对每个元素调用handler
+     * @desc 对每个元素调用handler
      * @param {*} handler
      */
     forEachItem(handler: (item: any, index: number) => void) {
@@ -34,21 +34,21 @@ export default function CollectionMixin<TBase extends Constructor>(Base: TBase) 
     }
 
     /**
-     * @description 返回当前元素个数
+     * @desc 返回当前元素个数
      */
     size(): number {
       return this._items.length;
     }
 
     /**
-     * @description 移除所有元素
+     * @desc 移除所有元素
      */
     removeAll(): void {
       this._items.length = 0;
     }
 
     /**
-     * @description 插入某个元素
+     * @desc 插入某个元素
      * @param {*} item
      * @param {number} index
      */
@@ -57,7 +57,7 @@ export default function CollectionMixin<TBase extends Constructor>(Base: TBase) 
     }
 
     /**
-     * @description 集合是否包含某个元素
+     * @desc 集合是否包含某个元素
      * @param {*} item
      */
     includes(item: any): boolean {
@@ -65,8 +65,8 @@ export default function CollectionMixin<TBase extends Constructor>(Base: TBase) 
     }
 
     /**
-     * @description 返回所有的项
-     * @returns
+     * @desc 返回所有的项
+     * @return
      */
     all(): Array<any> {
       return this._items;

@@ -42,7 +42,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
-   * @description 初始化视图
+   * @desc 初始化视图
    */
   _initView(): void {
     if (!this._lowerCanvas) {
@@ -89,7 +89,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
-   * @description 触发鼠标事件
+   * @desc 触发鼠标事件
    * @param {*} mouseEvent
    */
   _fireEvent(mouseEvent: MouseEvent): void {
@@ -153,7 +153,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
-   * @description 选中指定id的对象并反选其他对象
+   * @desc 选中指定id的对象并反选其他对象
    * @param {string} id
    */
   selectSprite(id: string): this {
@@ -170,7 +170,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
-   * @description 返回其他所有对象
+   * @desc 返回其他所有对象
    */
   deselectAll() {
     this.forEachItem((item) => {
@@ -181,11 +181,11 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
-   * @description 获取最顶层的对象
-   * @param {object} point
+   * @desc 获取最顶层的对象
+   * @param {Object} point
    * @param {number} point.x
    * @param {number} point.y
-   * @returns {sprite}
+   * @return {sprite}
    */
   _getTopSprite(point: Pos): Sprite {
     let top = null;
@@ -201,7 +201,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
-   * @description 更新视图尺寸
+   * @desc 更新视图尺寸
    */
   _updateView() {
     const { width, height } = this._size;
@@ -215,7 +215,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
-   * @description 更新视图相对于浏览器的位置尺寸信息
+   * @desc 更新视图相对于浏览器的位置尺寸信息
    */
   _updateViewRect() {
     const viewRect = this._upperCanvas.getBoundingClientRect();
@@ -228,7 +228,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
-   * @description 清空画布
+   * @desc 清空画布
    */
   _clear() {
     const { width, height } = this.getSize();
@@ -236,21 +236,21 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
-   * @description 清楚主视图画布
+   * @desc 清楚主视图画布
    */
   clearLowerCanvas() {
     clearCanvas(this._lowerCanvas);
   }
 
   /**
-   * @description 清楚控制器画布
+   * @desc 清楚控制器画布
    */
   clearUpperCanvas() {
     clearCanvas(this._upperCanvas);
   }
 
   /**
-   * @description 渲染
+   * @desc 渲染
    */
   render() {
     this.clearLowerCanvas();
@@ -262,7 +262,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
-   * @description 渲染控制器
+   * @desc 渲染控制器
    */
   renderTrack() {
     this.clearUpperCanvas();
@@ -274,21 +274,21 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
-   * @description 返回返回尺寸
-   * @returns {object} size
-   * @returns {number} size.widht
-   * @returns {number} size.height
+   * @desc 返回返回尺寸
+   * @return {Object} size
+   * @return {number} size.widht
+   * @return {number} size.height
    */
   getSize(): Size {
     return this._size;
   }
 
   /**
-   * @description 设置视图尺寸
-   * @param {object} size
+   * @desc 设置视图尺寸
+   * @param {Object} size
    * @param {number} size.width
    * @param {number} size.height
-   * @return {object}
+   * @return {Object}
    */
   setSize(size: Size): this {
     this._size = { ...size };

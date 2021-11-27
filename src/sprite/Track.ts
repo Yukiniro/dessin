@@ -45,52 +45,51 @@ class Track {
   }
 
   /**
-   * @description 返回track节点类型
-   * @returns
+   * @desc Return all nodes of the track.
    */
   static TRACK_NODES(): TrackNodes {
     return TRACK_NODES;
   }
 
   /**
-   * @description 返回其拥有者
+   * @type Return the owner.
    */
   get owner(): any {
     return this._owner;
   }
 
   /**
-   * @description 返回位置
+   * @type Return ths position of the track
    */
   get pos(): Pos {
     return this._owner.getPos();
   }
 
   /**
-   * @description 返回尺寸
+   * @type Return ths size of the track
    */
   get size(): Size {
     return this._owner.getSize();
   }
 
   /**
-   * @description 返回旋转角度
+   * @type Return ths angle of the track
    */
   get angle(): number {
     return this._owner.getAngle();
   }
 
   /**
-   * @description 返回位置尺寸信息
+   * @type {Object}
+   * @property {number} x
+   * @property {number} y
+   * @property {number} width
+   * @property {number} height
    */
   get rect(): Rect {
     return this._owner.rect;
   }
 
-  /**
-   * @description 渲染控制器
-   * @param {context} ctx
-   */
   render(ctx: CanvasRenderingContext2D): void {
     const { x, y, width, height } = this.rect;
     const angle = this.angle;
@@ -104,11 +103,11 @@ class Track {
   }
 
   /**
-   * @description 计算指定point在控制器中的节点类型
+   * @desc
    * @param {obeject} point
-   * @param {number} point.x
-   * @param {number} point.y
-   * @returns
+   * @property {number} point.x
+   * @property {number} point.y
+   * @return {number}
    */
   clacTrackNodeWithPoint(point: Pos): number {
     const pointWithAngle = calcPointWithAngle(point, this.angle);
@@ -138,10 +137,12 @@ class Track {
   }
 
   /**
-   * @description 計算指定节点类型的位置信息
+   * @desc
    * @param {number} node
-   * @param {boolean} useAngle
-   * @returns
+   * @param {boolean} [useAngle]
+   * @return {Object}
+   * @property {number} x
+   * @property {number} y
    */
   _calcNodePos(node: number, useAngle?: boolean): Pos {
     const rect = useAngle ? calcRectWithAngle(this.rect, this.angle) : this.rect;
@@ -186,7 +187,7 @@ class Track {
   }
 
   /**
-   * @description 渲染所有控制点
+   * @desc Render all controller node
    * @param {*} ctx
    */
   _renderNodes(ctx: CanvasRenderingContext2D): void {
@@ -200,11 +201,11 @@ class Track {
   }
 
   /**
-   * @description 渲染控制点
+   * @desc Render controller node
    * @param {*} ctx
-   * @param {object} point
-   * @param {number} point.x
-   * @param {number} point.y
+   * @param {Object} point
+   * @property {number} point.x
+   * @property {number} point.y
    */
   _renderNode(ctx: CanvasRenderingContext2D, point: Pos): void {
     ctx.save();
@@ -216,7 +217,7 @@ class Track {
   }
 
   /**
-   * @description
+   * @desc
    * @param {HTMLCanvasContext} ctx
    */
   _renderLines(ctx: CanvasRenderingContext2D): void {
@@ -240,12 +241,12 @@ class Track {
   }
 
   /**
-   * @description 在指定ctx上绘制pointFrom、pointTo之间的线条
+   * @desc
    * @param {*} ctx
-   * @param {object} pointFrom
+   * @param {Object} pointFrom
    * @param {number} pointFrom.x
    * @param {number} pointFrom.y
-   * @param {object} pointTo
+   * @param {Object} pointTo
    * @param {number} pointTo.x
    * @param {number} pointTo.y
    */

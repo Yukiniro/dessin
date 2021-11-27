@@ -55,11 +55,11 @@ class Text extends Sprite {
   }
 
   /**
-   * @description 计算元素尺寸
-   * @returns {object} info
-   * @returns {number} info.width
-   * @returns {number} info.height
-   * @returns {number} info.fontBoundingBoxAscent
+   * @desc
+   * @return {Object} info
+   * @return {number} info.width
+   * @return {number} info.height
+   * @return {number} info.fontBoundingBoxAscent
    */
   _calcSize(): TextSize {
     return this._texts.reduce(
@@ -85,157 +85,86 @@ class Text extends Sprite {
     );
   }
 
-  /**
-   * @description 返回字号
-   * @returns
-   */
   getFontSize(): number {
     return this._fontSize;
   }
 
-  /**
-   * @description 设置字号
-   * @param {number} fontSize
-   * @returns
-   */
   setFontSize(fontSize: number): this {
     this._fontSize = fontSize;
     return this;
   }
 
-  /**
-   * @description 返回字体样式
-   * @returns
-   */
   getFontStyle(): string {
     return this._fontStyle;
   }
 
-  /**
-   * @description 设置字体样式
-   * @param {string} fontStyle
-   * @returns
-   */
   setFontStyle(fontStyle: string): this {
     this._fontStyle = fontStyle;
     return this;
   }
 
-  /**
-   * @description 返回字体粗细
-   * @returns {string|number}
-   */
   getFontWeight(): string | number {
     return this._fontWeight;
   }
 
-  /**
-   * @description 设置字体粗细
-   * @param {string|number} fontWeight
-   * @returns
-   */
   setFontWeight(fontWeight: string | number): this {
     this._fontWeight = fontWeight;
     return this;
   }
 
-  /**
-   * @description 返回字体
-   * @returns {string}
-   */
   getFontFamily(): string {
     return this._fontFamily;
   }
 
-  /**
-   * @description 设置字体
-   * @param {string} fontFamily
-   * @returns
-   */
   setFontFamily(fontFamily: string): this {
     this._fontFamily = fontFamily;
     return this;
   }
 
-  /**
-   * @description 返回文字对齐
-   * @returns {string}
-   */
   getTextAlign(): string {
     return this._textAlign;
   }
 
-  /**
-   * @description 设置文字对齐
-   * @param {string} textAlign
-   * @returns
-   */
   setTextAlign(textAlign: string): this {
     this._textAlign = textAlign;
     return this;
   }
 
-  /**
-   * @description 返回文字行高
-   * @returns {number}
-   */
   getLineHeight(): number {
     return this._lineHeight;
   }
 
-  /**
-   * @description 设置文字行高
-   * @param {number} lineHeight
-   * @returns
-   */
   setLineHeight(lineHeight: number): this {
     this._lineHeight = lineHeight;
     return this;
   }
 
-  /**
-   * @description 返回填充颜色
-   * @returns {string}
-   */
   getFillColor(): string {
     return this._fillColor;
   }
 
-  /**
-   * @description 设置填充颜色
-   * @param {string} color
-   * @returns
-   */
   setFillColor(color: string): this {
     this._fillColor = color;
     return this;
   }
 
-  /**
-   * @description 返回边框颜色
-   * @returns
-   */
   getStrokeColor(): string {
     return this._strokeColor;
   }
 
-  /**
-   * @description 设置边框颜色
-   * @param {string} color
-   * @returns
-   */
   setStrokeColor(color: string): this {
     this._strokeColor = color;
     return this;
   }
 
   /**
-   * @description 初始化尺寸
+   * @desc Init the size of the text.
    */
-  initSize(): void {
+  initSize(): this {
     const { width, height, fontBoundingBoxAscent } = this._calcSize();
     this.setSize({ width, height });
     this._fontBoundingBoxAscent = fontBoundingBoxAscent;
+    return this;
   }
 
   renderCache(): this {

@@ -10,6 +10,12 @@
       "option": {
         "all": true
       }
+    },
+    {
+      "name": "esdoc-typescript-plugin",
+      "option": {
+        "enable": true
+      }
     }
   ]
 }

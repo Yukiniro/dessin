@@ -2,8 +2,6 @@ import constant from '../constant/constant';
 import eventConstant from '../constant/event-constant';
 import {
   angleToRadian,
-  isUndefined,
-  isObject,
   calcPointWithAngle,
   calcRectWithAngle,
   calcDiagonalInRect,
@@ -86,14 +84,18 @@ class Sprite extends ObservableMixin(Base) {
   }
 
   /**
-   * @description 返回类型
+   * @type {string}
    */
   get type(): string {
     return this._type;
   }
 
   /**
-   * @description 返回渲染框的信息
+   * @type {Object}
+   * @property {number} x
+   * @property {number} y
+   * @property {number} width
+   * @property {number} height
    */
   get rect(): Rect {
     return {
@@ -103,40 +105,39 @@ class Sprite extends ObservableMixin(Base) {
   }
 
   /**
-   * @description 返回id
+   * @desc The unique identifier of the Sprite
+   * @type {string}
    */
   get id(): string {
     return this._id;
   }
 
   /**
-   * @description 设置是否支持事件
-   * @param {boolean} isSupport
+   * @desc Set the sprite could support the event
    */
-  setEventSupport(isSupport: boolean): void {
+  setEventSupport(isSupport: boolean): this {
     this._evented = isSupport;
+    return this;
   }
 
   /**
-   * @description 返回是否支持事件
-   * @returns
+   * @desc Is the sprite could support the event
    */
-  getEventSuppor(): boolean {
+  getEventSupport(): boolean {
     return this._evented;
   }
 
   /**
-   * @description 返回宽度
-   * @returns {number}
+   * @desc Get the width of the sprite
+   * @return {number}
    */
   getWidth(): number {
     return this._width;
   }
 
   /**
-   * @description 设置宽度
+   * @desc Set the width of the sprite
    * @param {number} width
-   * @returns
    */
   setWidth(width: number): this {
     this._width = width;
@@ -144,17 +145,16 @@ class Sprite extends ObservableMixin(Base) {
   }
 
   /**
-   * @description 返回高度
-   * @returns {number}
+   * @desc Get the height of the sprite
+   * @return {number}
    */
-  getHeight() {
+  getHeight(): number {
     return this._height;
   }
 
   /**
-   * @description 设置高度
+   * @desc Set the height of the sprite
    * @param {number} height
-   * @returns
    */
   setHeight(height: number): this {
     this._height = height;
@@ -162,242 +162,154 @@ class Sprite extends ObservableMixin(Base) {
   }
 
   /**
-   * @description 返回尺寸信息
-   * @returns {object} size
-   * @returns {number} size.width
-   * @returns {number} size.height
+   * @desc Set the size of the sprite
+   * @return {Object}
+   * @property {number} width
+   * @property {number} height
    */
   getSize(): Size {
     return { width: this.getWidth(), height: this.getHeight() };
   }
 
   /**
-   * @description 设置尺寸
-   * @param {object} size
-   * @param {number} size.width
-   * @param {number} size.height
-   * @returns
+   * @desc
+   * @param {Object}
+   * @param {number} width
+   * @param {number} height
    */
   setSize(size: Size): this {
-    if (!isObject(size)) throw new Error(constant.ARGUMENT_ERROR);
-    if (!isUndefined(size.width)) this._width = size.width;
-    if (!isUndefined(size.height)) this._height = size.height;
+    this._width = size.width;
+    this._height = size.height;
     return this;
   }
 
-  /**
-   * @description 返回x轴坐标
-   * @returns {number}
-   */
   getX(): number {
     return this._x;
   }
 
-  /**
-   * @description 设置x轴坐标
-   * @param {number} x
-   * @returns
-   */
   setX(x: number): this {
     this._x = x;
     return this;
   }
 
-  /**
-   * @description 返回y轴坐标
-   * @returns {number} y
-   */
   getY(): number {
     return this._y;
   }
 
-  /**
-   * @description 设置y轴坐标
-   * @param {number} y
-   * @returns
-   */
   setY(y: number): this {
     this._y = y;
     return this;
   }
 
   /**
-   * @description 返回坐标
-   * @returns {object} position
-   * @returns {number} position.x
-   * @returns {number} position.y
+   * @desc Get the position of the sprite
+   * @return {Object}
+   * @return {number} x
+   * @return {number} y
    */
-  getPos() {
+  getPos(): Pos {
     return { x: this._x, y: this._y };
   }
 
   /**
-   * @description 设置坐标
-   * @param {object} position
-   * @param {number} position.x
-   * @param {number} position.y
-   * @returns
+   * @desc Set the position of the sprite
+   * @param {Object}
+   * @param {number} x
+   * @param {number} y
+   * @return
    */
   setPos(position: Pos): this {
-    if (!isObject(position)) throw new Error(constant.ARGUMENT_ERROR);
-    if (!isUndefined(position.x)) this._x = position.x;
-    if (!isUndefined(position.y)) this._y = position.y;
+    this._x = position.x;
+    this._y = position.y;
     return this;
   }
 
-  /**
-   * @description 返回透明度
-   * @returns {number}
-   */
   getOpacity(): number {
     return this._opacity;
   }
 
-  /**
-   * @description 设置透明度
-   * @param {number} opacity
-   */
   setOpacity(opacity: number): this {
     this._opacity = opacity;
     return this;
   }
 
-  /**
-   * @description 返回锚点x轴坐标
-   * @returns {number}
-   */
   getOriginX() {
     return this._originX;
   }
 
-  /**
-   * @description 设置锚点x轴坐标
-   * @param {number} originX
-   * @returns
-   */
   setOriginX(originX: number): this {
     this._originX = originX;
     return this;
   }
 
-  /**
-   * @description 返回锚点y轴坐标
-   * @returns
-   */
   getOriginY() {
     return this._originY;
   }
 
-  /**
-   * @description 设置锚点y轴坐标
-   * @param {*} originY
-   * @returns
-   */
   setOriginY(originY: number): this {
     this._originY = originY;
     return this;
   }
 
   /**
-   * @description 返回锚点坐标
-   * @returns {object} origin
-   * @returns {number} origin.x
-   * @returns {number} origin.y
+   * @desc Get the origin of the sprite
+   * @return {Object}
+   * @return {number} x
+   * @return {number} y
    */
   getOrigin(): Pos {
     return { x: this._originX, y: this._originY };
   }
 
   /**
-   * @description 设置锚点坐标
-   * @param {object} origin
-   * @param {number} origin.x
-   * @param {number} origin.y
-   * @returns
+   * @desc Set the origin of the sprite
+   * @param {Object}
+   * @param {number} x
+   * @param {number} y
    */
   setOrigin(origin: Pos): this {
-    if (!isObject(origin)) throw new Error(constant.ARGUMENT_ERROR);
-    if (!isUndefined(origin.x)) this._originX = origin.x;
-    if (!isUndefined(origin.y)) this._originY = origin.y;
+    this._originX = origin.x;
+    this._originY = origin.y;
     return this;
   }
 
-  /**
-   * @description 返回旋转角度
-   * @returns {number}
-   */
   getAngle(): number {
     return this._angle;
   }
 
-  /**
-   * @description 设置旋转角度
-   * @param {number} angle
-   * @returns
-   */
   setAngle(angle: number): this {
     this._angle = angle;
     return this;
   }
 
-  /**
-   * @description 返回水平翻转
-   * @returns
-   */
   getFlipX(): number {
     return this._flipX;
   }
 
-  /**
-   * @description 设置水平翻转
-   * @param {number} x
-   * @returns
-   */
   setFlipX(x: number): this {
     this._flipX = x;
     return this;
   }
 
-  /**
-   * @description 返回垂直翻转
-   * @returns
-   */
   getFlipY(): number {
     return this._flipY;
   }
 
-  /**
-   * @description 设置垂直翻转
-   * @param {number} y
-   * @returns
-   */
   setFlipY(y: number): this {
     this._flipY = y;
     return this;
   }
 
-  /**
-   * @description 返回是否选中
-   * @returns {boolean}
-   */
   isSelected(): boolean {
     return this._selected;
   }
 
-  /**
-   * @description 选中元素
-   * @returns
-   */
   select() {
     this._selected = true;
     this.fire(eventConstant.SELECTED, { target: this });
     return this;
   }
 
-  /**
-   * @description 取消元素选中
-   * @returns
-   */
   deselect() {
     this._selected = false;
     this.fire(eventConstant.DESELECTED, { target: this });
@@ -405,14 +317,16 @@ class Sprite extends ObservableMixin(Base) {
   }
 
   /**
-   * @description 渲染缓存
+   * @desc Render the sprite to the cache view
    */
-  renderCache() {}
+  renderCache(): this {
+    return this;
+  }
 
   /**
-   * @description 渲染元素
+   * @desc Render the cache view to the view
    */
-  render(ctx: CanvasRenderingContext2D) {
+  render(ctx: CanvasRenderingContext2D): this {
     const { WILL_RENDER, DID_RENDER } = eventConstant;
     const { x, y, width, height } = this.rect;
     const horizontalOffset = width / 2;
@@ -425,25 +339,27 @@ class Sprite extends ObservableMixin(Base) {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.restore();
     this.fire(DID_RENDER, { target: this });
+    return this;
   }
 
   /**
-   * @description 渲染控制器
+   * @desc Render the controller of the sprite
    * @param {*} ctx
    */
-  renderTrack(ctx: CanvasRenderingContext2D) {
+  renderTrack(ctx: CanvasRenderingContext2D): this {
     this._track.render(ctx);
+    return this;
   }
 
   /**
-   * @description 事件交互
-   * @param {number} trackNode 控制器节点类型
-   * @param {object} verctor 交互向量
-   * @param {number} verctor.x
-   * @param {number} verctor.y
-   * @param {object} prevEncodeData
+   * @desc
+   * @param {number} trackNode
+   * @param {Object} verctor
+   * @property {number} verctor.x
+   * @property {number} verctor.y
+   * @param {SpriteJSON} prevEncodeData
    */
-  transform(trackNode: number, verctor: Pos, prevEncodeData: object) {
+  transform(trackNode: number, verctor: Pos, prevEncodeData: object): this {
     const {
       SELF,
       LEFT_TOP,
@@ -481,23 +397,28 @@ class Sprite extends ObservableMixin(Base) {
   }
 
   /**
-   * @description 移动
-   * @param {*} prevEncodeData
-   * @param {*} verctor
+   * @desc
+   * @param {EncodeJSON} prevEncodeData
+   * @param {Object} verctor
+   * @property {number} verctor.x
+   * @property {number} verctor.y
    */
-  _move(prevEncodeData: EncodeJSON, verctor: Pos) {
+  _move(prevEncodeData: EncodeJSON, verctor: Pos): this {
     const { x: verctorX, y: verctorY } = verctor;
     const { x: prevX, y: prevY } = prevEncodeData;
     this.setX(prevX + verctorX).setY(prevY + verctorY);
+    return this;
   }
 
   /**
-   * @description 缩放
-   * @param {*} trackNode
-   * @param {*} prevEncodeData
-   * @param {*} verctor
+   * @desc
+   * @param {number} trackNode
+   * @param {EncodeJSON} prevEncodeData
+   * @param {Object} verctor
+   * @property {number} verctor.x
+   * @property {number} verctor.y
    */
-  _resieze(trackNode: number, prevEncodeData: EncodeJSON, verctor: Pos) {
+  _resieze(trackNode: number, prevEncodeData: EncodeJSON, verctor: Pos): this {
     const { x: verctorX, y: verctorY } = calcPointWithAngle(verctor, this._angle);
     const preRect = {
       x: prevEncodeData.x,
@@ -562,47 +483,51 @@ class Sprite extends ObservableMixin(Base) {
 
     const nextRect = calcRectWithAngle(nextRectWithAngle, -this._angle);
     this.setX(nextRect.x).setY(nextRect.y).setWidth(nextRect.width).setHeight(nextRect.height);
+    return this;
   }
 
   /**
-   * @description 旋转
-   * @param {*} verctor
+   * @desc
+   * @param {Object} verctor
+   * @property {number} verctor.x
+   * @property {number} verctor.y
    */
-  _rotate(verctor: Pos) {
+  _rotate(verctor: Pos): this {
     let angle;
     const centerPos = calcPointInRect(constant.CENTER, this.rect);
     const { x, y } = calcVertor(centerPos, verctor);
     angle = radianToAngle(Math.atan2(-y, x));
     angle = fixAngle(adsorbAngle(90 - angle));
     this.setAngle(angle);
+    return this;
   }
 
   /**
-   * @description 删除对象
+   * @desc Destory the sprite and remove all listener
    */
-  destroy() {
+  destroy(): void {
     this.fire(eventConstant.WILL_DESTROY, { target: this });
     this.fire(eventConstant.DID_DESTROY);
     this.resetListener();
   }
 
   /**
-   * @description 判断点是否在对象内
-   * @param {object} point
-   * @param {number} point.x
-   * @param {number} point.y
-   * @returns {boolean}
+   * @desc
+   * @param {Object} point
+   * @property {number} point.x
+   * @property {number} point.y
+   * @return {boolean}
    */
   isPointInSelf(point: Pos): boolean {
     return isPointInRect(point, this.rect);
   }
 
   /**
-   * @description 计算指定point在sprite中的控制器节点类型
-   * @param {object} point
-   * @param {number} point.x
-   * @param {number} point.y
-   * @returns
+   * @desc
+   * @param {Object} point
+   * @property {number} point.x
+   * @property {number} point.y
+   * @return {number}
    */
   calcTrackNode(point: Pos): number {
     return this._track.clacTrackNodeWithPoint(point);

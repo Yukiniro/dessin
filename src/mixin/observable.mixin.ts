@@ -6,7 +6,7 @@ export default function ObservableMixin<TBase extends Constructor>(Base: TBase) 
     _listeners: { [key: string]: Array<any> } = {};
 
     /**
-     * @description 绑定事件监听
+     * @desc 绑定事件监听
      * @param {string} eventName 事件名
      * @param {callback} handler 回调函数
      */
@@ -16,7 +16,7 @@ export default function ObservableMixin<TBase extends Constructor>(Base: TBase) 
     }
 
     /**
-     * @description 解绑事件监听
+     * @desc 解绑事件监听
      * @param {string} eventName 事件名
      * @param {callback} handler 回调函数
      */
@@ -29,14 +29,14 @@ export default function ObservableMixin<TBase extends Constructor>(Base: TBase) 
     }
 
     /**
-     * @description 重置事件监听
+     * @desc 重置事件监听
      */
     resetListener(): void {
       this._listeners = {};
     }
 
     /**
-     * @description 触犯事件
+     * @desc 触犯事件
      */
     fire(...args: any): void {
       const eventName = args.shift();
