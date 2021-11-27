@@ -266,6 +266,7 @@ class Sprite extends ObservableMixin(Base) {
    * @param {Object}
    * @param {number} x
    * @param {number} y
+   * @return
    */
   setOrigin(origin: Pos): this {
     this._originX = origin.x;
@@ -344,7 +345,6 @@ class Sprite extends ObservableMixin(Base) {
 
   /**
    * @desc Render the controller of the sprite
-   * @param {*} ctx
    */
   renderTrack(ctx: CanvasRenderingContext2D): this {
     this._track.render(ctx);
