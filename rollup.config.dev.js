@@ -35,7 +35,7 @@ module.exports = {
   plugins: [
     livereload(),
     server({
-      open: true,
+      open: false,
       host: 'localhost',
       port: 8080,
       contentBase: [''],
@@ -53,4 +53,8 @@ module.exports = {
     }),
     fileSize(),
   ],
+  watch: {
+    include: 'src/**/*.ts',
+    clearScreen: false,
+  }
 };

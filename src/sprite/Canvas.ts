@@ -1,10 +1,10 @@
-import { css, calcCursorPoint, calcVertor, clearCanvas } from '../util/util';
-import Track from './Track';
-import { Pos, Rect, Size } from '../types/types';
 import CollectionMixin from '../mixin/collection.mixin';
 import ObservableMixin from '../mixin/observable.mixin';
+import { Pos, Rect, Size } from '../types/types';
+import { calcCursorPoint, calcVertor, clearCanvas, css } from '../util/util';
 import Base from './Base';
 import Sprite from './sprite';
+import Track from './Track';
 
 class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   protected _size: Size = { width: 500, height: 500 };
@@ -88,6 +88,56 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this._body.removeEventListener('mouseup', this._fireEvent);
   }
 
+  _updateCursor(trackNode: number): void {
+    const {
+      LEFT_TOP,
+      CENTER_TOP,
+      RIGHT_TOP,
+      RIGHT_CENTER,
+      RIGHT_BOTTOM,
+      CENTER_BOTTOM,
+      LEFT_BOTTOM,
+      LEFT_CETNER,
+      ROTATE,
+    } = Track.TRACK_NODES();
+
+    switch (trackNode) {
+      case ROTATE:
+        css(this._body, {
+          cursor: 'rotate',
+        });
+        break;
+      case LEFT_TOP:
+      case RIGHT_BOTTOM:
+        css(this._body, {
+          cursor: 'nwse-resize',
+        });
+        break;
+      case CENTER_TOP:
+      case CENTER_BOTTOM:
+        css(this._body, {
+          cursor: 'ns-resize',
+        });
+        break;
+      case RIGHT_TOP:
+      case LEFT_BOTTOM:
+        css(this._body, {
+          cursor: 'nesw-resize',
+        });
+        break;
+      case LEFT_CETNER:
+      case RIGHT_CENTER:
+        css(this._body, {
+          cursor: 'ew-resize',
+        });
+        break;
+      default:
+        css(this._body, {
+          cursor: 'auto',
+        });
+    }
+  }
+
   /**
    * @desc 触发鼠标事件
    * @param {*} mouseEvent
@@ -124,13 +174,15 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
               ? offsetCursorPoint
               : calcVertor(this._recordPoint, offsetCursorPoint);
           this._recordSprite.transform(this._recordTrackNode, verctor, this._recordSpriteData);
+          this._updateCursor(this._recordTrackNode);
           this.render();
         } else {
           const hoverSprite = this._getTopSprite(offsetCursorPoint);
           if (hoverSprite) {
-            // TODO 渲染hover的track
-            // eslint-disable-next-line no-unused-vars
             const hoverTrackNode = hoverSprite.calcTrackNode(offsetCursorPoint);
+            this._updateCursor(hoverTrackNode);
+          } else {
+            this._updateCursor(-1);
           }
         }
         break;
