@@ -53,13 +53,13 @@ class Circle extends Sprite {
    * @property {Object} verctor.x
    * @property {Object} verctor.y
    */
-  _resieze(trackNode: number, prevEncodeData: Rect, verctor: Pos): this {
+  _resieze(trackNode: number, prevEncodeData: EncodeJSON, verctor: Pos): this {
     const { x: verctorX } = calcPointWithAngle(verctor, this._angle);
     const preRect = {
       x: prevEncodeData.x,
       y: prevEncodeData.y,
-      width: prevEncodeData.width,
-      height: prevEncodeData.height,
+      width: prevEncodeData.radius * 2,
+      height: prevEncodeData.radius * 2,
     };
     const preRectWithAngle = calcRectWithAngle(preRect, this._angle);
     const { width: prevWidth } = preRectWithAngle;
