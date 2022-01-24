@@ -508,7 +508,7 @@ class Sprite extends ObservableMixin(Base) {
   destroy(): void {
     this.fire(eventConstant.WILL_DESTROY, { target: this });
     this.fire(eventConstant.DID_DESTROY);
-    this.resetListener();
+    this.removeAllListeners();
   }
 
   /**

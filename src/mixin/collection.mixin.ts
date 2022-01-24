@@ -2,7 +2,7 @@ import { Constructor } from '../types/types';
 import { removeFromArray } from '../util/util';
 
 export default function CollectionMixin<TBase extends Constructor>(Base: TBase) {
-  return class Collection {
+  return class Collection extends Base {
     _items: Array<any> = [];
 
     /**

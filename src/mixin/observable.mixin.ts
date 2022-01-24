@@ -29,9 +29,9 @@ export default function ObservableMixin<TBase extends Constructor>(Base: TBase) 
     }
 
     /**
-     * @desc 重置事件监听
+     * @desc 移除所有事件监听
      */
-    resetListener(): void {
+    removeAllListeners(): void {
       this._listeners = {};
     }
 
