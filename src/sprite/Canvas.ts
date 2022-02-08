@@ -1,3 +1,4 @@
+import { EventConstant } from '../index';
 import CollectionMixin from '../mixin/collection.mixin';
 import ObservableMixin from '../mixin/observable.mixin';
 import { Pos, Rect, Size } from '../types/types';
@@ -39,6 +40,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this._initView();
     this._bindEvent();
     this._updateView();
+    this.fire(EventConstant.CREATED);
   }
 
   /**
@@ -150,8 +152,8 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     };
     switch (mouseEvent.type) {
       case 'mousedown':
+        
         this._recordPoint = offsetCursorPoint;
-        this._unbindEvent();
         this._bindEventForBody();
         this._recordSprite = this._getTopSprite(this._recordPoint);
         this._hasMousedown = true;
@@ -188,7 +190,6 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         break;
       }
       case 'mouseup':
-        this._bindEvent();
         this._unbindEventForBody();
         if (this._recordSprite) {
           this._recordSprite.renderCache();
@@ -205,6 +206,21 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
+   * @desc Destroy this canvas. And destroy all items.
+   */
+  destroy(): void {
+    this.fire(EventConstant.WILL_DESTROY);
+    this.forEachItem(item => {
+      item.destroy();
+    });
+    this.removeAll();
+    this.clearLowerCanvas();
+    this.clearUpperCanvas();
+    this._unbindEvent();
+    this.fire(EventConstant.DID_DESTROY);
+  }
+
+  /**
    * @desc 选中指定id的对象并反选其他对象
    * @param {string} id
    */
@@ -212,9 +228,13 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     if (!id) return this.deselectAll();
     this.forEachItem((item) => {
       if (item.id === id) {
-        if (!item.isSelected()) item.select();
+        if (!item.isSelected()) {
+          item.select();
+        }
       } else {
-        if (item.isSelected()) item.deselect();
+        if (item.isSelected()) {
+          item.deselect();
+        }
       }
     });
 
@@ -280,14 +300,6 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
-   * @desc 清空画布
-   */
-  _clear() {
-    const { width, height } = this.getSize();
-    this._lowerCanvas.getContext('2d').clearRect(0, 0, width, height);
-  }
-
-  /**
    * @desc 清楚主视图画布
    */
   clearLowerCanvas() {
@@ -305,12 +317,13 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
    * @desc 渲染
    */
   render() {
+    this.fire(EventConstant.WILL_RENDER);
     this.clearLowerCanvas();
     this.forEachItem((sprite) => {
       sprite.render(this._lowerCanvas.getContext('2d'));
     });
-
     this.renderTrack();
+    this.fire(EventConstant.DID_RENDER);
   }
 
   /**
