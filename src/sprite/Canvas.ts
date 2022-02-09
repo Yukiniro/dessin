@@ -177,6 +177,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
           this._recordSprite.transform(this._recordTrackNode, verctor, this._recordSpriteData);
           this._updateCursor(this._recordTrackNode);
           this.render();
+          this.renderTrack();
         } else {
           const hoverSprite = this._getTopSprite(offsetCursorPoint);
           if (hoverSprite) {
@@ -321,7 +322,6 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this.forEachItem((sprite) => {
       sprite.render(this._lowerCanvas.getContext('2d'));
     });
-    this.renderTrack();
     this.fire(EventConstant.DID_RENDER);
   }
 
