@@ -2,7 +2,7 @@ import { EventConstant } from '../index';
 import CollectionMixin from '../mixin/collection.mixin';
 import ObservableMixin from '../mixin/observable.mixin';
 import { Pos, Rect, Size } from '../types/types';
-import { calcCursorPoint, calcVertor, clearCanvas, css } from '../util/util';
+import { calcCursorPoint, calcRectForFrame, calcVertor, clearCanvas, css } from '../util/util';
 import Base from './Base';
 import Sprite from './sprite';
 import Track from './Track';
@@ -165,6 +165,8 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
       case 'mousemove': {
         if (this._recordSprite) {
           this._trasfrom(offsetCursorPoint);
+        } else if (this._hasMousedown) {
+          this._frameSelection(offsetCursorPoint);
         } else {
           this._updateHoverView(offsetCursorPoint);
         }
@@ -181,6 +183,14 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         this._hasMousedown = false;
         break;
       default:
+    }
+  }
+
+  _frameSelection(offsetCursorPoint: Pos): void {
+    const frameRect = calcRectForFrame(this._recordPoint, offsetCursorPoint);
+    if (frameRect) {
+      // TODO Multi selec
+      console.log(frameRect);
     }
   }
 

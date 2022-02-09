@@ -234,6 +234,30 @@ export function calcDistance(point1: Pos, point2: Pos): number {
 }
 
 /**
+ * @desc Calculate the rect between two points
+ * @param {Object} point1
+ * @property {number} point1.x
+ * @property {number} point1.y
+ * @param {Object} point2
+ * @property {number} point2.x
+ * @property {number} point2.y
+ * @return {Rect | null}
+ */
+export function calcRectForFrame(point1: Pos, point2: Pos): Rect | null {
+  const { x: x1, y: y1 } = point1;
+  const { x: x2, y: y2 } = point2;
+  if (x1 === x2 || y1 === y2) {
+    return null;
+  }
+  return {
+    x: Math.min(x1, x2),
+    y: Math.min(y1, y2),
+    width: Math.abs(x1 - x2),
+    height: Math.abs(y1 - y2),
+  };
+}
+
+/**
  * @desc Take the vector point2 with respect to point1
  * @param {Object} point1
  * @property {number} point1.x
