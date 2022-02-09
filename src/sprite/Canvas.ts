@@ -156,14 +156,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         this._bindEventForBody();
         this._recordSprite = this._getTopSprite(this._recordPoint);
         this._hasMousedown = true;
-        if (this._recordSprite) {
-          this._recordTrackNode = this._recordSprite.calcTrackNode(this._recordPoint);
-          this._recordSpriteData = this._recordSprite.toJSON();
-          this.selectSprite(this._recordSprite.id);
-        } else {
-          this.deselectAll();
-        }
-        this.renderTrack();
+        this._updateSelectionForMouseDown();
         break;
       case 'click':
         break;
@@ -171,23 +164,9 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         break;
       case 'mousemove': {
         if (this._recordSprite) {
-          const verctor =
-            this._recordTrackNode === Track.TRACK_NODES().ROTATE
-              ? offsetCursorPoint
-              : calcVertor(this._recordPoint, offsetCursorPoint);
-          this._recordSprite.transform(this._recordTrackNode, verctor, this._recordSpriteData);
-          this._updateCursor(this._recordTrackNode);
-          this.render();
-          this.renderTrack();
+          this._trasfrom(offsetCursorPoint);
         } else {
-          const hoverSprite = this._getTopSprite(offsetCursorPoint);
-          if (hoverSprite) {
-            const hoverTrackNode = hoverSprite.calcTrackNode(offsetCursorPoint);
-            this._updateCursor(hoverTrackNode);
-          } else {
-            this._updateCursor(-1);
-          }
-          this.renderTrack(hoverSprite);
+          this._updateHoverView(offsetCursorPoint);
         }
         break;
       }
@@ -203,6 +182,39 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         break;
       default:
     }
+  }
+
+  _updateSelectionForMouseDown(): void {
+    if (this._recordSprite) {
+      this._recordTrackNode = this._recordSprite.calcTrackNode(this._recordPoint);
+      this._recordSpriteData = this._recordSprite.toJSON();
+      this.selectSprite(this._recordSprite.id);
+    } else {
+      this.deselectAll();
+    }
+    this.renderTrack();
+  }
+
+  _trasfrom(offsetCursorPoint: Pos): void {
+    const verctor =
+      this._recordTrackNode === Track.TRACK_NODES().ROTATE
+        ? offsetCursorPoint
+        : calcVertor(this._recordPoint, offsetCursorPoint);
+    this._recordSprite.transform(this._recordTrackNode, verctor, this._recordSpriteData);
+    this._updateCursor(this._recordTrackNode);
+    this.render();
+    this.renderTrack();
+  }
+
+  _updateHoverView(offsetCursorPoint: Pos): void {
+    const hoverSprite = this._getTopSprite(offsetCursorPoint);
+    if (hoverSprite) {
+      const hoverTrackNode = hoverSprite.calcTrackNode(offsetCursorPoint);
+      this._updateCursor(hoverTrackNode);
+    } else {
+      this._updateCursor(-1);
+    }
+    this.renderTrack(hoverSprite);
   }
 
   /**
