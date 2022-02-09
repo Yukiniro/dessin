@@ -152,7 +152,6 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     };
     switch (mouseEvent.type) {
       case 'mousedown':
-        
         this._recordPoint = offsetCursorPoint;
         this._bindEventForBody();
         this._recordSprite = this._getTopSprite(this._recordPoint);
@@ -210,7 +209,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
    */
   destroy(): void {
     this.fire(EventConstant.WILL_DESTROY);
-    this.forEachItem(item => {
+    this.forEachItem((item) => {
       item.destroy();
     });
     this.removeAll();
