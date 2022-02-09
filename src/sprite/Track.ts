@@ -90,13 +90,15 @@ class Track {
     return this._owner.rect;
   }
 
-  render(ctx: CanvasRenderingContext2D): void {
+  render(ctx: CanvasRenderingContext2D, isHover: boolean | undefined): void {
     const { x, y, width, height } = this.rect;
     const angle = this.angle;
     ctx.save();
     ctx.translate(x + width / 2, y + height / 2);
     ctx.rotate(angleToRadian(angle));
-    this._renderNodes(ctx);
+    if (!isHover) {
+      this._renderNodes(ctx);
+    }
     this._renderLines(ctx);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.restore();

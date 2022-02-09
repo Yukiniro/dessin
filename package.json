@@ -9,8 +9,8 @@
     "dev": "npx rollup --watch --config rollup.config.dev.js",
     "build": "npx rollup --config rollup.config.prod.js",
     "doc": "npx esdoc",
-    "eslint": "npx eslint src/**/*.js",
-    "eslint && fix": "npx eslint src/**/*.js --fix",
+    "eslint": "npx eslint src/**/*.ts",
+    "eslint && fix": "npx eslint src/**/*.ts --fix",
     "prettier": "npx prettier --write src/**/*.ts"
   },
   "repository": {

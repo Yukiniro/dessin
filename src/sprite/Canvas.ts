@@ -163,6 +163,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         } else {
           this.deselectAll();
         }
+        this.renderTrack();
         break;
       case 'click':
         break;
@@ -186,6 +187,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
           } else {
             this._updateCursor(-1);
           }
+          this.renderTrack(hoverSprite);
         }
         break;
       }
@@ -201,8 +203,6 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         break;
       default:
     }
-
-    this.renderTrack();
   }
 
   /**
@@ -328,11 +328,14 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   /**
    * @desc 渲染控制器
    */
-  renderTrack() {
+  renderTrack(hoverSprite?: Sprite): void {
+    const ctx = this._upperCanvas.getContext('2d');
     this.clearUpperCanvas();
     this.forEachItem((sprite) => {
       if (sprite.isSelected()) {
-        sprite.renderTrack(this._upperCanvas.getContext('2d'));
+        sprite.renderTrack(ctx);
+      } else if (sprite === hoverSprite) {
+        sprite.renderTrack(ctx, true);
       }
     });
   }
