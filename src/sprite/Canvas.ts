@@ -20,6 +20,8 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   protected _recordTrackNode: number;
   protected _recordSpriteData: any;
   protected _viewRect: Rect;
+  protected _selectionOpacity: number;
+  protected _selectionColor: string;
 
   constructor(props: { canvas?: HTMLCanvasElement } = {}) {
     super();
@@ -36,6 +38,8 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this._recordSpriteData = null;
     this._viewRect = null;
     this._fireEvent = this._fireEvent.bind(this);
+    this._selectionOpacity = 0.6;
+    this._selectionColor = '#66e0ff';
 
     this._initView();
     this._bindEvent();
@@ -190,6 +194,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     const frameRect = calcRectForFrame(this._recordPoint, offsetCursorPoint);
     if (frameRect) {
       // TODO Multi selec
+      this.renderFrameSelection(frameRect);
       console.log(frameRect);
     }
   }
@@ -224,7 +229,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     } else {
       this._updateCursor(-1);
     }
-    this.renderTrack(hoverSprite);
+    this.renderTrack([hoverSprite]);
   }
 
   /**
@@ -350,16 +355,31 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   /**
    * @desc 渲染控制器
    */
-  renderTrack(hoverSprite?: Sprite): void {
+  renderTrack(willSelecSprites?: Array<Sprite>): void {
     const ctx = this._upperCanvas.getContext('2d');
     this.clearUpperCanvas();
     this.forEachItem((sprite) => {
       if (sprite.isSelected()) {
         sprite.renderTrack(ctx);
-      } else if (sprite === hoverSprite) {
+      } else if (willSelecSprites && willSelecSprites.includes(sprite)) {
         sprite.renderTrack(ctx, true);
       }
     });
+  }
+
+  /**
+   * @desc Render the multi selection box
+   * @param rect 
+   * @param willSelecSprites 
+   */
+  renderFrameSelection(rect: Rect, willSelecSprites?: Array<Sprite> ): void {
+    const ctx = this._upperCanvas.getContext('2d');
+    this.renderTrack(willSelecSprites);
+    ctx.save();
+    ctx.globalAlpha = this._selectionOpacity;
+    ctx.fillStyle = this._selectionColor;
+    ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+    ctx.restore();
   }
 
   /**

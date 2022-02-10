@@ -373,3 +373,15 @@ export function calcRectWithAngle(rect: Rect, angle: number): Rect {
 export function extendsValue(key: string, value: any, defalultValue: any): void {
   this[`_${key}`] = isUndefined(value) ? defalultValue : value;
 }
+
+/**
+ * @desc Return whether rect1(angle1) and rect2(angle2) collide
+ * @param rect1 
+ * @param angle1 
+ * @param rect2 
+ * @param angle2 
+ */
+export function isCollision(rect1: Rect, angle1: number, rect2: Rect, angle2: number): boolean {
+  // TODO obb检测算法
+  return false;
+}
