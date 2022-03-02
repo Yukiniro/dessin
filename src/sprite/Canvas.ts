@@ -2,7 +2,7 @@ import { EventConstant } from '../index';
 import CollectionMixin from '../mixin/collection.mixin';
 import ObservableMixin from '../mixin/observable.mixin';
 import { Pos, Rect, Size } from '../types/types';
-import { calcCursorPoint, calcRectForFrame, calcVertor, clearCanvas, css } from '../util/util';
+import { calcCursorPoint, calcRectForFrame, calcVertor, clearCanvas, css, isCollision } from '../util/util';
 import Base from './Base';
 import Sprite from './sprite';
 import Track from './Track';
@@ -22,6 +22,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   protected _viewRect: Rect;
   protected _selectionOpacity: number;
   protected _selectionColor: string;
+  protected _frameSelectionGraphs: Array<Sprite>;
 
   constructor(props: { canvas?: HTMLCanvasElement } = {}) {
     super();
@@ -40,6 +41,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this._fireEvent = this._fireEvent.bind(this);
     this._selectionOpacity = 0.6;
     this._selectionColor = '#66e0ff';
+    this._frameSelectionGraphs = [];
 
     this._initView();
     this._bindEvent();
@@ -181,6 +183,10 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         if (this._recordSprite) {
           this._recordSprite.renderCache();
         }
+        this._frameSelectionGraphs.forEach(graph => {
+          graph.select();
+        });
+        this._frameSelectionGraphs.length = 0;
         this._hasMousedown = false;
         this._recordSprite = null;
         this._recordPoint = null;
@@ -193,9 +199,15 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   _frameSelection(offsetCursorPoint: Pos): void {
     const frameRect = calcRectForFrame(this._recordPoint, offsetCursorPoint);
     if (frameRect) {
-      // TODO Multi selec
-      this.renderFrameSelection(frameRect);
-      console.log(frameRect);
+      this._frameSelectionGraphs.length = 0;
+      this.forEachItem(item => {
+        const rect = item.rect;
+        const rotation = item.getAngle();
+        if (isCollision(frameRect, 0, rect, rotation)) {
+          this._frameSelectionGraphs.push(item);
+        }
+      });
+      this.renderFrameSelection(frameRect, this._frameSelectionGraphs);
     }
   }
 

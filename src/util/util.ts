@@ -1,5 +1,6 @@
 import constant from '../constant/constant';
 import { Font, Pos, Rect } from '../types/types';
+import { detectorOBBvsOBB, OBB, Vector2 } from './obb';
 
 const { hasOwnProperty } = Object.prototype;
 
@@ -376,12 +377,25 @@ export function extendsValue(key: string, value: any, defalultValue: any): void 
 
 /**
  * @desc Return whether rect1(angle1) and rect2(angle2) collide
- * @param rect1 
- * @param angle1 
- * @param rect2 
- * @param angle2 
+ * @param rect1
+ * @param angle1
+ * @param rect2
+ * @param angle2
  */
 export function isCollision(rect1: Rect, angle1: number, rect2: Rect, angle2: number): boolean {
-  // TODO obb检测算法
-  return false;
+  const centerPoint1 = calcPointInRect(constant.CENTER, rect1);
+  const obb1 = new OBB(
+    new Vector2(centerPoint1.x, centerPoint1.y),
+    rect1.width,
+    rect1.height,
+    angle1
+  );
+  const centerPoint2 = calcPointInRect(constant.CENTER, rect2);
+  const obb2 = new OBB(
+    new Vector2(centerPoint2.x, centerPoint2.y),
+    rect2.width,
+    rect2.height,
+    angle2
+  );
+  return detectorOBBvsOBB(obb1, obb2);
 }
