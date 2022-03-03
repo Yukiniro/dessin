@@ -34,14 +34,25 @@ export default function CollectionMixin<TBase extends Constructor>(Base: TBase) 
     }
 
     /**
-     * @desc 返回当前元素个数
+     * @description Creates a new array populated with the results of calling a provided function on every element in the calling array.
+     * @param handler 
+     * @returns 
+     */
+    mapItem(handler: (item: any, index: number) => boolean) {
+      return this._items.map((item, index) => {
+        return handler.call(this, item, index);
+      });
+    }
+
+    /**
+     * @desc Return the size of items
      */
     size(): number {
       return this._items.length;
     }
 
     /**
-     * @desc 移除所有元素
+     * @desc Remove all items.
      */
     removeAll(): void {
       this._items.length = 0;

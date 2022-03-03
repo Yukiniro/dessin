@@ -1,3 +1,5 @@
+import Sprite from "../sprite/sprite";
+
 export interface Pos {
   x: number;
   y: number;
@@ -44,6 +46,11 @@ export interface RectJSON extends SpriteJSON {
 export interface CircleJSON extends SpriteJSON {
   fillColor?: string;
   radius?: number;
+}
+
+export interface GroupJSON extends SpriteJSON {
+  items?: Array<Sprite>,
+  isTemporary?: boolean,
 }
 
 export interface TrackWithOnwer extends TrackJSON {

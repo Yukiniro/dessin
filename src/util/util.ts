@@ -371,6 +371,12 @@ export function calcRectWithAngle(rect: Rect, angle: number): Rect {
   };
 }
 
+/**
+ * @description Extends the value for this.
+ * @param key 
+ * @param value 
+ * @param defalultValue 
+ */
 export function extendsValue(key: string, value: any, defalultValue: any): void {
   this[`_${key}`] = isUndefined(value) ? defalultValue : value;
 }
