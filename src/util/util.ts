@@ -334,10 +334,15 @@ export function adsorbAngle(angle: number, offset = 6): number {
  * @property {number} y
  */
 export function calcPointWithAngle(point: Pos, angle: number): Pos {
-  const { x, y } = point;
-  const radian = angleToRadian(angle);
-  const nextX = x * Math.cos(radian) + y * Math.sin(radian);
-  const nextY = y * Math.cos(radian) - x * Math.sin(radian);
+  return calcPointToPointWithAngle(point, {x: 0, y: 0}, angle);
+}
+
+export function calcPointToPointWithAngle(point1: Pos, point2: Pos, angle: number) {
+  const { x: x1, y: y1 } = point1;
+  const { x: x2, y: y2 } = point2;
+  const radian = angleToRadian(-angle);
+  const nextX = (x1 - x2) * Math.cos(radian) - (y1 - y2) * Math.sin(radian) + x2;
+  const nextY = (x1 - x2) * Math.sin(radian) + (y1 - y2) * Math.cos(radian) + y2;
   return {
     x: nextX,
     y: nextY,
@@ -373,9 +378,9 @@ export function calcRectWithAngle(rect: Rect, angle: number): Rect {
 
 /**
  * @description Extends the value for this.
- * @param key 
- * @param value 
- * @param defalultValue 
+ * @param key
+ * @param value
+ * @param defalultValue
  */
 export function extendsValue(key: string, value: any, defalultValue: any): void {
   this[`_${key}`] = isUndefined(value) ? defalultValue : value;
@@ -404,4 +409,45 @@ export function isCollision(rect1: Rect, angle1: number, rect2: Rect, angle2: nu
     angle2
   );
   return detectorOBBvsOBB(obb1, obb2);
+}
+
+/**
+ * @desc Return Returns the largest rect that wraps the specified rect in the current coordinate system
+ * @param rect
+ * @param angle
+ * @returns
+ */
+export function wrapRectWithAngle(rect: Rect, angle: number): Rect {
+  const centerPoint = calcPointInRect(constant.CENTER, rect);
+  const points = [
+    constant.LEFT_TOP,
+    constant.RIGHT_TOP,
+    constant.RIGHT_BOTTOM,
+    constant.LEFT_BOTTOM,
+  ].map((value) => calcPointToPointWithAngle(calcPointInRect(value, rect), centerPoint, angle));
+  return _getMaxRectForPoints(points);
+}
+
+export function wrapRects(rects: Array<Rect>): Rect {
+  const points: Array<Pos> = [];
+  rects.forEach((rect) => {
+    const curPoints = [constant.LEFT_TOP, constant.RIGHT_BOTTOM].map((value) =>
+      calcPointInRect(value, rect)
+    );
+    points.push(...curPoints);
+  });
+  return _getMaxRectForPoints(points);
+}
+
+function _getMaxRectForPoints(points: Array<Pos>): Rect {
+  const minX = Math.min(...points.map((point) => point.x));
+  const maxX = Math.max(...points.map((point) => point.x));
+  const minY = Math.min(...points.map((point) => point.y));
+  const maxY = Math.max(...points.map((point) => point.y));
+  return {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY,
+  };
 }

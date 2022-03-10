@@ -2,8 +2,18 @@ import { EventConstant } from '../index';
 import CollectionMixin from '../mixin/collection.mixin';
 import ObservableMixin from '../mixin/observable.mixin';
 import { Pos, Rect, Size } from '../types/types';
-import { calcCursorPoint, calcRectForFrame, calcVertor, clearCanvas, css, isCollision } from '../util/util';
+import {
+  calcCursorPoint,
+  calcRectForFrame,
+  calcVertor,
+  clearCanvas,
+  css,
+  isCollision,
+  wrapRects,
+  wrapRectWithAngle,
+} from '../util/util';
 import Base from './Base';
+import SoftGroup from './SoftGroup';
 import Sprite from './sprite';
 import Track from './Track';
 
@@ -23,6 +33,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   protected _selectionOpacity: number;
   protected _selectionColor: string;
   protected _frameSelectionGraphs: Array<Sprite>;
+  protected _softGroup: SoftGroup;
 
   constructor(props: { canvas?: HTMLCanvasElement } = {}) {
     super();
@@ -42,6 +53,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this._selectionOpacity = 0.6;
     this._selectionColor = '#66e0ff';
     this._frameSelectionGraphs = [];
+    this._softGroup = null;
 
     this._initView();
     this._bindEvent();
@@ -183,9 +195,12 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         if (this._recordSprite) {
           this._recordSprite.renderCache();
         }
-        this._frameSelectionGraphs.forEach(graph => {
-          graph.select();
-        });
+        if (this._frameSelectionGraphs.length > 1) {
+          this._frameSelect(this._frameSelectionGraphs);
+        } else {
+          this._softGroup = null;
+        }
+        this.renderTrack();
         this._frameSelectionGraphs.length = 0;
         this._hasMousedown = false;
         this._recordSprite = null;
@@ -200,7 +215,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     const frameRect = calcRectForFrame(this._recordPoint, offsetCursorPoint);
     if (frameRect) {
       this._frameSelectionGraphs.length = 0;
-      this.forEachItem(item => {
+      this.forEachItem((item) => {
         const rect = item.rect;
         const rotation = item.getAngle();
         if (isCollision(frameRect, 0, rect, rotation)) {
@@ -212,7 +227,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   _updateSelectionForMouseDown(): void {
-    if (this._recordSprite) {
+    if (this._recordSprite && this._recordSprite !== this._softGroup) {
       this._recordTrackNode = this._recordSprite.calcTrackNode(this._recordPoint);
       this._recordSpriteData = this._recordSprite.toJSON();
       this.selectSprite(this._recordSprite.id);
@@ -299,6 +314,9 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
    * @return {sprite}
    */
   _getTopSprite(point: Pos): Sprite {
+    if (this._softGroup && this._softGroup.calcTrackNode(point)) {
+      return this._softGroup;
+    }
     let top = null;
     let index = this.size();
     const allItems = this.all();
@@ -307,7 +325,6 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
       const curItem = allItems[--index];
       top = curItem.calcTrackNode(point) !== NONE && curItem;
     }
-
     return top;
   }
 
@@ -377,14 +394,18 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         sprite.renderTrack(ctx, true);
       }
     });
+    if (this._softGroup) {
+      this._softGroup.renderTrack(ctx, true);
+      this._softGroup.forEachItem(sprite => sprite.renderTrack(ctx, true));
+    }
   }
 
   /**
    * @desc Render the multi selection box
-   * @param rect 
-   * @param willSelecSprites 
+   * @param rect
+   * @param willSelecSprites
    */
-  renderFrameSelection(rect: Rect, willSelecSprites?: Array<Sprite> ): void {
+  renderFrameSelection(rect: Rect, willSelecSprites?: Array<Sprite>): void {
     const ctx = this._upperCanvas.getContext('2d');
     this.renderTrack(willSelecSprites);
     ctx.save();
@@ -415,6 +436,18 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this._size = { ...size };
     this._updateView();
     return this;
+  }
+
+  _frameSelect(sprites: Array<Sprite>) {
+    if (this._frameSelectionGraphs.length > 1) {
+      this._softGroup = new SoftGroup();
+      const rects = sprites.map((sprite) => {
+        this._softGroup.add(sprite);
+        return wrapRectWithAngle(sprite.rect, sprite.getAngle());
+      });
+      const { x, y, width, height } = wrapRects(rects);
+      this._softGroup.setPos({ x, y }).setSize({ width, height });
+    }
   }
 }
 
