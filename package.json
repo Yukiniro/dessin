@@ -15,13 +15,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Yukiniro/dessin.git"
+    "url": "https://github.com/Yukiniro/dessin.git"
   },
   "keywords": [
     "canvas",
     "render",
     "2d",
     "library"
+  ],
+  "files": [
+    "dist"
   ],
   "author": "yukiniro",
   "license": "MIT",
