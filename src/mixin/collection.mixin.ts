@@ -1,5 +1,5 @@
 import { Constructor } from '../types/types';
-import { removeFromArray } from '../util/util';
+import { remove } from 'bittydash';
 
 export default function CollectionMixin<TBase extends Constructor>(Base: TBase) {
   return class Collection extends Base {
@@ -20,7 +20,7 @@ export default function CollectionMixin<TBase extends Constructor>(Base: TBase) 
      * @param {*} item
      */
     remove(item: any): void {
-      removeFromArray(this._items, item);
+      remove(this._items, item);
     }
 
     /**

@@ -63,6 +63,7 @@
     "uuid": "^8.3.2"
   },
   "dependencies": {
+    "bittydash": "^0.0.9",
     "esdoc-typescript-plugin": "^1.0.1"
   }
 }

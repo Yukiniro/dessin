@@ -1,8 +1,9 @@
 import config from '../config/config';
 import constant from '../constant/constant';
 import { TextJSON, TextSize } from '../types/types';
-import { extendsValue, calcTextSize, deepClone } from '../util/util';
+import { extendsValue, calcTextSize } from '../util/util';
 import Sprite from './sprite';
+import { clone } from 'bittydash';
 
 class Text extends Sprite {
   protected _fontSize: number = 36;
@@ -37,7 +38,7 @@ class Text extends Sprite {
       lineHeight: this._lineHeight,
       fillColor: this._fillColor,
       strokeColor: this._strokeColor,
-      texts: deepClone(this._texts),
+      texts: clone(this._texts, true),
     };
   }
 
@@ -48,7 +49,7 @@ class Text extends Sprite {
     extendsValue.call(this, 'fontWeight', data.fontWeight, this._fontWeight);
     extendsValue.call(this, 'textAlign', data.textAlign, this._textAlign);
     extendsValue.call(this, 'lineHeight', data.lineHeight, this._lineHeight);
-    extendsValue.call(this, 'texts', deepClone(data.texts), this._texts);
+    extendsValue.call(this, 'texts', clone(data.texts, true), this._texts);
     this.initSize();
     this.renderCache();
     return this;

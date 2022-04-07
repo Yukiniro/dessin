@@ -1,5 +1,5 @@
 import { Constructor } from '../types/types';
-import { removeFromArray } from '../util/util';
+import { remove } from 'bittydash';
 
 export default function ObservableMixin<TBase extends Constructor>(Base: TBase) {
   return class Observable extends Base {
@@ -25,7 +25,7 @@ export default function ObservableMixin<TBase extends Constructor>(Base: TBase) 
         return;
       }
 
-      removeFromArray(this._listeners[eventName], handler);
+      remove(this._listeners[eventName], handler);
     }
 
     /**

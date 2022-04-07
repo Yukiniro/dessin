@@ -9,6 +9,7 @@ specifiers:
   '@rollup/plugin-node-resolve': ^13.0.4
   '@rollup/plugin-typescript': ^8.3.0
   '@types/uuid': ^8.3.3
+  bittydash: ^0.0.9
   esdoc: ^1.1.0
   esdoc-ecmascript-proposal-plugin: ^1.0.0
   esdoc-standard-plugin: ^1.0.0
@@ -32,6 +33,7 @@ specifiers:
   uuid: ^8.3.2
 
 dependencies:
+  bittydash: 0.0.9
   esdoc-typescript-plugin: 1.0.1
 
 devDependencies:
@@ -1782,6 +1784,10 @@ packages:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
     dev: true
+
+  /bittydash/0.0.9:
+    resolution: {integrity: sha512-JNJBqQstmjRMoUkmqX2DeuGDU9ZslgtUw47Sq4mzs55dAMN/JPBg8od73reW8XfLMyTqhnDKRtp7ILsNodIpcw==}
+    dev: false
 
   /boolbase/1.0.0:
     resolution: {integrity: sha1-aN/1++YMUes3cl6p4+0xDcwed24=}

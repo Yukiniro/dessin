@@ -1,47 +1,9 @@
 import constant from '../constant/constant';
 import { Font, Pos, Rect } from '../types/types';
 import { detectorOBBvsOBB, OBB, Vector2 } from './obb';
+import { isUndefined } from 'bittydash';
 
-const { hasOwnProperty } = Object.prototype;
-
-/**
- * @desc Check whether the value is undefined
- * @param value
- * @return {boolean}
- */
-export function isUndefined(value: any): boolean {
-  return value === void 0;
-}
-
-export function isObject(value: any): boolean {
-  return typeof value === 'object' && value !== null;
-}
-
-export function deepClone(value: any): any {
-  if (isObject(value)) {
-    if (Array.isArray(value)) {
-      return value.map((item) => deepClone(item));
-    } else {
-      const result: { [key: string]: any } = {};
-      for (let key in value) {
-        if (hasOwnProperty.call(value, key)) {
-          result[key] = value[key];
-        }
-      }
-
-      return result;
-    }
-  } else {
-    return value;
-  }
-}
-
-export function removeFromArray(array: Array<any>, item: any): void {
-  const index = array.indexOf(item);
-  if (index !== -1) {
-    array.splice(index, 1);
-  }
-}
+const { hasOwnProperty } = Object.prototype; 
 
 export function addEventListener(
   target: EventTarget,
