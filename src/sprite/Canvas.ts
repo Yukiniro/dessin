@@ -1,4 +1,4 @@
-import { EventConstant } from '../index';
+import EventConstant from '../constant/event-constant';
 import CollectionMixin from '../mixin/collection.mixin';
 import ObservableMixin from '../mixin/observable.mixin';
 import { Pos, Rect, Size } from '../types/types';
@@ -396,7 +396,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     });
     if (this._softGroup) {
       this._softGroup.renderTrack(ctx, true);
-      this._softGroup.forEachItem(sprite => sprite.renderTrack(ctx, true));
+      this._softGroup.forEachItem((sprite) => sprite.renderTrack(ctx, true));
     }
   }
 
