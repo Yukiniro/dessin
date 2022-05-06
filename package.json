@@ -2,15 +2,15 @@
   "name": "dessin",
   "version": "0.0.7",
   "description": "A Canvas - based TypeScript rendering library.",
-  "main": "dist/dessin.js",
+  "main": "dist/dessin.min.cjs",
+  "module": "dist/dessin.min.mjs",
   "scripts": {
     "publish": "npm run build && npm publish",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx rollup --watch --config rollup.config.dev.js",
-    "build": "npx rollup --config rollup.config.prod.js",
+    "dev": "cd playground && npx vite",
+    "build": "npx rollup --config rollup.config.js",
     "doc": "npx esdoc",
-    "eslint": "npx eslint src/**/*.ts",
-    "eslint && fix": "npx eslint src/**/*.ts --fix",
+    "eslint": "npx eslint src/**/*.ts --fix",
     "prettier": "npx prettier --write src/**/*.ts"
   },
   "repository": {
