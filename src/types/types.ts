@@ -1,4 +1,4 @@
-import Sprite from "../sprite/sprite";
+import Sprite from "../sprite/Sprite";
 
 export interface Pos {
   x: number;

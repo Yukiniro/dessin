@@ -1,7 +1,7 @@
-import canvas from './sprite/canvas';
-import text from './sprite/text';
-import rect from './sprite/rect';
-import circle from './sprite/circle';
+import canvas from './sprite/Canvas';
+import text from './sprite/Text';
+import rect from './sprite/Rect';
+import circle from './sprite/Circle';
 import eventConstant from './constant/event-constant';
 
 export const Canvas = canvas;
