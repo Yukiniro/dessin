@@ -100,7 +100,6 @@ class Track {
       this._renderNodes(ctx);
     }
     this._renderLines(ctx);
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.restore();
   }
 
@@ -174,6 +173,9 @@ class Track {
       case 7:
         pos = calcPointInRect(constant.LEFT_CENTER, rect);
         break;
+      case 8:
+        pos = calcPointInRect(constant.CENTER, rect);
+        break;
       case 9: {
         const { x, y } = calcPointInRect(constant.CENTER_TOP, rect);
         pos = {
@@ -194,11 +196,14 @@ class Track {
    */
   _renderNodes(ctx: CanvasRenderingContext2D): void {
     this._supportNodes.forEach((node) => {
-      const pos = this._calcNodePos(node);
-      const { x, y, width, height } = this.rect;
-      pos.x -= x + width / 2;
-      pos.y -= y + height / 2;
-      this._renderNode(ctx, pos);
+      if (node !== TRACK_NODES.SELF && node !== TRACK_NODES.NONE) {
+        const pos = this._calcNodePos(node);
+        const { x, y, width, height } = this.rect;
+        this._renderNode(ctx, {
+          x: pos.x - x - width / 2,
+          y: pos.y - y - height / 2,
+        });
+      }
     });
   }
 

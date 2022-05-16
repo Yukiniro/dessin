@@ -7,7 +7,7 @@ import {
   calcRectWithAngle,
   calcDiagonalInRect,
 } from '../util/util';
-import Track from './track';
+import Track from './Track';
 import { CircleJSON, EncodeJSON, Pos, Rect } from '../types/types';
 
 class Circle extends Sprite {

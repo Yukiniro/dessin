@@ -13,7 +13,7 @@ import {
   calcVertor,
   extendsValue,
 } from '../util/util';
-import Track from './track';
+import Track from './Track';
 import { v4 } from 'uuid';
 import { EncodeJSON, Pos, Rect, Size, SpriteJSON } from '../types/types';
 import ObservableMixin from '../mixin/observable.mixin';

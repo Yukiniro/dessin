@@ -3,7 +3,7 @@ import { Font, Pos, Rect } from '../types/types';
 import { detectorOBBvsOBB, OBB, Vector2 } from './obb';
 import { isUndefined } from 'bittydash';
 
-const { hasOwnProperty } = Object.prototype; 
+const { hasOwnProperty } = Object.prototype;
 
 export function addEventListener(
   target: EventTarget,
@@ -296,7 +296,7 @@ export function adsorbAngle(angle: number, offset = 6): number {
  * @property {number} y
  */
 export function calcPointWithAngle(point: Pos, angle: number): Pos {
-  return calcPointToPointWithAngle(point, {x: 0, y: 0}, angle);
+  return calcPointToPointWithAngle(point, { x: 0, y: 0 }, angle);
 }
 
 export function calcPointToPointWithAngle(point1: Pos, point2: Pos, angle: number) {
@@ -319,10 +319,7 @@ export function calcPointToPointWithAngle(point1: Pos, point2: Pos, angle: numbe
  * @property {number} rect.width
  * @property {number} rect.height
  * @param {number} angle
- * @return {Object}
- * @return {Object}
- * @return {Object}
- * @return {Object}
+ * @return {Rect}
  */
 export function calcRectWithAngle(rect: Rect, angle: number): Rect {
   const { width, height } = rect;
