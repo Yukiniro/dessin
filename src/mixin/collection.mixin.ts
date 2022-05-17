@@ -35,8 +35,8 @@ export default function CollectionMixin<TBase extends Constructor>(Base: TBase) 
 
     /**
      * @description Creates a new array populated with the results of calling a provided function on every element in the calling array.
-     * @param handler 
-     * @returns 
+     * @param handler
+     * @returns
      */
     mapItem(handler: (item: any, index: number) => boolean) {
       return this._items.map((item, index) => {

@@ -1,4 +1,4 @@
-import Sprite from "../sprite/Sprite";
+import Sprite from '../sprite/Sprite';
 
 export interface Pos {
   x: number;
@@ -49,8 +49,8 @@ export interface CircleJSON extends SpriteJSON {
 }
 
 export interface GroupJSON extends SpriteJSON {
-  items?: Array<Sprite>,
-  isTemporary?: boolean,
+  items?: Array<Sprite>;
+  isTemporary?: boolean;
 }
 
 export interface TrackWithOnwer extends TrackJSON {
