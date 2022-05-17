@@ -1,5 +1,5 @@
 import constant from '../constant/constant';
-import Sprite from './sprite';
+import Sprite from './Sprite';
 import config from '../config/config';
 import {
   extendsValue,

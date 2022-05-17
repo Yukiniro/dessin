@@ -2,7 +2,7 @@ import config from '../config/config';
 import constant from '../constant/constant';
 import { TextJSON, TextSize } from '../types/types';
 import { extendsValue, calcTextSize } from '../util/util';
-import Sprite from './sprite';
+import Sprite from './Sprite';
 import { clone } from 'bittydash';
 
 class Text extends Sprite {

@@ -278,7 +278,7 @@ export function fixAngle(angle: number): number {
  * @param {number} [offset=6]
  * @return {number}
  */
-export function adsorbAngle(angle: number, offset = 6): number {
+export function adsorbAngle(angle = 0, offset = 6): number {
   const angleToAbsorb = [0, 90, 180, 270, 360];
   const ang = fixAngle(angle);
   const index = angleToAbsorb.findIndex((value) => Math.abs(value - ang) <= offset);
@@ -396,6 +396,24 @@ export function wrapRects(rects: Array<Rect>): Rect {
     points.push(...curPoints);
   });
   return _getMaxRectForPoints(points);
+}
+
+export function localityRect(childRect: Rect, parentRect: Rect): Rect {
+  return {
+    x: childRect.x - parentRect.x,
+    y: childRect.y - parentRect.y,
+    width: childRect.width,
+    height: childRect.height,
+  };
+}
+
+export function unlocalityRect(localityRect: Rect, parentRect: Rect): Rect {
+  return {
+    x: localityRect.x + parentRect.x,
+    y: localityRect.y + parentRect.y,
+    width: localityRect.width,
+    height: localityRect.height,
+  };
 }
 
 function _getMaxRectForPoints(points: Array<Pos>): Rect {

@@ -9,12 +9,10 @@ import {
   clearCanvas,
   css,
   isCollision,
-  wrapRects,
-  wrapRectWithAngle,
 } from '../util/util';
 import Base from './Base';
 import SoftGroup from './SoftGroup';
-import Sprite from './sprite';
+import Sprite from './Sprite';
 import Track from './Track';
 
 class Canvas extends ObservableMixin(CollectionMixin(Base)) {
@@ -173,6 +171,10 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         this._recordPoint = offsetCursorPoint;
         this._bindEventForBody();
         this._recordSprite = this._getTopSprite(this._recordPoint);
+        if (this._softGroup && this._softGroup !== this._recordSprite) {
+          this._deleteSoftGrop();
+          this.renderTrack();
+        }
         this._hasMousedown = true;
         this._updateSelectionForMouseDown();
         break;
@@ -196,9 +198,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
           this._recordSprite.renderCache();
         }
         if (this._frameSelectionGraphs.length > 1) {
-          this._frameSelect(this._frameSelectionGraphs);
-        } else {
-          this._softGroup = null;
+          this._createSoftGroup(this._frameSelectionGraphs);
         }
         this.renderTrack();
         this._frameSelectionGraphs.length = 0;
@@ -211,7 +211,17 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     }
   }
 
-  _frameSelection(offsetCursorPoint: Pos): void {
+  private _createSoftGroup(sprites: Array<Sprite>) {
+    this._softGroup = this._softGroup || new SoftGroup();
+    this._softGroup.group(sprites);
+  }
+
+  private _deleteSoftGrop() {
+    this._softGroup.ungroup();
+    this._softGroup = null;
+  }
+
+  private _frameSelection(offsetCursorPoint: Pos): void {
     const frameRect = calcRectForFrame(this._recordPoint, offsetCursorPoint);
     if (frameRect) {
       this._frameSelectionGraphs.length = 0;
@@ -227,11 +237,14 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   _updateSelectionForMouseDown(): void {
-    if (this._recordSprite && this._recordSprite !== this._softGroup) {
+    if (this._recordSprite) {
       this._recordTrackNode = this._recordSprite.calcTrackNode(this._recordPoint);
       this._recordSpriteData = this._recordSprite.toJSON();
+    }
+    if (this._recordSprite !== this._softGroup) {
       this.selectSprite(this._recordSprite.id);
-    } else {
+    }
+    if (this._recordTrackNode === -1) {
       this.deselectAll();
     }
     this.renderTrack();
@@ -314,7 +327,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
    * @return {sprite}
    */
   _getTopSprite(point: Pos): Sprite {
-    if (this._softGroup && this._softGroup.calcTrackNode(point)) {
+    if (this._softGroup && this._softGroup.calcTrackNode(point) !== -1) {
       return this._softGroup;
     }
     let top = null;
@@ -436,18 +449,6 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this._size = { ...size };
     this._updateView();
     return this;
-  }
-
-  _frameSelect(sprites: Array<Sprite>) {
-    if (this._frameSelectionGraphs.length > 1) {
-      this._softGroup = new SoftGroup();
-      const rects = sprites.map((sprite) => {
-        this._softGroup.add(sprite);
-        return wrapRectWithAngle(sprite.rect, sprite.getAngle());
-      });
-      const { x, y, width, height } = wrapRects(rects);
-      this._softGroup.setPos({ x, y }).setSize({ width, height });
-    }
   }
 }
 

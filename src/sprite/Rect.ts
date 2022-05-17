@@ -2,7 +2,7 @@ import config from '../config/config';
 import constant from '../constant/constant';
 import { RectJSON } from '../types/types';
 import { extendsValue } from '../util/util';
-import Sprite from './sprite';
+import Sprite from './Sprite';
 
 class Rect extends Sprite {
   protected _fillColor: string = '#FF0000';
