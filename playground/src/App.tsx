@@ -1,38 +1,62 @@
-import { useEffect, useRef, useState } from 'react';
+import { random } from 'bittydash';
+import { useEffect, useRef } from 'react';
 import { Canvas, Text, Rect, Circle } from '../../src/index';
-import './App.css';
+import './App.less';
+import { getRandomColor, getRandomPos, getRandomSize } from './util';
 
 function App() {
-  const canvasRef = useRef(null);
+  const viewRef: any = useRef(null);
+  const cannvasRef: any = useRef(null);
+  const addRect = () => {
+    const rect = new Rect({
+      ...getRandomPos(),
+      ...getRandomSize(),
+      fillColor: getRandomColor(),
+    });
+    cannvasRef.current.add(rect);
+    cannvasRef.current.render();
+  };
+  const addCircle = () => {
+    const circle = new Circle({
+      ...getRandomPos(),
+      radius: random(50, 100),
+      fillColor: getRandomColor(),
+    });
+    cannvasRef.current.add(circle);
+    cannvasRef.current.render();
+  };
+  const addText = () => {
+    const text = new Text({
+      ...getRandomPos(),
+      fillColor: getRandomColor(),
+      texts: ['hollo world'],
+    });
+    cannvasRef.current.add(text);
+    cannvasRef.current.render();
+  };
   useEffect(() => {
-    let canvas = new Canvas({ canvas: canvasRef.current as unknown as HTMLCanvasElement });
-    let text = new Text({
-      texts: ['hollo world', 'I am Yukiniro'],
-      fillColor: '#FF0000',
-      x: 100,
-      y: 200,
-    });
-    let rect = new Rect({
-      x: 20,
-      y: 20,
-      width: 120,
-      height: 100,
-      fillColor: '#0F0',
-    });
-    let circle = new Circle({
-      x: 150,
-      y: 20,
-      radius: 30,
-      fillColor: '#00F',
-    });
-    canvas.add(text);
-    canvas.add(rect);
-    canvas.add(circle);
-    canvas.render();
+    let canvas = new Canvas({ canvas: viewRef.current as unknown as HTMLCanvasElement });
+    cannvasRef.current = canvas;
   });
+
+  useEffect(() => {
+    addRect();
+    addCircle();
+    addText();
+  });
+
   return (
-    <div className="App">
-      <canvas ref={canvasRef}></canvas>
+    <div className="app">
+      <div className="content">
+        <div className="operate">
+          <button onClick={addRect}>Add Rect</button>
+          <button onClick={addCircle}>Add Circle</button>
+          <button onClick={addText}>Add Text</button>
+        </div>
+        <div className="preview">
+          <canvas ref={viewRef}></canvas>
+        </div>
+      </div>
     </div>
   );
 }
