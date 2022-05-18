@@ -15,7 +15,6 @@ function App() {
       fillColor: getRandomColor(),
     });
     cannvasRef.current.add(rect);
-    cannvasRef.current.render();
   };
   const addCircle = () => {
     const circle = new Circle({
@@ -24,7 +23,6 @@ function App() {
       fillColor: getRandomColor(),
     });
     cannvasRef.current.add(circle);
-    cannvasRef.current.render();
   };
   const addText = () => {
     const text = new Text({
@@ -33,7 +31,6 @@ function App() {
       texts: ['hollo world'],
     });
     cannvasRef.current.add(text);
-    cannvasRef.current.render();
   };
   useEffect(() => {
     let canvas = new Canvas({ canvas: viewRef.current as unknown as HTMLCanvasElement });
@@ -51,8 +48,6 @@ function App() {
       const selectedSprite = cannvasRef.current.selectedSprite();
       if (selectedSprite) {
         cannvasRef.current.remove(selectedSprite);
-        cannvasRef.current.render();
-        cannvasRef.current.renderTrack();
       }
     });
   }, []);

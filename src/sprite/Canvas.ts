@@ -236,7 +236,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     }
   }
 
-  _updateSelectionForMouseDown(): void {
+  private _updateSelectionForMouseDown(): void {
     if (this._recordSprite) {
       this._recordTrackNode = this._recordSprite.calcTrackNode(this._recordPoint);
       this._recordSpriteData = this._recordSprite.toJSON();
@@ -250,7 +250,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this.renderTrack();
   }
 
-  _trasfrom(offsetCursorPoint: Pos): void {
+  private _trasfrom(offsetCursorPoint: Pos): void {
     const verctor =
       this._recordTrackNode === Track.TRACK_NODES().ROTATE
         ? offsetCursorPoint
@@ -261,7 +261,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this.renderTrack();
   }
 
-  _updateHoverView(offsetCursorPoint: Pos): void {
+  private _updateHoverView(offsetCursorPoint: Pos): void {
     const hoverSprite = this._getTopSprite(offsetCursorPoint);
     if (hoverSprite) {
       const hoverTrackNode = hoverSprite.calcTrackNode(offsetCursorPoint);
@@ -309,6 +309,9 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   selectedSprite(): Sprite {
+    if (this._softGroup) {
+      return this._softGroup;
+    }
     return this.all().find((item) => item.isSelected());
   }
 
@@ -330,7 +333,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
    * @param {number} point.y
    * @return {sprite}
    */
-  _getTopSprite(point: Pos): Sprite {
+  private _getTopSprite(point: Pos): Sprite {
     if (this._softGroup && this._softGroup.calcTrackNode(point) !== -1) {
       return this._softGroup;
     }
@@ -348,7 +351,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   /**
    * @desc 更新视图尺寸
    */
-  _updateView() {
+  private _updateView() {
     const { width, height } = this._size;
     this._lowerCanvas.width = width;
     this._lowerCanvas.height = height;
@@ -362,7 +365,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   /**
    * @desc 更新视图相对于浏览器的位置尺寸信息
    */
-  _updateViewRect() {
+  private _updateViewRect() {
     const viewRect = this._upperCanvas.getBoundingClientRect();
     this._viewRect = {
       x: viewRect.left,
@@ -370,6 +373,25 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
       width: viewRect.width,
       height: viewRect.height,
     };
+  }
+
+  add(item: any): void {
+    super.add(item);
+    this.render();
+    this.renderTrack();
+  }
+
+  remove(item: any): void {
+    if (item === this._softGroup) {
+      this._softGroup.forEachItem((item) => {
+        super.remove(item);
+      });
+      this._deleteSoftGrop();
+    } else {
+      super.remove(item);
+    }
+    this.render();
+    this.renderTrack();
   }
 
   /**
