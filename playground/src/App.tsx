@@ -1,6 +1,6 @@
 import { random } from 'bittydash';
 import { useEffect, useRef } from 'react';
-import { Canvas, Text, Rect, Circle } from '../../src/index';
+import { Canvas, Text, Rect, Circle } from 'dessin';
 import './App.less';
 import { getRandomColor, getRandomPos, getRandomSize } from './util';
 import { subscribe } from 'toukey';
