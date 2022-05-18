@@ -44,6 +44,7 @@ class Text extends Sprite {
 
   fromJSON(data: TextJSON): this {
     super.fromJSON(data);
+    extendsValue.call(this, 'fillColor', data.fillColor, this._fillColor);
     extendsValue.call(this, 'fontSize', data.fontSize, this._fontSize);
     extendsValue.call(this, 'fontStyle', data.fontStyle, this._fontStyle);
     extendsValue.call(this, 'fontWeight', data.fontWeight, this._fontWeight);
