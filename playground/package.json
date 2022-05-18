@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "cd ../ && npm run build && cd playground && tsc && vite build",
+    "build": "cd ../ && pnpm i && npm run build && cd playground && tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
