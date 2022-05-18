@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { Canvas, Text, Rect, Circle } from '../../src/index';
 import './App.less';
 import { getRandomColor, getRandomPos, getRandomSize } from './util';
+import { subscribe } from 'toukey';
 
 function App() {
   const viewRef: any = useRef(null);
@@ -44,6 +45,17 @@ function App() {
     addCircle();
     addText();
   });
+
+  useEffect(() => {
+    return subscribe('delete', () => {
+      const selectedSprite = cannvasRef.current.selectedSprite();
+      if (selectedSprite) {
+        cannvasRef.current.remove(selectedSprite);
+        cannvasRef.current.render();
+        cannvasRef.current.renderTrack();
+      }
+    });
+  }, []);
 
   return (
     <div className="app">
