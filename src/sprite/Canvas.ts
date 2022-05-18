@@ -197,7 +197,9 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         if (this._recordSprite) {
           this._recordSprite.renderCache();
         }
-        if (this._frameSelectionGraphs.length > 1) {
+        if (this._frameSelectionGraphs.length === 1) {
+          this.selectSprite(this._frameSelectionGraphs[0].id);
+        } else if (this._frameSelectionGraphs.length > 1) {
           this._createSoftGroup(this._frameSelectionGraphs);
         }
         this.renderTrack();
