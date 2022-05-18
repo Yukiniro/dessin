@@ -308,6 +308,10 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     return this;
   }
 
+  selectedSprite(): Sprite {
+    return this.all().find((item) => item.isSelected());
+  }
+
   /**
    * @desc 返回其他所有对象
    */
