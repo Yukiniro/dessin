@@ -84,14 +84,14 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
 
   _bindEvent(): void {
     this._lowerCanvas.addEventListener('mousedown', this._fireEvent);
-    this._lowerCanvas.addEventListener('clcik', this._fireEvent);
+    this._lowerCanvas.addEventListener('click', this._fireEvent);
     this._lowerCanvas.addEventListener('dblclick', this._fireEvent);
     this._lowerCanvas.addEventListener('mousemove', this._fireEvent);
   }
 
   _unbindEvent(): void {
     this._lowerCanvas.removeEventListener('mousedown', this._fireEvent);
-    this._lowerCanvas.removeEventListener('clcik', this._fireEvent);
+    this._lowerCanvas.removeEventListener('click', this._fireEvent);
     this._lowerCanvas.removeEventListener('dblclick', this._fireEvent);
     this._lowerCanvas.removeEventListener('mouseover', this._fireEvent);
   }
