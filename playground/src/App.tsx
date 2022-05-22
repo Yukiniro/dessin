@@ -55,14 +55,9 @@ function App() {
 
   return (
     <div className="w-full">
-      <Header />
+      <Header addCircle={addCircle} addText={addText} addRect={addRect} />
       <div className="content">
-        <div className="operate">
-          <button onClick={addRect}>Add Rect</button>
-          <button onClick={addCircle}>Add Circle</button>
-          <button onClick={addText}>Add Text</button>
-        </div>
-        <div className="preview">
+        <div w="500px" h="500px" border="1 solid dark-200">
           <canvas ref={viewRef}></canvas>
         </div>
       </div>

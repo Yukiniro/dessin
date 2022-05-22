@@ -1,13 +1,21 @@
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 
-function Header() {
+interface HeaderProps {
+  addRect: () => void;
+  addCircle: () => void;
+  addText: () => void;
+}
+
+function Header(props: HeaderProps) {
+  const { addRect, addCircle, addText } = props;
   return (
     <div className="flex items-center justify-between w-full">
       <div>
         <ButtonGroup>
-          <Button>Undo</Button>
-          <Button>Redo</Button>
+          <Button onClick={addRect}>Add Rect</Button>
+          <Button onClick={addCircle}>Add Circle</Button>
+          <Button onClick={addText}>Add Text</Button>
         </ButtonGroup>
       </div>
       <div>

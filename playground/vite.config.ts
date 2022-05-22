@@ -5,7 +5,14 @@ import Windicss from 'vite-plugin-windicss';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   return {
-    plugins: [react(), Windicss()],
+    plugins: [
+      react(),
+      Windicss({
+        config: {
+          attributify: true,
+        },
+      }),
+    ],
     resolve: {
       alias: {
         dessin: mode === 'development' ? '../../src/index' : '../../dist/dessin.mjs',
