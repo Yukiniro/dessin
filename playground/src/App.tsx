@@ -4,6 +4,7 @@ import { Canvas, Text, Rect, Circle } from 'dessin';
 import './App.less';
 import { getRandomColor, getRandomPos, getRandomSize } from './util';
 import { subscribe } from 'toukey';
+import Header from './header/Header';
 
 function App() {
   const viewRef: any = useRef(null);
@@ -53,7 +54,8 @@ function App() {
   }, []);
 
   return (
-    <div className="app">
+    <div className="w-full">
+      <Header />
       <div className="content">
         <div className="operate">
           <button onClick={addRect}>Add Rect</button>
