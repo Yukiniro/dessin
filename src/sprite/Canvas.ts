@@ -8,6 +8,7 @@ import {
   calcVertor,
   clearCanvas,
   css,
+  extendsValue,
   isCollision,
 } from '../util/util';
 import Base from './Base';
@@ -20,6 +21,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   protected _viewResponse: number = 1;
   protected _lowerCanvas: HTMLCanvasElement;
   protected _upperCanvas: HTMLCanvasElement;
+  protected _backgroundColor: string;
   protected _body: HTMLElement;
   protected _willOperateSprite: any;
   protected _hasMousedown: boolean;
@@ -33,12 +35,13 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   protected _frameSelectionGraphs: Array<Sprite>;
   protected _softGroup: SoftGroup;
 
-  constructor(props: { canvas?: HTMLCanvasElement } = {}) {
+  constructor(props: { canvas?: HTMLCanvasElement; backgroundColor?: string } = {}) {
     super();
     this._lowerCanvas = props && props.canvas; // 渲染视图
     this._upperCanvas = document.createElement('canvas'); // 事件响应、辅助线视图
     this._size = { width: 500, height: 500 };
     this._viewResponse = 1; // 实际渲染与最终成像之间的比例关系
+    this._backgroundColor = '#FFFFFF';
     this._body = document.body;
     this._willOperateSprite = null; // 将要正在控制的对象
     this._hasMousedown = false; // 鼠标是否已经按下，区分划过、拖动
@@ -53,6 +56,8 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this._frameSelectionGraphs = [];
     this._softGroup = null;
 
+    extendsValue.call(this, 'backgroundColor', props.backgroundColor, '#FFFFFF');
+
     this._initView();
     this._bindEvent();
     this._updateView();
@@ -62,7 +67,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   /**
    * @desc 初始化视图
    */
-  _initView(): void {
+  private _initView(): void {
     if (!this._lowerCanvas) {
       throw new Error('You have to bind a canvas!');
     } else {
@@ -82,31 +87,31 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     }
   }
 
-  _bindEvent(): void {
+  private _bindEvent(): void {
     this._lowerCanvas.addEventListener('mousedown', this._fireEvent);
     this._lowerCanvas.addEventListener('click', this._fireEvent);
     this._lowerCanvas.addEventListener('dblclick', this._fireEvent);
     this._lowerCanvas.addEventListener('mousemove', this._fireEvent);
   }
 
-  _unbindEvent(): void {
+  private _unbindEvent(): void {
     this._lowerCanvas.removeEventListener('mousedown', this._fireEvent);
     this._lowerCanvas.removeEventListener('click', this._fireEvent);
     this._lowerCanvas.removeEventListener('dblclick', this._fireEvent);
     this._lowerCanvas.removeEventListener('mouseover', this._fireEvent);
   }
 
-  _bindEventForBody(): void {
+  private _bindEventForBody(): void {
     this._body.addEventListener('mousemove', this._fireEvent);
     this._body.addEventListener('mouseup', this._fireEvent);
   }
 
-  _unbindEventForBody(): void {
+  private _unbindEventForBody(): void {
     this._body.removeEventListener('mousemove', this._fireEvent);
     this._body.removeEventListener('mouseup', this._fireEvent);
   }
 
-  _updateCursor(trackNode: number): void {
+  private _updateCursor(trackNode: number): void {
     const {
       LEFT_TOP,
       CENTER_TOP,
@@ -160,7 +165,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
    * @desc 触发鼠标事件
    * @param {*} mouseEvent
    */
-  _fireEvent(mouseEvent: MouseEvent): void {
+  private _fireEvent(mouseEvent: MouseEvent): void {
     const cursorPoint = calcCursorPoint(mouseEvent);
     const offsetCursorPoint = {
       x: cursorPoint.x - this._viewRect.x,
@@ -416,10 +421,20 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   render() {
     this.fire(EventConstant.WILL_RENDER);
     this.clearLowerCanvas();
+    this.renderBackground();
     this.forEachItem((sprite) => {
       sprite.render(this._lowerCanvas.getContext('2d'));
     });
     this.fire(EventConstant.DID_RENDER);
+  }
+
+  renderBackground() {
+    const ctx = this._lowerCanvas.getContext('2d');
+    const { width, height } = this._size;
+    ctx.save();
+    ctx.fillStyle = this._backgroundColor;
+    ctx.fillRect(0, 0, width, height);
+    ctx.restore();
   }
 
   /**

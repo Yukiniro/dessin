@@ -39,7 +39,10 @@ function App() {
     download(viewRef.current.toDataURL(), { name: 'test.png' });
   }, []);
   useEffect(() => {
-    let canvas = new Canvas({ canvas: viewRef.current as unknown as HTMLCanvasElement });
+    let canvas = new Canvas({
+      canvas: viewRef.current as unknown as HTMLCanvasElement,
+      backgroundColor: getRandomColor(),
+    });
     cannvasRef.current = canvas;
   });
 
@@ -62,7 +65,7 @@ function App() {
     <div className="w-full">
       <Header exportImage={exportImage} addCircle={addCircle} addText={addText} addRect={addRect} />
       <div className="content">
-        <div w="500px" h="500px" border="1 solid dark-200">
+        <div w="502px" h="502px" border="1 solid dark-200">
           <canvas ref={viewRef}></canvas>
         </div>
       </div>
