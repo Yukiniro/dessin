@@ -41,7 +41,7 @@
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@rollup/plugin-typescript": "^8.3.0",
     "@types/uuid": "^8.3.3",
-    "bittydash": "^0.0.12",
+    "bittydash": "^0.0.13",
     "comelog": "^0.1.1",
     "esdoc": "^1.1.0",
     "esdoc-ecmascript-proposal-plugin": "^1.0.0",

@@ -1,13 +1,8 @@
-import { random } from 'bittydash';
+import { random, randomColor } from 'bittydash';
 import { Pos, Size } from './types';
 
 function getRandomColor(): string {
-  const signs = '0123456789ABCDEF';
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += signs[random(0, signs.length - 1)];
-  }
-  return color;
+  return randomColor('hex');
 }
 
 function getRandomSize(): Size {
