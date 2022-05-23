@@ -41,11 +41,11 @@ class Sprite extends ObservableMixin(Base) {
 
   constructor(props: SpriteJSON = {}) {
     super();
-    this._supportNodes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1];
     this._evented = true;
     this._selected = false;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
+    this._supportNodes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1];
     this._track = new Track({ supportNodes: this._supportNodes, owner: this });
     this.fromJSON(props);
   }

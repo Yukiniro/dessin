@@ -4,6 +4,7 @@ import { TextJSON, TextSize } from '../types/types';
 import { extendsValue, calcTextSize } from '../util/util';
 import Sprite from './Sprite';
 import { clone } from 'bittydash';
+import Track from './Track';
 
 class Text extends Sprite {
   protected _fontSize: number = 36;
@@ -20,8 +21,9 @@ class Text extends Sprite {
   constructor(props: TextJSON = {}) {
     super(props);
     this._type = constant.SPRITE_TYPE_TEXT;
-    this._supportNodes = [0, 2, 3, 4, 6, 7, 9];
+    this._supportNodes = [0, 2, 4, 6, 8, 9];
     this._fontBoundingBoxAscent = 0;
+    this._track = new Track({ supportNodes: this._supportNodes, owner: this });
     this.fromJSON(props);
     this.initSize();
     this.renderCache();

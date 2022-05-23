@@ -1,14 +1,15 @@
 import constant from '../constant/constant';
 import { GroupJSON, Pos } from '../types/types';
-import { wrapRects, wrapRectWithAngle } from '../util/util';
 import Group from './Group';
 import Sprite from './Sprite';
+import Track from './Track';
 
 class SoftGroup extends Group {
   constructor(props: GroupJSON = {}) {
     super(props);
     this._type = constant.SPRITE_TYPE_SOFTGROUP;
     this._supportNodes = [8, -1];
+    this._track = new Track({ supportNodes: this._supportNodes, owner: this });
   }
 
   transform(trackNode: number, verctor: Pos, prevEncodeData: object): this {

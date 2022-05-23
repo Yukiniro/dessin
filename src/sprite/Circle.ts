@@ -8,7 +8,7 @@ import {
   calcDiagonalInRect,
 } from '../util/util';
 import Track from './Track';
-import { CircleJSON, EncodeJSON, Pos, Rect } from '../types/types';
+import { CircleJSON, EncodeJSON, Pos } from '../types/types';
 
 class Circle extends Sprite {
   protected _fillColor: string = '#FF0000';
@@ -18,6 +18,7 @@ class Circle extends Sprite {
     super(props);
     this._type = constant.SPRITE_TYPE_CIRCLE;
     this._supportNodes = [0, 2, 4, 6, 8, 9];
+    this._track = new Track({ supportNodes: this._supportNodes, owner: this });
     this.fromJSON(props);
     this.renderCache();
   }
