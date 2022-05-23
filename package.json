@@ -1,6 +1,6 @@
 {
   "name": "dessin",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "A Canvas - based TypeScript rendering library.",
   "main": "dist/dessin.min.cjs",
   "module": "dist/dessin.min.mjs",
