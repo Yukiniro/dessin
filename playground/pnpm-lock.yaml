@@ -8,6 +8,7 @@ specifiers:
   '@types/react': ^17.0.33
   '@types/react-dom': ^17.0.10
   '@vitejs/plugin-react': ^1.0.7
+  downloadmejs: ^1.1.1
   less: ^4.1.2
   less-loader: ^11.0.0
   react: ^17.0.2
@@ -23,6 +24,7 @@ dependencies:
   '@emotion/styled': 11.8.1_roy3f4wzeod2t2byip7ulyixma
   '@fontsource/roboto': 4.5.7
   '@mui/material': 5.8.0_zanmx6zi7rhzhubzy2o5yfbjjq
+  downloadmejs: 1.1.1
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   toukey: 1.0.7
@@ -841,6 +843,10 @@ packages:
     dependencies:
       '@babel/runtime': 7.18.0
       csstype: 3.0.11
+    dev: false
+
+  /downloadmejs/1.1.1:
+    resolution: {integrity: sha512-Q3Wy9XRUw28/1S2f13H+9LzPsh5v2nRMBq+u9AwK1BWTbh6w689Dz/sHYbkPAOh7Oz+pMLYKpbd++kWR6kDllQ==}
     dev: false
 
   /electron-to-chromium/1.4.103:

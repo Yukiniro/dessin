@@ -12,6 +12,7 @@
     "@emotion/styled": "^11.8.1",
     "@fontsource/roboto": "^4.5.7",
     "@mui/material": "^5.8.0",
+    "downloadmejs": "^1.1.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "toukey": "^1.0.7"

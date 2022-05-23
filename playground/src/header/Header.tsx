@@ -5,10 +5,11 @@ interface HeaderProps {
   addRect: () => void;
   addCircle: () => void;
   addText: () => void;
+  exportImage: () => void;
 }
 
 function Header(props: HeaderProps) {
-  const { addRect, addCircle, addText } = props;
+  const { addRect, addCircle, addText, exportImage } = props;
   return (
     <div className="flex items-center justify-between w-full">
       <div>
@@ -19,7 +20,7 @@ function Header(props: HeaderProps) {
         </ButtonGroup>
       </div>
       <div>
-        <Button>export</Button>
+        <Button onClick={exportImage}>export</Button>
       </div>
     </div>
   );
