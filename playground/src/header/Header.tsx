@@ -11,7 +11,7 @@ interface HeaderProps {
 function Header(props: HeaderProps) {
   const { addRect, addCircle, addText, exportImage } = props;
   return (
-    <div className="flex items-center justify-between w-full">
+    <div className="flex items-center justify-between w-full shadow">
       <div>
         <ButtonGroup>
           <Button onClick={addRect}>Add Rect</Button>
