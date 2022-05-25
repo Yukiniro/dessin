@@ -9,14 +9,14 @@ import { download } from 'downloadmejs';
 
 function App() {
   const viewRef: any = useRef(null);
-  const cannvasRef: any = useRef(null);
+  const canvasRef: any = useRef(null);
   const addRect = useCallback(() => {
     const rect = new Rect({
       ...getRandomPos(),
       ...getRandomSize(),
       fillColor: getRandomColor(),
     });
-    cannvasRef.current.add(rect);
+    canvasRef.current.add(rect);
   }, []);
   const addCircle = useCallback(() => {
     const circle = new Circle({
@@ -24,7 +24,7 @@ function App() {
       radius: random(50, 100),
       fillColor: getRandomColor(),
     });
-    cannvasRef.current.add(circle);
+    canvasRef.current.add(circle);
   }, []);
   const addText = useCallback(() => {
     const text = new Text({
@@ -32,31 +32,37 @@ function App() {
       fillColor: getRandomColor(),
       texts: ['hollo world'],
     });
-    cannvasRef.current.add(text);
+    canvasRef.current.add(text);
   }, []);
+
   const exportImage = useCallback(() => {
-    console.log(viewRef.current.toDataURL());
     download(viewRef.current.toDataURL(), { name: 'test.png' });
   }, []);
+
   useEffect(() => {
     let canvas = new Canvas({
       canvas: viewRef.current as unknown as HTMLCanvasElement,
       backgroundColor: getRandomColor(),
     });
-    cannvasRef.current = canvas;
-  });
+    canvasRef.current = canvas;
+
+    return () => {
+      canvasRef.current.destroy();
+      canvasRef.current = null;
+    };
+  }, []);
 
   useEffect(() => {
     addRect();
     addCircle();
     addText();
-  });
+  }, []);
 
   useEffect(() => {
     return subscribe('delete', () => {
-      const selectedSprite = cannvasRef.current.selectedSprite();
+      const selectedSprite = canvasRef.current.selectedSprite();
       if (selectedSprite) {
-        cannvasRef.current.remove(selectedSprite);
+        canvasRef.current.remove(selectedSprite);
       }
     });
   }, []);

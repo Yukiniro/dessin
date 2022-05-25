@@ -1,5 +1,5 @@
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
+import { Button, Divider, IconButton } from '@mui/material';
+import { CloudDownload } from '@mui/icons-material';
 
 interface HeaderProps {
   addRect: () => void;
@@ -12,15 +12,25 @@ function Header(props: HeaderProps) {
   const { addRect, addCircle, addText, exportImage } = props;
   return (
     <div className="flex items-center justify-between w-full shadow">
-      <div>
-        <ButtonGroup>
-          <Button onClick={addRect}>Add Rect</Button>
-          <Button onClick={addCircle}>Add Circle</Button>
-          <Button onClick={addText}>Add Text</Button>
-        </ButtonGroup>
+      <div className="flex items-center justify-between">
+        <Button className="text-dark-50 mx-4" href="https://github.com/Yukiniro/dessin">
+          Dessin
+        </Button>
+        <Divider orientation="vertical" flexItem />
+        <Button className="mx-2" variant="contained" onClick={addRect}>
+          Add Rect
+        </Button>
+        <Button className="mx-2" variant="contained" onClick={addCircle}>
+          Add Circle
+        </Button>
+        <Button className="mx-2" variant="contained" onClick={addText}>
+          Add Text
+        </Button>
       </div>
       <div>
-        <Button onClick={exportImage}>export</Button>
+        <IconButton onClick={exportImage} color="success">
+          <CloudDownload />
+        </IconButton>
       </div>
     </div>
   );
