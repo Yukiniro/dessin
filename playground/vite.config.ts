@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import Windicss from 'vite-plugin-windicss';
+const path = require('path');
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -15,7 +16,10 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: {
-        dessin: mode === 'development' ? '../../src/index' : '../../dist/dessin.mjs',
+        dessin:
+          mode === 'development'
+            ? path.resolve(__dirname, '../src/index.ts')
+            : path.resolve(__dirname, '../dist/dessin.mjs'),
       },
     },
   };

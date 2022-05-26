@@ -1,13 +1,11 @@
 import create from 'zustand';
+import createTopbarStore, { TopbarState } from './createTopbarStore';
 
-interface CanvasStore {
-  backgroundColor: string;
-  changeBackgroundColor: (value: string) => void;
-}
+type MyState = TopbarState;
 
-const useCanvasStore = create<CanvasStore>((set) => ({
-  backgroundColor: '#972cb5',
-  changeBackgroundColor: (value: string) => set({ backgroundColor: value }),
+const useStore = create<MyState>((set, get) => ({
+  ...createTopbarStore(set, get),
 }));
 
-export { useCanvasStore };
+export { MyState };
+export default useStore;
