@@ -13,6 +13,7 @@ try {
 const COMMAND = {
   INIT_CANVAS: 'INIT_CANVAS',
   CHANGE_BKC: 'CHANGE_BKC',
+  GET_ALL_STATE: 'GET_ALL_STATE',
 };
 
 function execute(command: string, value?: any) {
@@ -25,6 +26,8 @@ function execute(command: string, value?: any) {
     case COMMAND.CHANGE_BKC:
       dessinCanvas.setBackgroundColor(value);
       dessinCanvas.render();
+    case COMMAND.GET_ALL_STATE:
+      return dessinCanvas.toJSON();
     default:
       throw new Error('command must be string.');
   }

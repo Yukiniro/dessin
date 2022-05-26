@@ -3,6 +3,7 @@ import './App.less';
 import Header from './header/Header';
 import { download } from 'downloadmejs';
 import { COMMAND, execute } from './core';
+import useStore from './store';
 
 function App() {
   const viewRef: any = useRef(null);
@@ -10,8 +11,11 @@ function App() {
     download(viewRef.current.toDataURL(), { name: 'test.png' });
   }, []);
 
+  const { updateAll } = useStore((state) => state);
+
   useEffect(() => {
     const canvas = execute(COMMAND.INIT_CANVAS, viewRef.current);
+    updateAll();
     return () => {
       canvas.destroy();
     };
