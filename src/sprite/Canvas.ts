@@ -493,6 +493,15 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this._updateView();
     return this;
   }
+
+  getBackgroundColor(): string {
+    return this._backgroundColor;
+  }
+
+  setBackgroundColor(value: string): this {
+    this._backgroundColor = value;
+    return this;
+  }
 }
 
 export default Canvas;
