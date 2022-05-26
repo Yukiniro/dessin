@@ -1,7 +1,8 @@
+import { clone } from 'bittydash';
 import EventConstant from '../constant/event-constant';
 import CollectionMixin from '../mixin/collection.mixin';
 import ObservableMixin from '../mixin/observable.mixin';
-import { Pos, Rect, Size } from '../types/types';
+import { CanvasJSON, Pos, Rect, Size } from '../types/types';
 import {
   calcCursorPoint,
   calcRectForFrame,
@@ -277,6 +278,19 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
       this._updateCursor(-1);
     }
     this.renderTrack([hoverSprite]);
+  }
+
+  toJSON(): CanvasJSON {
+    return {
+      size: clone(this._size, true),
+      backgroundColor: this._backgroundColor,
+    };
+  }
+
+  fromJSON(data: CanvasJSON): this {
+    extendsValue.call(this, 'size', data.size, this._size);
+    extendsValue.call(this, 'backgroundColor', data.backgroundColor, this._backgroundColor);
+    return this;
   }
 
   /**

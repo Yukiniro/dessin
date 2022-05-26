@@ -53,6 +53,12 @@ export interface GroupJSON extends SpriteJSON {
   isTemporary?: boolean;
 }
 
+export interface CanvasJSON {
+  size?: Size,
+  backgroundColor?: string;
+  sprites?: Array<SpriteJSON>;
+}
+
 export interface TrackWithOnwer extends TrackJSON {
   owner: any;
 }
