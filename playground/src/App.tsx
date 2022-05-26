@@ -6,6 +6,7 @@ import { getRandomColor, getRandomPos, getRandomSize } from './util';
 import { subscribe } from 'toukey';
 import Header from './header/Header';
 import { download } from 'downloadmejs';
+import { useCanvasStore } from './store';
 
 function App() {
   const viewRef: any = useRef(null);
@@ -66,6 +67,12 @@ function App() {
       }
     });
   }, []);
+
+  const { backgroundColor } = useCanvasStore((state) => state);
+  useEffect(() => {
+    canvasRef.current.setBackgroundColor(backgroundColor);
+    canvasRef.current.render();
+  }, [backgroundColor])
 
   return (
     <div className="w-full">
