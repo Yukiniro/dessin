@@ -1,13 +1,16 @@
 import { Button, Divider, IconButton } from '@mui/material';
-import { CloudDownload } from '@mui/icons-material';
 import useStore from '../store/index';
 import { ChangeEvent, useCallback } from 'react';
+import RectangleIcon from '../icon/rectangle.svg?component';
+import HandIcon from '../icon/hand.svg?component';
+import CircleIcon from '../icon/circle.svg?component';
+import DownloadIcon from '../icon/download.svg?component';
 
 interface HeaderProps {
   exportImage: () => void;
 }
 
-function Header(props: HeaderProps) {
+function Header(props: HeaderProps): JSX.Element {
   const { exportImage } = props;
   const { changeBackgroundColor, backgroundColor } = useStore((state) => state);
   const onColorChange = useCallback(
@@ -25,10 +28,19 @@ function Header(props: HeaderProps) {
         </Button>
         <Divider orientation="vertical" flexItem />
         <input onChange={onColorChange} value={backgroundColor} className="mx-2" type="color" />
+        <IconButton>
+          <HandIcon width="24" height="24" />
+        </IconButton>
+        <IconButton>
+          <RectangleIcon width="22" height="22" />
+        </IconButton>
+        <IconButton>
+          <CircleIcon width="24" height="24" />
+        </IconButton>
       </div>
       <div>
-        <IconButton onClick={exportImage} color="success">
-          <CloudDownload />
+        <IconButton onClick={exportImage}>
+          <DownloadIcon />
         </IconButton>
       </div>
     </div>
