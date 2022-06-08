@@ -4,11 +4,13 @@ import { MyState } from './index';
 
 interface TopbarState {
   backgroundColor: string;
+  operateType: 'handle' | 'rect' | 'circle';
   changeBackgroundColor: (value: string) => void;
 }
 
 const createTopbarStore = (set: SetState<MyState>, get: GetState<MyState>) => ({
   backgroundColor: '#FFFFFF',
+  operateType: 'handle',
   changeBackgroundColor: (value: string) => {
     execute(COMMAND.CHANGE_BKC, value);
     set({ backgroundColor: value });
