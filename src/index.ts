@@ -3,6 +3,7 @@ import text from './sprite/Text';
 import rect from './sprite/Rect';
 import circle from './sprite/Circle';
 import eventConstant from './constant/event-constant';
+export * from './util/util';
 
 export const Canvas = canvas;
 export const Text = text;
