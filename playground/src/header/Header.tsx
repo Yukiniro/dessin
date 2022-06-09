@@ -13,13 +13,24 @@ interface HeaderProps {
 
 function Header(props: HeaderProps): JSX.Element {
   const { exportImage } = props;
-  const { operateType, changeBackgroundColor, backgroundColor } = useStore((state) => state);
+  const { operateType, changeOperateType, changeBackgroundColor, backgroundColor } = useStore(
+    (state) => state
+  );
   const onColorChange = useCallback(
     (event: ChangeEvent) => {
       changeBackgroundColor((event.target as HTMLInputElement).value);
     },
     [changeBackgroundColor]
   );
+  const changeHandleType = useCallback(() => {
+    changeOperateType('handle');
+  }, []);
+  const changeRectType = useCallback(() => {
+    changeOperateType('rect');
+  }, []);
+  const changeCircleType = useCallback(() => {
+    changeOperateType('circle');
+  }, []);
 
   return (
     <div className="flex items-center justify-between w-full shadow h-10">
@@ -29,9 +40,21 @@ function Header(props: HeaderProps): JSX.Element {
         </Link>
         <Spacer x={1} />
         <input onChange={onColorChange} value={backgroundColor} className="mx-2" type="color" />
-        <BarButton icon={<HandIcon width={24} height={24} />} />
-        <BarButton icon={<RectangleIcon width={20} height={20} />} />
-        <BarButton icon={<CircleIcon width={26} height={26} />} />
+        <BarButton
+          onClick={changeHandleType}
+          active={operateType === 'handle'}
+          icon={<HandIcon width={24} height={24} />}
+        />
+        <BarButton
+          onClick={changeRectType}
+          active={operateType === 'rect'}
+          icon={<RectangleIcon width={20} height={20} />}
+        />
+        <BarButton
+          onClick={changeCircleType}
+          active={operateType === 'circle'}
+          icon={<CircleIcon width={26} height={26} />}
+        />
       </div>
       <div>
         <BarButton icon={<DownloadIcon />} onClick={exportImage} />

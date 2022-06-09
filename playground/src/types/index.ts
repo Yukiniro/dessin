@@ -7,3 +7,5 @@ export interface Pos {
   x: number;
   y: number;
 }
+
+export type OperateType = 'handle' | 'rect' | 'circle';
