@@ -8,6 +8,7 @@ specifiers:
   '@types/react': ^18.0.9
   '@types/react-dom': ^18.0.5
   '@vitejs/plugin-react': ^1.0.7
+  classnames: ^2.3.1
   downloadmejs: ^1.1.1
   less: ^4.1.2
   less-loader: ^11.0.0
@@ -37,6 +38,7 @@ devDependencies:
   '@types/react': 18.0.9
   '@types/react-dom': 18.0.5
   '@vitejs/plugin-react': 1.3.2
+  classnames: 2.3.1
   less: 4.1.2
   less-loader: 11.0.0_less@4.1.2
   typescript: 4.6.4
@@ -1367,6 +1369,10 @@ packages:
       ansi-styles: 3.2.1
       escape-string-regexp: 1.0.5
       supports-color: 5.5.0
+    dev: true
+
+  /classnames/2.3.1:
+    resolution: {integrity: sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==}
     dev: true
 
   /clsx/1.1.1:
