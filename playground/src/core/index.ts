@@ -1,4 +1,5 @@
-import { Canvas, Rect, calcRectForFrame } from 'dessin';
+import { Canvas, Rect, Circle, calcRectForFrame, calcDistance } from 'dessin';
+import { randomColor } from 'bittydash';
 
 let dessinCanvas: any = null;
 
@@ -35,8 +36,18 @@ function execute(command: string, value?: any) {
         case 'rect': {
           const rect = calcRectForFrame(startPoint, endPoint);
           if (rect) {
-            const rectGraph = new Rect({ ...rect });
+            const rectGraph = new Rect({ ...rect, fillColor: randomColor() });
             dessinCanvas.add(rectGraph);
+          }
+          break;
+        }
+        case 'circle': {
+          const distance = calcDistance(startPoint, endPoint);
+          if (distance > 0) {
+            const x = startPoint.x - distance;
+            const y = startPoint.y - distance;
+            const circleGraph = new Circle({ x, y, radius: distance, fillColor: randomColor() });
+            dessinCanvas.add(circleGraph);
           }
         }
         default:
