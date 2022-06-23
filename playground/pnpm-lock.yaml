@@ -15,7 +15,7 @@ specifiers:
   prop-types: ^15.7.2
   react: ^18.1.0
   react-dom: ^18.1.0
-  toukey: ^1.0.7
+  toukey: ^1.1.1
   typescript: ^4.5.4
   vite: ^2.9.9
   vite-plugin-windicss: ^1.8.4
@@ -29,7 +29,7 @@ dependencies:
   prop-types: 15.8.1
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
-  toukey: 1.1.0
+  toukey: 1.1.1
   zustand: 4.0.0-rc.1_react@18.1.0
 
 devDependencies:
@@ -2188,8 +2188,8 @@ packages:
       is-number: 7.0.0
     dev: true
 
-  /toukey/1.1.0:
-    resolution: {integrity: sha512-57Rz9o96Vr9zlhzsqBnbUvnutHh7gCdrs3LRHMF6JrRQk38CWdA7vnI6Fs4GMU1K7Ct+bY3ic4tRzAdkk+KWag==}
+  /toukey/1.1.1:
+    resolution: {integrity: sha512-pLRFX1HsMmWKn7hhmSZi9JXABDKg+mI2qdbesJkycly9rJLRAF4nOqsYAj7w+b9faunF4xnLKAFKFRddoSk0Hw==}
     dev: false
 
   /tslib/2.4.0:
