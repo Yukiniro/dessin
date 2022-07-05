@@ -1,6 +1,6 @@
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import './App.less';
-import Header from './header/Header';
+import Header from './components/header/Header';
 import { download } from 'downloadmejs';
 import { COMMAND, execute } from './core';
 import useStore from './store';

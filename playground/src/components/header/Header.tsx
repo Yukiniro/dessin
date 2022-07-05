@@ -1,11 +1,11 @@
-import useStore from '../store/index';
+import useStore from '../../store/index';
 import { ChangeEvent, useCallback, useEffect } from 'react';
-import RectangleIcon from '../icon/rectangle.svg?component';
-import HandIcon from '../icon/hand.svg?component';
-import CircleIcon from '../icon/circle.svg?component';
-import DownloadIcon from '../icon/download.svg?component';
+import RectangleIcon from '../../icon/rectangle.svg?component';
+import HandIcon from '../../icon/hand.svg?component';
+import CircleIcon from '../../icon/circle.svg?component';
+import DownloadIcon from '../../icon/download.svg?component';
 import { Link, Spacer } from '@nextui-org/react';
-import BarButton from '../common/BarButton';
+import BarButton from '../../common/BarButton';
 import { subscribe } from 'toukey';
 
 interface HeaderProps {
