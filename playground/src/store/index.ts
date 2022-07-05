@@ -1,9 +1,11 @@
 import create from 'zustand';
 import { COMMAND, execute } from '../core';
+import { Size } from '../types';
 import createTopbarStore, { TopbarState } from './createTopbarStore';
 
 interface BaseState {
   updateAll: () => void;
+  updateCanvasSize: (size: Size) => void;
 }
 
 type MyState = BaseState & TopbarState;
@@ -15,6 +17,9 @@ const useStore = create<MyState>((set, get) => ({
     set({
       backgroundColor: state.backgroundColor,
     });
+  },
+  updateCanvasSize: (size) => {
+    execute(COMMAND.UPDATE_CANVAS_SIZE, size);
   },
 }));
 

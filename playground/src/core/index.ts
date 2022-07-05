@@ -16,46 +16,57 @@ const COMMAND = {
   CHANGE_BKC: 'CHANGE_BKC',
   GET_ALL_STATE: 'GET_ALL_STATE',
   CREATE_GRAPH: 'CREATE_GRAPH',
+  UPDATE_CANVAS_SIZE: 'UPDATE_CANVAS_SIZE',
 };
 
 function execute(command: string, value?: any) {
-  switch (command) {
-    case COMMAND.INIT_CANVAS:
-      dessinCanvas = new Canvas({
-        canvas: value as unknown as HTMLCanvasElement,
-      });
-      return dessinCanvas;
-    case COMMAND.CHANGE_BKC:
-      dessinCanvas.setBackgroundColor(value);
-      dessinCanvas.render();
-    case COMMAND.GET_ALL_STATE:
-      return dessinCanvas.toJSON();
-    case COMMAND.CREATE_GRAPH:
-      const { operateType, startPoint, endPoint } = value;
-      switch (operateType) {
-        case 'rect': {
-          const rect = calcRectForFrame(startPoint, endPoint);
-          if (rect) {
-            const rectGraph = new Rect({ ...rect, fillColor: randomColor() });
-            dessinCanvas.add(rectGraph);
+  try {
+    switch (command) {
+      case COMMAND.INIT_CANVAS:
+        dessinCanvas = new Canvas({
+          canvas: value as unknown as HTMLCanvasElement,
+        });
+        return dessinCanvas;
+      case COMMAND.UPDATE_CANVAS_SIZE:
+        dessinCanvas.setSize(value);
+        dessinCanvas.render();
+        break;
+      case COMMAND.CHANGE_BKC:
+        dessinCanvas.setBackgroundColor(value);
+        dessinCanvas.render();
+      case COMMAND.GET_ALL_STATE:
+        return dessinCanvas.toJSON();
+      case COMMAND.CREATE_GRAPH:
+        const { operateType, startPoint, endPoint } = value;
+        switch (operateType) {
+          case 'rect': {
+            const rect = calcRectForFrame(startPoint, endPoint);
+            if (rect) {
+              const rectGraph = new Rect({ ...rect, fillColor: randomColor() });
+              dessinCanvas.add(rectGraph);
+            }
+            break;
           }
-          break;
-        }
-        case 'circle': {
-          const distance = calcDistance(startPoint, endPoint);
-          if (distance > 0) {
-            const x = startPoint.x - distance;
-            const y = startPoint.y - distance;
-            const circleGraph = new Circle({ x, y, radius: distance, fillColor: randomColor() });
-            dessinCanvas.add(circleGraph);
+          case 'circle': {
+            const distance = calcDistance(startPoint, endPoint);
+            if (distance > 0) {
+              const x = startPoint.x - distance;
+              const y = startPoint.y - distance;
+              const circleGraph = new Circle({ x, y, radius: distance, fillColor: randomColor() });
+              dessinCanvas.add(circleGraph);
+            }
           }
+          default:
         }
-        default:
-      }
-      dessinCanvas.render();
-      break;
-    default:
-      throw new Error('command must be string.');
+        dessinCanvas.render();
+        break;
+      default:
+        throw new Error('command must be string.');
+    }
+  } catch (e) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(e);
+    }
   }
 }
 
