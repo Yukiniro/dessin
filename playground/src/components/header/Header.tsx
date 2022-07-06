@@ -28,17 +28,17 @@ function Header(props: HeaderProps): JSX.Element {
     return subscribe('space', () => {
       changeOperateType('handle');
     });
-  }, []);
+  }, [changeOperateType]);
 
   const changeHandleType = useCallback(() => {
     changeOperateType('handle');
-  }, []);
+  }, [changeOperateType]);
   const changeRectType = useCallback(() => {
     changeOperateType('rect');
-  }, []);
+  }, [changeOperateType]);
   const changeCircleType = useCallback(() => {
     changeOperateType('circle');
-  }, []);
+  }, [changeOperateType]);
 
   return (
     <div className="flex items-center justify-between w-full shadow h-10">

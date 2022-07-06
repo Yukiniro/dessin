@@ -1,6 +1,7 @@
 import { Canvas, Rect, Circle, calcRectForFrame, calcDistance } from 'dessin';
 import { randomColor } from 'bittydash';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let dessinCanvas: any = null;
 
 // TODO Avoid ts check error.
@@ -19,6 +20,7 @@ const COMMAND = {
   UPDATE_CANVAS_SIZE: 'UPDATE_CANVAS_SIZE',
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function execute(command: string, value?: any) {
   try {
     switch (command) {
@@ -36,7 +38,7 @@ function execute(command: string, value?: any) {
         dessinCanvas.render();
       case COMMAND.GET_ALL_STATE:
         return dessinCanvas.toJSON();
-      case COMMAND.CREATE_GRAPH:
+      case COMMAND.CREATE_GRAPH: {
         const { operateType, startPoint, endPoint } = value;
         switch (operateType) {
           case 'rect': {
@@ -60,6 +62,8 @@ function execute(command: string, value?: any) {
         }
         dessinCanvas.render();
         break;
+      }
+
       default:
         throw new Error('command must be string.');
     }
