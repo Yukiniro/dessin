@@ -305,6 +305,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this.clearLowerCanvas();
     this.clearUpperCanvas();
     this._unbindEvent();
+    this._upperCanvas?.parentNode?.removeChild(this._upperCanvas);
     this.fire(EventConstant.DID_DESTROY);
   }
 
