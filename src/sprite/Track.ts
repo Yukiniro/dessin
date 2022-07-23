@@ -27,21 +27,31 @@ class Track {
   protected _supportNodes: Array<number>;
   protected _lineColor: string;
   protected _nodeColor: string;
+  protected _nodeHoverColor: string;
+  protected _nodeBorderColor: string;
   protected _nodeRadius: number;
   protected _rotateNodeOffset: number;
   protected _cacheView: HTMLCanvasElement;
+  protected _cacheViewForTrackNode: HTMLCanvasElement;
+  protected _cacheViewForTrackNodeHover: HTMLCanvasElement;
   protected _cacheCtx: CanvasRenderingContext2D;
   protected _owner: any;
 
   constructor(props: TrackWithOnwer = { owner: null }) {
     extendsValue.call(this, 'supportNodes', props.supportNodes, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1]);
     extendsValue.call(this, 'lineColor', props.lineColor, '#08b9ff');
-    extendsValue.call(this, 'nodeColor', props.nodeColor, '#adadad');
-    extendsValue.call(this, 'nodeRadius', props.nodeRadius, 4);
-    this._rotateNodeOffset = 10;
+    extendsValue.call(this, 'nodeColor', props.nodeColor, '#FFFFFF');
+    extendsValue.call(this, 'nodeHoverColor', props.nodeHoverColor, '#08b9ff');
+    extendsValue.call(this, 'nodeBorderColor', props.nodeBorderColor, '#A8A8A8');
+    extendsValue.call(this, 'nodeRadius', props.nodeRadius, 6);
+    this._rotateNodeOffset = 20;
     this._cacheView = document.createElement('canvas');
     this._cacheCtx = this._cacheView.getContext('2d');
+    this._cacheViewForTrackNode = document.createElement('canvas');
+    this._cacheViewForTrackNodeHover = document.createElement('canvas');
     this._owner = props.owner;
+
+    this._initNodeView();
   }
 
   /**
@@ -90,16 +100,39 @@ class Track {
     return this._owner.rect;
   }
 
-  render(ctx: CanvasRenderingContext2D, isHover: boolean | undefined): void {
+  private _initNodeView() {
+    const width = this._nodeRadius * 2;
+    const height = this._nodeRadius * 2;
+    this._cacheViewForTrackNode.width = width;
+    this._cacheViewForTrackNode.height = height;
+    this._cacheViewForTrackNodeHover.width = width;
+    this._cacheViewForTrackNodeHover.height = height;
+    const ctx = this._cacheViewForTrackNode.getContext('2d');
+    ctx.fillStyle = this._nodeBorderColor;
+    ctx.beginPath();
+    ctx.arc(width / 2, height / 2, this._nodeRadius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = this._nodeColor;
+    ctx.beginPath();
+    ctx.arc(width / 2, height / 2, this._nodeRadius - 1, 0, Math.PI * 2);
+    ctx.fill();
+    const ctxHover = this._cacheViewForTrackNodeHover.getContext('2d');
+    ctxHover.fillStyle = this._nodeHoverColor;
+    ctxHover.beginPath();
+    ctxHover.arc(width / 2, height / 2, this._nodeRadius, 0, Math.PI * 2);
+    ctxHover.fill();
+  }
+
+  render(ctx: CanvasRenderingContext2D, isHover?: boolean, activeTrackNode?: number): void {
     const { x, y, width, height } = this.rect;
     const angle = this.angle;
     ctx.save();
     ctx.translate(x + width / 2, y + height / 2);
     ctx.rotate(angleToRadian(angle));
-    if (!isHover) {
-      this._renderNodes(ctx);
-    }
     this._renderLines(ctx);
+    if (!isHover) {
+      this._renderNodes(ctx, activeTrackNode);
+    }
     ctx.restore();
   }
 
@@ -192,17 +225,20 @@ class Track {
 
   /**
    * @desc Render all controller node
-   * @param {*} ctx
    */
-  _renderNodes(ctx: CanvasRenderingContext2D): void {
+  _renderNodes(ctx: CanvasRenderingContext2D, activeTrackNode?: number): void {
     this._supportNodes.forEach((node) => {
       if (node !== TRACK_NODES.SELF && node !== TRACK_NODES.NONE) {
         const pos = this._calcNodePos(node);
         const { x, y, width, height } = this.rect;
-        this._renderNode(ctx, {
-          x: pos.x - x - width / 2,
-          y: pos.y - y - height / 2,
-        });
+        this._renderNode(
+          ctx,
+          {
+            x: pos.x - x - width / 2,
+            y: pos.y - y - height / 2,
+          },
+          node === activeTrackNode
+        );
       }
     });
   }
@@ -213,13 +249,15 @@ class Track {
    * @param {Object} point
    * @property {number} point.x
    * @property {number} point.y
+   * @property {boolean} isHover
    */
-  _renderNode(ctx: CanvasRenderingContext2D, point: Pos): void {
+  _renderNode(ctx: CanvasRenderingContext2D, point: Pos, isHover: boolean): void {
     ctx.save();
-    ctx.fillStyle = this._nodeColor;
-    ctx.beginPath();
-    ctx.arc(point.x, point.y, this._nodeRadius, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.drawImage(
+      isHover ? this._cacheViewForTrackNodeHover : this._cacheViewForTrackNode,
+      point.x - this._nodeRadius,
+      point.y - this._nodeRadius
+    );
     ctx.restore();
   }
 

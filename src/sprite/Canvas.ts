@@ -179,7 +179,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         this._recordSprite = this._getTopSprite(this._recordPoint);
         if (this._softGroup && this._softGroup !== this._recordSprite) {
           this._deleteSoftGrop();
-          this.renderTrack();
+          this.renderTrack([], this._recordTrackNode);
         }
         this._hasMousedown = true;
         this._updateSelectionForMouseDown();
@@ -255,7 +255,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     if (this._recordTrackNode === -1) {
       this.deselectAll();
     }
-    this.renderTrack();
+    this.renderTrack([], this._recordTrackNode);
   }
 
   private _trasfrom(offsetCursorPoint: Pos): void {
@@ -266,18 +266,19 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
     this._recordSprite.transform(this._recordTrackNode, verctor, this._recordSpriteData);
     this._updateCursor(this._recordTrackNode);
     this.render();
-    this.renderTrack();
+    this.renderTrack([], this._recordTrackNode);
   }
 
   private _updateHoverView(offsetCursorPoint: Pos): void {
     const hoverSprite = this._getTopSprite(offsetCursorPoint);
+    let activeTrackNode = -1;
     if (hoverSprite) {
-      const hoverTrackNode = hoverSprite.calcTrackNode(offsetCursorPoint);
-      this._updateCursor(hoverTrackNode);
+      activeTrackNode = hoverSprite.calcTrackNode(offsetCursorPoint);
+      this._updateCursor(activeTrackNode);
     } else {
-      this._updateCursor(-1);
+      this._updateCursor(activeTrackNode);
     }
-    this.renderTrack([hoverSprite]);
+    this.renderTrack([hoverSprite], activeTrackNode);
   }
 
   toJSON(): CanvasJSON {
@@ -453,21 +454,21 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   }
 
   /**
-   * @desc 渲染控制器
+   * @desc Render the controller
    */
-  renderTrack(willSelecSprites?: Array<Sprite>): void {
+  renderTrack(willSelecSprites: Array<Sprite> = [], activeTrackNode = -1): void {
     const ctx = this._upperCanvas.getContext('2d');
     this.clearUpperCanvas();
     this.forEachItem((sprite) => {
       if (sprite.isSelected()) {
-        sprite.renderTrack(ctx);
-      } else if (willSelecSprites && willSelecSprites.includes(sprite)) {
-        sprite.renderTrack(ctx, true);
+        sprite.renderTrack(ctx, false, activeTrackNode);
+      } else if (willSelecSprites.includes(sprite)) {
+        sprite.renderTrack(ctx, true, activeTrackNode);
       }
     });
     if (this._softGroup) {
-      this._softGroup.renderTrack(ctx, true);
-      this._softGroup.forEachItem((sprite) => sprite.renderTrack(ctx, true));
+      this._softGroup.renderTrack(ctx, true, activeTrackNode);
+      this._softGroup.forEachItem((sprite) => sprite.renderTrack(ctx, true, activeTrackNode));
     }
   }
 

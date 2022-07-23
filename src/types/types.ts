@@ -54,7 +54,7 @@ export interface GroupJSON extends SpriteJSON {
 }
 
 export interface CanvasJSON {
-  size?: Size,
+  size?: Size;
   backgroundColor?: string;
   sprites?: Array<SpriteJSON>;
 }
@@ -69,6 +69,8 @@ export interface TrackJSON {
   supportNodes?: Array<number>;
   lineColor?: string;
   nodeColor?: string;
+  nodeHoverColor?: string;
+  nodeBorderColor?: string;
   nodeRadius?: number;
 }
 

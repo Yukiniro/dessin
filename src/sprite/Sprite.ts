@@ -346,8 +346,8 @@ class Sprite extends ObservableMixin(Base) {
   /**
    * @desc Render the controller of the sprite
    */
-  renderTrack(ctx: CanvasRenderingContext2D, isHover: boolean | undefined): this {
-    this._track.render(ctx, isHover);
+  renderTrack(ctx: CanvasRenderingContext2D, isHover?: boolean, activeTrackNode?: number): this {
+    this._track.render(ctx, isHover, activeTrackNode);
     return this;
   }
 
