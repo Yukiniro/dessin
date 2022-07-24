@@ -14,6 +14,7 @@ try {
 
 const COMMAND = {
   INIT_CANVAS: 'INIT_CANVAS',
+  GET_CANVAS: 'GET_CANVAS',
   CHANGE_BKC: 'CHANGE_BKC',
   GET_ALL_STATE: 'GET_ALL_STATE',
   CREATE_GRAPH: 'CREATE_GRAPH',
@@ -29,6 +30,8 @@ function execute(command: string, value?: any) {
         dessinCanvas = new Canvas({
           canvas: value as unknown as HTMLCanvasElement,
         });
+        return dessinCanvas;
+      case COMMAND.GET_CANVAS:
         return dessinCanvas;
       case COMMAND.UPDATE_CANVAS_SIZE:
         dessinCanvas.setSize(value);
