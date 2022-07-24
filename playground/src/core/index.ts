@@ -18,6 +18,7 @@ const COMMAND = {
   GET_ALL_STATE: 'GET_ALL_STATE',
   CREATE_GRAPH: 'CREATE_GRAPH',
   UPDATE_CANVAS_SIZE: 'UPDATE_CANVAS_SIZE',
+  TOGGLE_GROUP: 'TOGGLE_GROUP',
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -63,7 +64,9 @@ function execute(command: string, value?: any) {
         dessinCanvas.render();
         break;
       }
-
+      case COMMAND.TOGGLE_GROUP: {
+        break;
+      }
       default:
         throw new Error('command must be string.');
     }

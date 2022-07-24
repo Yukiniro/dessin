@@ -14,9 +14,14 @@ interface HeaderProps {
 
 function Header(props: HeaderProps): JSX.Element {
   const { exportImage } = props;
-  const { operateType, changeOperateType, changeBackgroundColor, backgroundColor } = useStore(
-    (state) => state
-  );
+  const {
+    groupDisabled,
+    groupType,
+    operateType,
+    changeOperateType,
+    changeBackgroundColor,
+    backgroundColor,
+  } = useStore((state) => state);
   const onColorChange = useCallback(
     (event: ChangeEvent) => {
       changeBackgroundColor((event.target as HTMLInputElement).value);
@@ -62,6 +67,11 @@ function Header(props: HeaderProps): JSX.Element {
           onClick={changeCircleType}
           active={operateType === 'circle'}
           icon={<CircleIcon width={26} height={26} />}
+        />
+        <BarButton
+          onClick={changeCircleType}
+          disabled={groupDisabled}
+          text={groupType === 'group' ? 'Group' : 'Ungroup'}
         />
       </div>
       <div>

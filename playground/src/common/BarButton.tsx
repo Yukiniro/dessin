@@ -3,17 +3,19 @@ import { MouseEvent, MouseEventHandler, ReactNode, useCallback, useMemo } from '
 import classNames from 'classnames';
 
 interface BarButtonProps {
-  icon: ReactNode;
+  text?: string;
+  icon?: ReactNode;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   active?: boolean;
+  disabled?: boolean;
 }
 
 function BarButton(props: BarButtonProps) {
-  const { icon, onClick, active } = props;
+  const { icon, onClick, active, disabled, text } = props;
   const className = useMemo(() => {
-    const baseClass = 'min-w-8 min-h-8 w-8 h-8 mx-1 bg-transparent fill-black hover:bg-gray-200';
-    return classNames(baseClass, active ? 'bg-gray-200' : '');
-  }, [active]);
+    const baseClass = 'min-w-8 min-h-8 mx-1 bg-transparent fill-black hover:bg-gray-200';
+    return classNames(baseClass, !disabled && 'text-black', active ? 'bg-gray-200' : '');
+  }, [active, disabled]);
   const handleClick = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       if (onClick) {
@@ -23,7 +25,11 @@ function BarButton(props: BarButtonProps) {
     },
     [onClick]
   );
-  return <Button onClick={handleClick} className={className} size="xs" icon={icon} />;
+  return (
+    <Button onClick={handleClick} disabled={disabled} className={className} size="xs" icon={icon}>
+      {text}
+    </Button>
+  );
 }
 
 export default BarButton;
