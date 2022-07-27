@@ -335,6 +335,24 @@ export function calcRectWithAngle(rect: Rect, angle: number): Rect {
   };
 }
 
+export function calcRelativeRect(sourceRect: Rect, targetRect: Rect): Rect {
+  return {
+    x: targetRect.x / sourceRect.width,
+    y: targetRect.y / sourceRect.height,
+    width: targetRect.width / sourceRect.width,
+    height: targetRect.height / sourceRect.height,
+  };
+}
+
+export function calcRectFromRelative(sourceRect: Rect, relativeRect: Rect): Rect {
+  return {
+    x: relativeRect.x * sourceRect.width,
+    y: relativeRect.y * sourceRect.height,
+    width: relativeRect.width * sourceRect.width,
+    height: relativeRect.height * sourceRect.height,
+  };
+}
+
 /**
  * @description Extends the value for this.
  * @param key

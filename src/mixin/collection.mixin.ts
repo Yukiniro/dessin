@@ -1,5 +1,6 @@
 import { Constructor } from '../types/types';
 import { remove } from 'bittydash';
+import Sprite from '../sprite/Sprite';
 
 export default function CollectionMixin<TBase extends Constructor>(Base: TBase) {
   return class Collection extends Base {
@@ -79,7 +80,7 @@ export default function CollectionMixin<TBase extends Constructor>(Base: TBase) 
      * @desc 返回所有的项
      * @return
      */
-    all(): Array<any> {
+    all(): Array<Sprite> {
       return this._items;
     }
   };

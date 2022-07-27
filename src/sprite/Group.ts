@@ -1,7 +1,9 @@
 import constant from '../constant/constant';
 import CollectionMixin from '../mixin/collection.mixin';
-import { GroupJSON } from '../types/types';
+import { GroupJSON, Pos } from '../types/types';
 import {
+  calcRectFromRelative,
+  calcRelativeRect,
   extendsValue,
   localityRect,
   unlocalityRect,
@@ -9,11 +11,14 @@ import {
   wrapRectWithAngle,
 } from '../util/util';
 import Sprite from './Sprite';
+import Track from './Track';
 
 class Group extends CollectionMixin(Sprite) {
   constructor(props: GroupJSON = {}) {
     super(props);
     this._type = constant.SPRITE_TYPE_GROUP;
+    this._supportNodes = [0, 2, 4, 6, 8, 9, -1];
+    this._track = new Track({ supportNodes: this._supportNodes, owner: this });
     this.fromJSON(props);
   }
 
@@ -75,6 +80,27 @@ class Group extends CollectionMixin(Sprite) {
   ungroup(): this {
     this._unlocalityChildren();
     this.removeAll();
+    return this;
+  }
+
+  transform(trackNode: number, verctor: Pos, prevEncodeData: object): this {
+    const { LEFT_TOP, RIGHT_TOP, RIGHT_BOTTOM, LEFT_BOTTOM } = Track.TRACK_NODES();
+    const itemts = this.all();
+    const relativeInfos = itemts.map((item) => calcRelativeRect(this.rect, item.rect));
+    super.transform(trackNode, verctor, prevEncodeData);
+    switch (trackNode) {
+      case LEFT_TOP:
+      case RIGHT_TOP:
+      case RIGHT_BOTTOM:
+      case LEFT_BOTTOM:
+        relativeInfos.forEach((relativeRect, index) => {
+          const rect = calcRectFromRelative(this.rect, relativeRect);
+          itemts[index].setPos(rect).setSize(rect);
+        });
+        break;
+      default:
+    }
+    this.renderCache();
     return this;
   }
 }

@@ -14,7 +14,10 @@ class SoftGroup extends Group {
 
   transform(trackNode: number, verctor: Pos, prevEncodeData: object): this {
     this._localityChildren();
-    super.transform(trackNode, verctor, prevEncodeData);
+
+    // The Group's transform implementation conflicts with the current sprite.
+    // So, here we use the Sprite's transform.
+    Sprite.prototype.transform.call(this, trackNode, verctor, prevEncodeData);
     this._unlocalityChildren();
     return this;
   }
