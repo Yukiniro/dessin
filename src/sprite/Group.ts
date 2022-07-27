@@ -52,11 +52,23 @@ class Group extends CollectionMixin(Sprite) {
     };
   }
 
+  renderCache(): this {
+    this._cacheView.width = this.getWidth();
+    this._cacheView.height = this.getHeight();
+    this.forEachItem((item) => item.render(this._cacheCtx));
+    return this;
+  }
+
+  render(ctx: CanvasRenderingContext2D): this {
+    ctx.drawImage(this._cacheView, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+    return this;
+  }
+
   group(items: Array<Sprite>): this {
-    this.removeAll();
     items.forEach((item) => this.add(item));
     this._wrapChildren();
     this._localityChildren();
+    this.renderCache();
     return this;
   }
 

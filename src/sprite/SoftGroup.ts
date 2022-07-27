@@ -20,7 +20,6 @@ class SoftGroup extends Group {
   }
 
   group(items: Sprite[]): this {
-    this.removeAll();
     items.forEach((item) => this.add(item));
     this._wrapChildren();
     return this;

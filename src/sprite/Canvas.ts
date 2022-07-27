@@ -14,8 +14,10 @@ import {
 } from '../util/util';
 import Base from './Base';
 import SoftGroup from './SoftGroup';
+import Group from './Group';
 import Sprite from './Sprite';
 import Track from './Track';
+import constant from '../constant/constant';
 
 class Canvas extends ObservableMixin(CollectionMixin(Base)) {
   protected _size: Size = { width: 500, height: 500 };
@@ -183,6 +185,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         }
         this._hasMousedown = true;
         this._updateSelectionForMouseDown();
+        this.fire(EventConstant.MOUSE_DOWN);
         break;
       case 'click':
         break;
@@ -214,6 +217,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
         this._recordSprite = null;
         this._recordPoint = null;
         this._hasMousedown = false;
+        this.fire(EventConstant.MOUSE_UP);
         break;
       default:
     }
@@ -221,6 +225,7 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
 
   private _createSoftGroup(sprites: Array<Sprite>) {
     this._softGroup = this._softGroup || new SoftGroup();
+    this._softGroup.removeAll();
     this._softGroup.group(sprites);
   }
 
@@ -516,6 +521,38 @@ class Canvas extends ObservableMixin(CollectionMixin(Base)) {
 
   setBackgroundColor(value: string): this {
     this._backgroundColor = value;
+    return this;
+  }
+
+  transferGroup(): this {
+    const selectedSprite = this.selectedSprite() as unknown as Group;
+    if (selectedSprite) {
+      switch (selectedSprite.type) {
+        case constant.SPRITE_TYPE_SOFTGROUP: {
+          const group = new Group();
+          const items = [...this._softGroup.all()];
+          items.forEach((item) => this.remove(item));
+          group.group(items);
+          this._deleteSoftGrop();
+          this.add(group);
+          this.selectSprite(group.id);
+          break;
+        }
+        case constant.SPRITE_TYPE_GROUP: {
+          const items = [...selectedSprite.all()];
+          selectedSprite.ungroup();
+          this.remove(selectedSprite);
+          this._softGroup = new SoftGroup();
+          items.forEach((item) => this.add(item));
+          this._softGroup.group(items);
+          break;
+        }
+        default:
+      }
+      this.render();
+      this.renderTrack();
+    }
+
     return this;
   }
 }

@@ -17,6 +17,7 @@ function Header(props: HeaderProps): JSX.Element {
   const {
     groupDisabled,
     groupType,
+    toggleGroup,
     operateType,
     changeOperateType,
     changeBackgroundColor,
@@ -69,7 +70,7 @@ function Header(props: HeaderProps): JSX.Element {
           icon={<CircleIcon width={26} height={26} />}
         />
         <BarButton
-          onClick={changeCircleType}
+          onClick={toggleGroup}
           disabled={groupDisabled}
           text={groupType === 'group' ? 'Group' : 'Ungroup'}
         />

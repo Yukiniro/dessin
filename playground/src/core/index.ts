@@ -20,6 +20,7 @@ const COMMAND = {
   CREATE_GRAPH: 'CREATE_GRAPH',
   UPDATE_CANVAS_SIZE: 'UPDATE_CANVAS_SIZE',
   TOGGLE_GROUP: 'TOGGLE_GROUP',
+  GET_GROUP_STATUS: 'GET_GROUP_STATUS',
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,7 +69,22 @@ function execute(command: string, value?: any) {
         break;
       }
       case COMMAND.TOGGLE_GROUP: {
+        dessinCanvas.transferGroup();
         break;
+      }
+      case COMMAND.GET_GROUP_STATUS: {
+        const selectedSprite = dessinCanvas.selectedSprite();
+        if (selectedSprite) {
+          switch (selectedSprite.type) {
+            case 'GROUP':
+              return 'ungroup';
+            case 'SOFTGROUP':
+              return 'group';
+            default:
+              return 'disabled';
+          }
+        }
+        return 'disabled';
       }
       default:
         throw new Error('command must be string.');

@@ -5,7 +5,7 @@ import { download } from 'downloadmejs';
 import { COMMAND, execute } from './core';
 import useStore from './store';
 import useMouseDrag from './hooks/useMouseDrag';
-import { calcRectForFrame } from 'dessin';
+import { calcRectForFrame, EventConstant } from 'dessin';
 
 function App() {
   const [viewSize, updateViewSize] = useState({ width: 500, height: 500 });
@@ -16,7 +16,9 @@ function App() {
     const canvas = viewRef.current as unknown as HTMLCanvasElement;
     download(canvas.toDataURL(), { name: 'test.png' });
   }, []);
-  const { updateAll, createGraph, updateCanvasSize, operateType } = useStore((state) => state);
+  const { updateAll, createGraph, updateCanvasSize, updateGroupStatus, operateType } = useStore(
+    (state) => state
+  );
 
   const resizeHandle = useCallback(() => {
     const rect = viewBoxRef.current?.getBoundingClientRect();
@@ -40,13 +42,24 @@ function App() {
   }, [resizeHandle]);
 
   useEffect(() => {
-    const canvas = execute(COMMAND.INIT_CANVAS, viewRef.current);
+    const dessinCanvas = execute(COMMAND.INIT_CANVAS, viewRef.current);
     updateAll();
     resizeHandle();
     return () => {
-      canvas.destroy();
+      dessinCanvas.destroy();
     };
   }, [resizeHandle, updateAll]);
+
+  useEffect(() => {
+    const dessinCanvas = execute(COMMAND.GET_CANVAS);
+    const handler = () => {
+      updateGroupStatus();
+    };
+    dessinCanvas.on(EventConstant.MOUSE_UP, handler);
+    return () => {
+      dessinCanvas.off(EventConstant.MOUSE_UP, handler);
+    };
+  }, [updateGroupStatus]);
 
   const [actionType, startPoint, changePoint, endPoint] = useMouseDrag(viewHandleRef);
   useEffect(() => {

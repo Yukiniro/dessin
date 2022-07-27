@@ -12,7 +12,22 @@ interface TopbarState {
   changeBackgroundColor: (value: string) => void;
   createGraph: (startPoint: Pos, endPoint: Pos) => void;
   toggleGroup: () => void;
+  updateGroupStatus: () => void;
 }
+
+const _updateGroupStatus = (set: SetState<MyState>) => {
+  const status = execute(COMMAND.GET_GROUP_STATUS);
+  switch (status) {
+    case 'disabled':
+      set({ groupDisabled: true, groupType: 'group' });
+      break;
+    default:
+      set({
+        groupDisabled: false,
+        groupType: status,
+      });
+  }
+};
 
 const createTopbarStore = (set: SetState<MyState>, get: GetState<MyState>): TopbarState => ({
   backgroundColor: '#FFFFFF',
@@ -32,6 +47,10 @@ const createTopbarStore = (set: SetState<MyState>, get: GetState<MyState>): Topb
   },
   toggleGroup: () => {
     execute(COMMAND.TOGGLE_GROUP);
+    _updateGroupStatus(set);
+  },
+  updateGroupStatus: () => {
+    _updateGroupStatus(set);
   },
 });
 
