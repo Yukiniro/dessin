@@ -6,6 +6,7 @@ import { Pos, OperateType } from '../types';
 interface TopbarState {
   backgroundColor: string;
   operateType: OperateType;
+  deleteDisabled: boolean;
   groupDisabled: boolean;
   groupType: 'group' | 'ungroup';
   changeOperateType: (type: OperateType) => void;
@@ -13,6 +14,8 @@ interface TopbarState {
   createGraph: (startPoint: Pos, endPoint: Pos) => void;
   toggleGroup: () => void;
   updateGroupStatus: () => void;
+  updateDeleteStatus: () => void;
+  deleteSprite: () => void;
 }
 
 const _updateGroupStatus = (set: SetState<MyState>) => {
@@ -32,6 +35,7 @@ const _updateGroupStatus = (set: SetState<MyState>) => {
 const createTopbarStore = (set: SetState<MyState>, get: GetState<MyState>): TopbarState => ({
   backgroundColor: '#FFFFFF',
   operateType: 'handle',
+  deleteDisabled: true,
   groupDisabled: true,
   groupType: 'group',
   changeOperateType: (type: OperateType) => {
@@ -51,6 +55,12 @@ const createTopbarStore = (set: SetState<MyState>, get: GetState<MyState>): Topb
   },
   updateGroupStatus: () => {
     _updateGroupStatus(set);
+  },
+  updateDeleteStatus: () => {
+    set({ deleteDisabled: !execute(COMMAND.GET_DELETE_STATUS) });
+  },
+  deleteSprite: () => {
+    execute(COMMAND.DELETE_GRAPH);
   },
 });
 

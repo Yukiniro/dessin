@@ -4,6 +4,7 @@ import RectangleIcon from '../../icon/rectangle.svg?component';
 import HandIcon from '../../icon/hand.svg?component';
 import CircleIcon from '../../icon/circle.svg?component';
 import DownloadIcon from '../../icon/download.svg?component';
+import DeleteIcon from '../../icon/delete.svg?component';
 import { Link, Spacer } from '@nextui-org/react';
 import BarButton from '../../common/BarButton';
 import { subscribe } from 'toukey';
@@ -22,6 +23,8 @@ function Header(props: HeaderProps): JSX.Element {
     changeOperateType,
     changeBackgroundColor,
     backgroundColor,
+    deleteDisabled,
+    deleteSprite,
   } = useStore((state) => state);
   const onColorChange = useCallback(
     (event: ChangeEvent) => {
@@ -73,6 +76,11 @@ function Header(props: HeaderProps): JSX.Element {
           onClick={toggleGroup}
           disabled={groupDisabled}
           text={groupType === 'group' ? 'Group' : 'Ungroup'}
+        />
+        <BarButton
+          onClick={deleteSprite}
+          disabled={deleteDisabled}
+          icon={<DeleteIcon width={26} height={26} />}
         />
       </div>
       <div>

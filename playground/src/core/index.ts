@@ -17,10 +17,12 @@ const COMMAND = {
   GET_CANVAS: 'GET_CANVAS',
   CHANGE_BKC: 'CHANGE_BKC',
   GET_ALL_STATE: 'GET_ALL_STATE',
+  DELETE_GRAPH: 'DELETE_GRAPH',
   CREATE_GRAPH: 'CREATE_GRAPH',
   UPDATE_CANVAS_SIZE: 'UPDATE_CANVAS_SIZE',
   TOGGLE_GROUP: 'TOGGLE_GROUP',
   GET_GROUP_STATUS: 'GET_GROUP_STATUS',
+  GET_DELETE_STATUS: 'GET_DELETE_STATUS',
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -85,6 +87,15 @@ function execute(command: string, value?: any) {
           }
         }
         return 'disabled';
+      }
+      case COMMAND.GET_DELETE_STATUS:
+        return !!dessinCanvas.selectedSprite();
+      case COMMAND.DELETE_GRAPH: {
+        const selectedSprite = dessinCanvas.selectedSprite();
+        if (selectedSprite) {
+          dessinCanvas.remove(selectedSprite);
+        }
+        break;
       }
       default:
         throw new Error('command must be string.');

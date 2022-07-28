@@ -16,9 +16,14 @@ function App() {
     const canvas = viewRef.current as unknown as HTMLCanvasElement;
     download(canvas.toDataURL(), { name: 'test.png' });
   }, []);
-  const { updateAll, createGraph, updateCanvasSize, updateGroupStatus, operateType } = useStore(
-    (state) => state
-  );
+  const {
+    updateAll,
+    createGraph,
+    updateCanvasSize,
+    updateGroupStatus,
+    updateDeleteStatus,
+    operateType,
+  } = useStore((state) => state);
 
   const resizeHandle = useCallback(() => {
     const rect = viewBoxRef.current?.getBoundingClientRect();
@@ -54,12 +59,13 @@ function App() {
     const dessinCanvas = execute(COMMAND.GET_CANVAS);
     const handler = () => {
       updateGroupStatus();
+      updateDeleteStatus();
     };
     dessinCanvas.on(EventConstant.MOUSE_UP, handler);
     return () => {
       dessinCanvas.off(EventConstant.MOUSE_UP, handler);
     };
-  }, [updateGroupStatus]);
+  }, [updateGroupStatus, updateDeleteStatus]);
 
   const [actionType, startPoint, changePoint, endPoint] = useMouseDrag(viewHandleRef);
   useEffect(() => {
