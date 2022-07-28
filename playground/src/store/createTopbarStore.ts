@@ -32,6 +32,10 @@ const _updateGroupStatus = (set: SetState<MyState>) => {
   }
 };
 
+const _updateDeleteStatus = (set: SetState<MyState>) => {
+  set({ deleteDisabled: !execute(COMMAND.GET_DELETE_STATUS) });
+};
+
 const createTopbarStore = (set: SetState<MyState>, get: GetState<MyState>): TopbarState => ({
   backgroundColor: '#FFFFFF',
   operateType: 'handle',
@@ -48,19 +52,22 @@ const createTopbarStore = (set: SetState<MyState>, get: GetState<MyState>): Topb
   createGraph: (startPoint: Pos, endPoint: Pos) => {
     const { operateType } = get();
     execute(COMMAND.CREATE_GRAPH, { operateType, startPoint, endPoint });
+    _updateDeleteStatus(set);
   },
   toggleGroup: () => {
     execute(COMMAND.TOGGLE_GROUP);
     _updateGroupStatus(set);
+    _updateDeleteStatus(set);
   },
   updateGroupStatus: () => {
     _updateGroupStatus(set);
   },
   updateDeleteStatus: () => {
-    set({ deleteDisabled: !execute(COMMAND.GET_DELETE_STATUS) });
+    _updateDeleteStatus(set);
   },
   deleteSprite: () => {
     execute(COMMAND.DELETE_GRAPH);
+    _updateDeleteStatus(set);
   },
 });
 

@@ -34,6 +34,14 @@ function Header(props: HeaderProps): JSX.Element {
   );
 
   useEffect(() => {
+    return subscribe('delete', () => {
+      if (!deleteDisabled) {
+        deleteSprite();
+      }
+    });
+  }, [deleteDisabled, deleteSprite]);
+
+  useEffect(() => {
     return subscribe('space', () => {
       changeOperateType('handle');
     });
